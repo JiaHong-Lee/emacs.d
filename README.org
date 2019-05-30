@@ -1,0 +1,11 @@
+#+TITLE:  .emacs.d README
+#+AUTHOR: Lee Jia Hong
+#+EMAIL:  jia_hong@live.com.my
+#+DATE:   [2019-05-30 Thu]
+#+TAGS:   emacs dotfiles readme
+
+* Introduction
+
+This is a git repo for my emacs dotfiles.
+
+It is derived from the Purcell emacs.d. Most of the code are copied from his.
