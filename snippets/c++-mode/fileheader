@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: fileheader
+# key: fileheader
+# --
+// Author       : ${1:Lee Jia Hong}
+// Student ID   : ${2:SWE1609577}
+// Email        : ${3:SWE1609577@xmu.edu.my}
+// Phone-number : ${4:+60 10 980 9762}
+// First written: ${5:[`(format-time-string "%Y-%m-%d %a")`]}
+// Updated      : 
+// Version      : 0.1
+// Description  : $6

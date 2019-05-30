@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: fileheader
+# key: fileheader
+# --
+#+TITLE:  $1
+#+AUTHOR: Lee Jia Hong
+#+EMAIL:  jia_hong@live.com.my
+#+DATE:   `(let ((x (org-insert-time-stamp nil nil t))))`
+#+TAGS:   $2
+
+* Introduction
+
+$0

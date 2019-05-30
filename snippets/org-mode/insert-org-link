@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: url-link
+# key: url
+# --
+`(jh/insert-org-link-from-url)`
