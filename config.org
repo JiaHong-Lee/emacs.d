@@ -92,7 +92,8 @@ Add my personal info.
 
 #+BEGIN_SRC emacs-lisp
 (global-visual-line-mode 1) ;; wrap line
-(diminish 'visual-line-mode)
+(with-eval-after-load 'diminish  ;; diminish library is loaded after this line
+  (diminish 'visual-line-mode))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -270,6 +271,8 @@ Add melpa as a package source.
 
 #+BEGIN_SRC emacs-lisp
 (require 'package)
+(package-initialize)
+
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 #+END_SRC
 
@@ -356,7 +359,8 @@ Display ugly ^L page breaks as tidy horizontal lines.
 (require-package 'page-break-lines)
 (global-page-break-lines-mode)
 
-(diminish 'page-break-lines-mode)
+(with-eval-after-load 'diminish ;; diminish library is loaded after this line
+  (diminish 'page-break-lines-mode))
 #+END_SRC
 
 Provides a command which searches for unicode characters by name, and displays a list of matching characters with their names in a buffer.
@@ -893,7 +897,7 @@ Not quite sure the differences between these and the =reftex-default-bibliograph
 This is useful to edit =docker-compose.yml= file.
 #+BEGIN_SRC emacs-lisp
 ;; YAML Mode
-(require 'yaml-mode)
+(require-package 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
 (add-hook 'yaml-mode-hook
