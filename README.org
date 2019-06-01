@@ -6,6 +6,8 @@
 
 * Introduction
 
-This is a git repo for my emacs dotfiles.
+This is a Git repo for my Emacs dotfiles. It is derived from the Purcell emacs.d. Most of the code are copied from his.
 
-It is derived from the Purcell emacs.d. Most of the code are copied from his.
+All my configs live in the =config.org= file. On startup, the =config.el= will be generated from the Org file and be run by Emacs. 
+
+I have defined my =init.el= inside the =config.org= file as well. At every runtime, the =init.el= will be overwritten by the one defines in the =config.org= file.
