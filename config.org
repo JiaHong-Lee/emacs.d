@@ -170,7 +170,10 @@ Create directory if not already created. Got the code from [[https://github.com/
 
 To prevent custom variable form cluttering the init.el file.
 #+BEGIN_SRC emacs-lisp
-(setq custom-file "~/.emacs.d/custom.el")
+(defconst custom-file "~/.emacs.d/custom.el")
+(unless (file-exists-p custom-file)
+  (shell-command (concat "touch " custom-file)))
+(setq custom-file custom-file)
 (load custom-file)
 #+END_SRC
 
