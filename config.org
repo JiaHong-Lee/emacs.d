@@ -1932,6 +1932,14 @@ Open a new =shell= from the current buffer-directory. [fn:4]
     (shell (concat "*shell: " name "*"))))
 #+END_SRC
 
+** Aweshell
+https://github.com/manateelazycat/aweshell
+
+Trying it out <2019-06-06 Thu>.
+#+BEGIN_SRC emacs-lisp
+(require 'aweshell)
+#+END_SRC
+
 * Gnus Authinfo
 
 Emacs offers to save my passwords when I want to use TRAMP. However, I would like to save it in an encrypted file. Create the file =~/.authinfo.gpg= and give only the current user permission to read-write to it.
