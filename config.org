@@ -1890,6 +1890,21 @@ The only functionalities that I care:
 2. Search.
 3. Open in external browser.
 
+* Dash Docsets in Emacs
+
+I want to browse dash docsets in Emacs. Now, I am using =counsel-dash=. Check out the homepage [[https://github.com/dash-docs-el/counsel-dash][here]].
+#+BEGIN_SRC emacs-lisp
+(require-package 'counsel-dash)
+
+
+(setq dash-docs-docsets-path "/home/zacque/.emacs.d/docsets") ;; use absolute path
+(setq dash-docs-common-docsets '("OpenCV", "Keras"))
+#+END_SRC
+
+Note:
+1. counsel-dash-docsets-path should use absolute path only.
+2. sqlite3 binaries should be found from my $PATH.
+
 * Eshell as my Terminal
 
 #+BEGIN_SRC emacs-lisp
