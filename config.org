@@ -1092,6 +1092,17 @@ In Ubuntu, set org-babel to run =python3= by default.
 (setq org-babel-python-command "python3")
 #+END_SRC
 
+** Pip-mode
+
+It supports =*.pip= and =requirements*.txt= files. It provides syntax highlighting, togglable comments, and auto-completion of package names from PyPI.
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'pip-requirements)
+#+END_SRC
+
+References:
+1. https://github.com/Wilfred/pip-requirements.el
+
 ** Elpy
 
 Elpy turns Emacs into a Python IDE. Getting ideas from these sources [fn:9].
