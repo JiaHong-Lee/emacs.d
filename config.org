@@ -673,7 +673,7 @@ Use =org-cliplink= to fetch a page title and format it into an org-link.
 (global-set-key (kbd "C-c l") 'org-store-link)
 #+END_SRC
 
-Override Org-mode subscript and superscripts default behaviours for display.
+Override Org-mode subscript and superscripts default behaviours for display. Mixing LaTeX with plain text.
 #+BEGIN_SRC emacs-lisp
 (setq org-use-sub-superscripts "{}")
 #+END_SRC
