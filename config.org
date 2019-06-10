@@ -1896,9 +1896,8 @@ I want to browse dash docsets in Emacs. Now, I am using =counsel-dash=. Check ou
 #+BEGIN_SRC emacs-lisp
 (require-package 'counsel-dash)
 
-
 (setq dash-docs-docsets-path "/home/zacque/.emacs.d/docsets") ;; use absolute path
-(setq dash-docs-common-docsets '("OpenCV", "Keras"))
+(setq dash-docs-common-docsets '("OpenCV" "Keras" "Python 3"))
 #+END_SRC
 
 Note:
