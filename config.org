@@ -473,6 +473,14 @@ Use Ivy with Historian-mode [fn:14]. Historian-mode stores the results of comple
 (ivy-historian-mode 1)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(defun open-file-directory-from-path (x)
+  "Open the directory given a file path"
+  (find-file (file-name-directory x)))
+
+(ivy-set-actions 'ivy-switch-buffer '(("d" open-file-directory-from-path "directory")))
+#+END_SRC
+
 * Enable Evil mode
 
 #+BEGIN_SRC emacs-lisp
