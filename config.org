@@ -2118,10 +2118,6 @@ Note: default-directory is a buffer-local variable that changes with buffers.
 
 Add a dispatch option to =counsel-file-jump= to jump to the directory.
 #+BEGIN_SRC emacs-lisp
-(defun open-file-directory-from-path (x)
-  "Open the directory given a file path"
-  (find-file (file-name-directory x)))
-
 (ivy-set-actions 'counsel-file-jump '(("d" open-file-directory-from-path "directory")))
 #+END_SRC
 
