@@ -417,6 +417,16 @@ A useful tool to alert from the mode-line.
 (require-package 'mode-line-bell)
 #+END_SRC
 
+* Editing Utilities
+
+This is where I put codes that help with editing in general, no matter what the language be.
+
+#+BEGIN_SRC emacs-lisp
+;; Purcell .emacs.d
+(when (fboundp 'electric-pair-mode)
+  (add-hook 'after-init-hook 'electric-pair-mode))
+#+END_SRC
+
 * Enable Ivy Mode
 
 #+BEGIN_SRC emacs-lisp
