@@ -2461,8 +2461,31 @@ Directly search the contents of files in Dropbox.
 (keyfreq-autosave-mode 1)
 #+END_SRC
 
+** Counsel-firefox-bookmarks
+
+A handy tool for me to search firefox bookmarks from within Emacs.
+
+Right now, I am git cloning the package into the .emacs.d/lisp directory. It might be merged into the =ivy= package in the future.
+
 #+BEGIN_SRC emacs-lisp
+(require 'counsel-firefox-bookmarks)
+(setq counsel-firefox-bookmarks-file "/home/zacque/sync/firefox-bookmarks-autobackup.html")
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(defun incognito-tab (x)
+  "Browse candidate in Firefox private window."
+  (browse-url (cadr x)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(ivy-set-actions 'counsel-firefox-bookmarks '(("i" incognito-tab "incognito-tab")))
+#+END_SRC
+
+References:
+1. https://github.com/tangxinfa/counsel-firefox-bookmarks
+2. https://www.emacswiki.org/emacs/BrowseUrl#toc29
+   With private-browsing.
 
 * Enable Emacs Server
 
