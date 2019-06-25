@@ -1535,6 +1535,33 @@ Change dired default sorting to directories first, then followed by files in alp
   (define-key dired-mode-map (kbd "C-c C-q") 'wdired-change-to-wdired-mode))
 #+END_SRC
 
+#+SOURCE: https://oremacs.com/2015/07/27/counsel-recoll/
+#+BEGIN_SRC emacs-lisp :tangle no
+(defun ora-terminal ()
+  "Switch to terminal. Launch if nonexistent."
+  (interactive)
+  (if (get-buffer "*ansi-term*")
+      (switch-to-buffer "*ansi-term*")
+    (ansi-term "/bin/bash"))
+    (get-buffer-process "*ansi-term*"))
+
+(defun ora-dired-open-term ()
+  "Open an `ansi-term' that corresponds to current directory."
+  (interactive)
+  (let ((current-dir (dired-current-directory)))
+    (term-send-string
+     (ora-terminal)
+     (if (file-remote-p current-dir)
+         (let ((v (tramp-dissect-file-name current-dir t)))
+           (format "ssh %s@%s\n"
+                   (aref v 1) (aref v 2)))
+       (format "cd '%s'\n" current-dir)))
+    (setq default-directory current-dir)))
+
+(define-key dired-mode-map (kbd "`") 'ora-dired-open-term)
+#+END_SRC
+
+
 ** File Editing
 
 A buffer is not a file. It is an intermediate form to hold contents before writing it to files. Being able to directly work on a file through its buffer is very convenient. I will call it a file-buffer.
@@ -2157,7 +2184,63 @@ Note:
 1. counsel-dash-docsets-path should use absolute path only.
 2. sqlite3 binaries should be found from my $PATH.
 
-* Eshell as my Terminal
+* Ansi-term, Term, Eshell
+
+** Ansi-Term
+
+#+BEGIN_SRC emacs-lisp
+(require 'term)
+#+END_SRC
+
+Remove the prompt.
+#+BEGIN_SRC emacs-lisp
+(setq explicit-shell-file-name "/bin/bash") ;; use bash by default
+#+END_SRC
+
+Kill the buffer after exiting the term.
+#+BEGIN_SRC emacs-lisp
+;; Source: https://oremacs.com/2015/01/01/three-ansi-term-tips/
+(defun oleh-term-exec-hook ()
+  (let* ((buff (current-buffer))
+         (proc (get-buffer-process buff)))
+    (set-process-sentinel
+     proc
+     `(lambda (process event)
+        (if (string= event "finished\n")
+            (kill-buffer ,buff))))))
+
+(add-hook 'term-exec-hook 'oleh-term-exec-hook)
+#+END_SRC
+
+I couldn't remember which key is for which line/char-mode in term. Simply turn it into a toggle. Source: https://joelmccracken.github.io/entries/switching-between-term-mode-and-line-mode-in-emacs-term/
+#+BEGIN_SRC emacs-lisp
+(defun jnm/term-toggle-mode ()
+  "Toggles term between line mode and char mode"
+  (interactive)
+  (if (term-in-line-mode)
+      (term-char-mode)
+    (term-line-mode)))
+
+(define-key term-mode-map (kbd "C-c C-j") 'jnm/term-toggle-mode)
+(define-key term-mode-map (kbd "C-c C-k") 'jnm/term-toggle-mode)
+
+(define-key term-raw-map (kbd "C-c C-j") 'jnm/term-toggle-mode)
+(define-key term-raw-map (kbd "C-c C-k") 'jnm/term-toggle-mode)
+#+END_SRC
+
+My ansi-term is black and white. This should make it more colourful.
+#+BEGIN_SRC emacs-lisp
+(require-package 'eterm-256color)
+(add-hook 'term-mode-hook #'eterm-256color-mode)
+#+END_SRC
+
+This avoids some inputs from going to a newline before reaching the end.
+#+BEGIN_SRC emacs-lisp
+;; SOURCE: https://emacs.stackexchange.com/a/37831
+(setq term-suppress-hard-newline t)
+#+END_SRC
+
+** Eshell as my Terminal
 
 #+BEGIN_SRC emacs-lisp
 (setq eshell-history-size 5000)
@@ -2184,7 +2267,45 @@ Open a new =shell= from the current buffer-directory. [fn:4]
     (shell (concat "*shell: " name "*"))))
 #+END_SRC
 
-** Aweshell
+Progress bar for apt in shell. Source: https://oremacs.com/2019/03/24/shell-apt/
+#+BEGIN_SRC emacs-lisp
+(advice-add
+ 'ansi-color-apply-on-region
+ :before 'ora-ansi-color-apply-on-region)
+
+(defun ora-ansi-color-apply-on-region (begin end)
+  "Fix progress bars for e.g. apt(8).
+Display progress in the mode line instead."
+  (let ((end-marker (copy-marker end))
+        mb)
+    (save-excursion
+      (goto-char (copy-marker begin))
+      (while (re-search-forward "\0337" end-marker t)
+        (setq mb (match-beginning 0))
+        (when (re-search-forward "\0338" end-marker t)
+          (ora-apt-progress-message
+           (substring-no-properties
+            (delete-and-extract-region mb (point))
+            2 -2)))))))
+
+;; (defun ora-apt-progress-message (progress)
+;;   (setq mode-line-process
+;;         (if (string-match
+;;              "Progress: \\[ *\\([0-9]+\\)%\\]" progress)
+;;             (list
+;;              (concat ":%s "
+;;                      (match-string 1 progress)
+;;                      "%%%% "))
+;;           '(":%s")))
+;;   (force-mode-line-update))
+
+(defun ora-apt-progress-message (progress)
+  (message
+   (replace-regexp-in-string
+    "%" "%%"
+    (ansi-color-apply progress))))
+#+END_SRC
+*** Aweshell
 https://github.com/manateelazycat/aweshell
 
 Trying it out <2019-06-06 Thu>.
