@@ -68,6 +68,12 @@ This is an attempt to put my Emacs config into an org file. By doing so, my init
 
 The rest is in the config.org file.
 
+* Header
+
+#+BEGIN_SRC emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+END_SRC
+
 * Personalise
 
 Add my personal info.
