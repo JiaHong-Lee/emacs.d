@@ -1260,7 +1260,7 @@ Gradle is Groovy DSL.
 :header-args: :tangle ./lisp/gradle-mode/gradle-mode.el
 :END:
 
-Derive and define gradle-mode from groovy-mode.
+Derive and define gradle-mode from groovy-mode. Note: This code will be tangled to the lisp dir.
 #+BEGIN_SRC emacs-lisp
 ;;; gradle-mode.el --- An emacs major mode for editing gradle files.
 
@@ -1312,6 +1312,12 @@ Derive and define gradle-mode from groovy-mode.
 
 (provide 'gradle-mode)
 ;;; gradle-mode.el ends here
+#+END_SRC
+
+** Gradle-mode
+
+#+BEGIN_SRC emacs-lisp
+(require 'gradle-mode)
 #+END_SRC
 
 * Docker -- Containers
