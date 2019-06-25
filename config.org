@@ -523,7 +523,9 @@ Set some built-in modes to launch in emacs-state.
            (eww-mode . emacs)
 	   (help-mode . emacs)
 	   (Info-mode . emacs)
-	   (calendar-mode . emacs))
+	   (calendar-mode . emacs)
+	   (process-menu-mode . emacs)
+	   (diff-mode . emacs))
          do (evil-set-initial-state mode state))
 #+END_SRC
 
