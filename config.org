@@ -213,8 +213,13 @@ To prevent custom variable form cluttering the init.el file.
 
 ** Emacs Theme
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (load-theme 'leuven t)
+#+END_SRC
+
+Dark mode.
+#+BEGIN_SRC emacs-lisp
+(load-theme 'manoj-dark t)
 #+END_SRC
 
 ** Default Font
