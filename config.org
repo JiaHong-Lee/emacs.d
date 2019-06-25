@@ -2150,7 +2150,7 @@ I want to browse dash docsets in Emacs. Now, I am using =counsel-dash=. Check ou
 (require-package 'counsel-dash)
 
 (setq dash-docs-docsets-path "/home/zacque/.emacs.d/docsets") ;; use absolute path
-(setq dash-docs-common-docsets '("OpenCV" "Keras" "Python 3"))
+(setq dash-docs-common-docsets '("OpenCV" "Keras" "Python 3" "Java"))
 #+END_SRC
 
 Note:
