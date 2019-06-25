@@ -2499,10 +2499,6 @@ Allow the use of emacsclient from terminal.
 
 * Printing
 
-Use =ps-print-buffer= to print code.
-
-Use =lpr-buffer= to print PDF.
-
 #+BEGIN_SRC emacs-lisp
 (setq ps-line-number t) ; print with line numbers
 #+END_SRC
@@ -2549,39 +2545,6 @@ Sometimes I would have to read HTML files. Not to read its code, but its code. S
         (error "Cannot open tramp file")
       (browse-url (concat "file://" file-name)))))
 #+END_SRC
-
-* Learning Elisp
-
-1. Use =setq-default= rather than =setq= command to set values only in buffers that do not have their own local values for the variable. See [[https://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html][here]].
-
-2. Return all files in a directory matching the REGEXP. ([[https://emacs.stackexchange.com/a/32794][Source]])
-   
-   #+BEGIN_SRC emacs-lisp :tangle no :results raw
-   (directory-files "~/Dropbox/DropSyncFiles" t "\\.txt\\'")
-   #+END_SRC
-
-   or recursively,
-
-   #+BEGIN_SRC emacs-lisp :tangle no :results raw
-   (directory-files-recursively "~/Dropbox/DropSyncFiles" "\\.txt\\'")
-   #+END_SRC
-
-3. Use IELM mode for Emacs-lisp REPL.
-
-4. Get user input.
-
-   #+BEGIN_SRC emacs-lisp :tangle no
-   (read-string "Type something: ")
-   #+END_SRC
-
-5. Use =concat= to concatenate strings.
-
-6. Loop through an alist.
-   
-   #+BEGIN_SRC emacs-lisp :tangle no
-   (loop for (key . value) in my-list
-         collect (cons value key))
-   #+END_SRC
 
 * Footnotes
 
