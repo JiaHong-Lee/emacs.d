@@ -2454,10 +2454,6 @@ Directly search the contents of files in Dropbox.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(defun jh/find-assignments()
-  "Read the assignment file"
-  (interactive)
-  (find-file "~/Dropbox/DropSyncFiles/education/assignment_notebook.txt"))
 #+END_SRC
 
 * Enable Emacs Server
