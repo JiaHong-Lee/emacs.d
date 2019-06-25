@@ -1184,6 +1184,10 @@ pip install jedi flake8
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
+(setq elpy-rpc-python-command "python3")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 (elpy-enable)
 #+END_SRC
 
