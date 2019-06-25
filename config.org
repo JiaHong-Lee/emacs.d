@@ -1751,6 +1751,14 @@ Open in full frame.
 (fullframe mu4e mu4e-quit)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-confirm-quit nil)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-hide-index-messages t)
+#+END_SRC
+
 Use mu4e as the default Emacs program to send email for =C-x m (compose-mail)= or =report-emacs-bug=.
 #+BEGIN_SRC emacs-lisp
 (setq mail-user-agent 'mu4e-user-agent) ;; use a the default client on emacs
@@ -1779,9 +1787,15 @@ Override default to show both sender name and address. This makes me easier to f
 #+END_SRC
 
 Defines the shell command to retrieve mails. Updates mail and index periodically for every N seconds.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (setq mu4e-get-mail-command "mbsync -a"
       mu4e-update-interval (* 10 60)) ;; re-index every 10 minutes
+#+END_SRC
+
+Update using systemd in the background.
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-index-update-in-background nil
+      mu4e-update-interval nil)
 #+END_SRC
 
 Speeds up mu4e updates.
@@ -1806,7 +1820,7 @@ Sending mail from mu4e.
 
 Queuing email is useful for offline mode.
 #+BEGIN_SRC emacs-lisp :tangle no
-(setq smtpmail-queue-mail t
+(setq smtpmail-queue-mail nil
       smtpmail-queue-dir "~/Mail/outlook/queue")
 #+END_SRC
 
@@ -1888,8 +1902,8 @@ Defines mu4e search bookmarks.
 #+BEGIN_SRC emacs-lisp
 (setq mu4e-bookmarks
   `( ,(make-mu4e-bookmark
-       :name  "Unread messages"
-       :query "flag:unread AND NOT flag:trashed"
+       :name  "Inbox unread messages"
+       :query "maildir:/Inbox AND flag:unread"
        :key ?u)
      ,(make-mu4e-bookmark
        :name "Today's messages"
