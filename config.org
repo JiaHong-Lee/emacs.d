@@ -391,7 +391,7 @@ A useful tool to hide/redefine mode indicator at the mode line.
 (require-package 'diminish)
 #+END_SRC
 
-rg[fn:24] is an Emacs interface to =ripgrep=. This package interoperates well with =wgrep=. 
+rg[fn:24] is an Emacs interface to =ripgrep=. This package interoperates well with =wgrep=. Similar: =deadgrep=.
 #+BEGIN_SRC emacs-lisp
 (require-package 'rg)
 (with-eval-after-load 'evil
