@@ -1934,6 +1934,11 @@ Override the default directory for saving attachements.
 (require-package 'elfeed)
 #+END_SRC
 
+Autofetching every 1 hour.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'emacs-startup-hook (lambda () (run-at-time nil (* 1 60 60) 'elfeed-update)))
+#+END_SRC
+
 Open elfeed in fullframe.
 #+BEGIN_SRC emacs-lisp
 (fullframe elfeed elfeed-search-quit-window)
@@ -1942,6 +1947,11 @@ Open elfeed in fullframe.
 Override default search filter to including the =focus= tag.
 #+BEGIN_SRC emacs-lisp
 (setq-default elfeed-search-filter "@6-months-ago +unread +focus")
+#+END_SRC
+
+Sort from oldest to newest because I am not using RSS to catch the "latest" news. And I am expecting myself to go through all the feeds.
+#+BEGIN_SRC emacs-lisp
+(setq elfeed-sort-order 'ascending)
 #+END_SRC
 
 Override default database directory at home folder.
@@ -2013,6 +2023,15 @@ apt install mpv youtube-dl curl
 Use curl to fetch feed. This will be faster.
 #+BEGIN_SRC emacs-lisp
 (setq elfeed-use-curl t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; Source: https://emacs.stackexchange.com/a/2441
+(defun elfeed-mark-all-as-read()
+  "Mark all messages as read."
+  (interactive)
+  (mark-whole-buffer)
+  (elfeed-search-untag-all-unread))
 #+END_SRC
 
 Use elfeed-org to load feeds from an org file.
