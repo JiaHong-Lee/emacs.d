@@ -908,16 +908,51 @@ To export an Org-file into HTML file, install package =htmlize= to export Org fi
 (setq org-html-htmlize-output-type 'css)
 #+END_SRC
 
-* Org-ref
+* Emacs Research
+** Ivy-bibtex
 
-=org-ref= is an Emacs library/org-mode modules for citations, cross-references, bibliographies and other useful bibtext tools.
+A bibliography manager based on Ivy.
 
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq org-ref-completion-library 'org-ref-ivy-cite)
+#+BEGIN_SRC emacs-lisp
+(require-package 'ivy-bibtex)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'org-ref)
+(defun get-all-bib-files ()
+  "Get all my bib files under the directory recursively"
+  (directory-files-recursively "/home/zacque/Documents/Artificial_Intelligence/academic_papers" "bib"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq bibtex-completion-bibliography '("~/Documents/bibliography/references.bib" "~/Documents/Artificial_Intelligence/references.bib"))
+
+(setq bibtex-completion-bibliography (append bibtex-completion-bibliography (get-all-bib-files)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun get-all-subdirs ()
+  "Get all subdirectories under the directory"
+  (split-string (shell-command-to-string "find ~/Documents/Artificial_Intelligence/academic_papers/ -type d") "\n" t))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq bibtex-completion-library-path '("~/Documents/bibliography/pdfs/" "/home/zacque/Documents/Artificial_Intelligence/computer_vision/"))
+(setq bibtex-completion-library-path (append bibtex-completion-library-path (get-all-subdirs)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq bibtex-completion-notes-path "/home/zacque/Documents/Artificial_Intelligence/academic_papers/notes.org")
+#+END_SRC
+
+References:
+1. https://github.com/tmalsburg/helm-bibtex/tree/e1391a4be629b506f06d678bcdfd17d290904482
+
+** Org-ref
+
+=org-ref= is an Emacs library/org-mode modules for citations, cross-references, bibliographies and other useful bibtext tools.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-ref-completion-library 'org-ref-ivy-cite)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -930,6 +965,10 @@ Not quite sure the differences between these and the =reftex-default-bibliograph
 (setq org-ref-bibliography-notes "~/Documents/bibliography/notes.txt"
       org-ref-default-bibliography reftex-default-bibliography
       org-ref-pdf-directory "~/Documents/bibliography/pdfs/")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'org-ref)
 #+END_SRC
 
 * Enable YAML Mode
