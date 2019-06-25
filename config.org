@@ -538,7 +538,25 @@ Redefine =evil-ex-commands= to close buffers instead of the frame (Emacs windows
     (evil-write nil nil nil file bang))
   (kill-buffer))
 
+(evil-define-command jh/evil-save-and-close-buffer (file &optional bang)
+  "Saves the current buffer and closes the window."
+  :repeat nil
+  (interactive "<f><!>")
+  (evil-write nil nil nil file bang)
+  (kill-buffer))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; ZZ from normal mode kill the buffer rather than quitting emacs
 (define-key evil-normal-state-map "ZZ" 'jh/evil-save-modified-and-close-buffer)
+
+;; Ex :q should kill the current buffer rather than quitting emacs entirely
+(evil-ex-define-cmd "q" 'kill-this-buffer)
+
+;; Type :quit to close emacs
+(evil-ex-define-cmd "quit" 'evil-quit)
+
+(evil-ex-define-cmd "wq" 'jh/evil-save-and-close-buffer)
 #+END_SRC
 
 Increment numbers/characters at point [fn:10].
