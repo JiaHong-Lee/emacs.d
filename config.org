@@ -850,8 +850,8 @@ Define org-capture-templates.
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline "" "Tasks")
          "* TODO %?\n%t\n%a\n %i\n\n  " :prepend t)
-        ("j" "Journal" entry (file+headline "" "Journal")
-         "* %?\nEntered on %U\n  %i\n  %a" :prepend t)))
+        ("j" "Journal" entry (file "~/Dropbox/DropSyncFiles/journal.txt")
+         "* %u %?\n %i\n\n")))
 #+END_SRC
 
 A handy function for convenience.
