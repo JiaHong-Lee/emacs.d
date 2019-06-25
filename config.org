@@ -1330,6 +1330,10 @@ Surprisingly, there are Emacs packages that offer a nice integration with Docker
 (require-package 'docker)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(setq docker-command "/usr/bin/docker")
+#+END_SRC
+
 Make =evil= works well with =docker= mode.
 #+BEGIN_SRC emacs-lisp
 (evil-set-initial-state 'docker-container-mode 'emacs)
@@ -1339,7 +1343,7 @@ Make =evil= works well with =docker= mode.
 
 Since I didn't add my user to the Docker group, I will need to run every docker command with =sudo=. Setting this flag will make it work. [fn:17]
 #+BEGIN_SRC emacs-lisp
-(setq docker-run-as-root t)
+(setq docker-run-as-root nil)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
