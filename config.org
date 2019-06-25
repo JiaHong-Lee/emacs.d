@@ -1320,6 +1320,22 @@ Derive and define gradle-mode from groovy-mode. Note: This code will be tangled 
 (require 'gradle-mode)
 #+END_SRC
 
+* PlantUML
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'plantuml-mode)
+#+END_SRC
+
+#+SOURCE: Purcell .emacs.d
+#+BEGIN_SRC emacs-lisp
+(after-load 'ob-plantuml
+  (let ((jar-name "plantuml.jar")
+        (url "http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar"))
+    (setq org-plantuml-jar-path (expand-file-name jar-name (file-name-directory user-init-file)))
+    (unless (file-exists-p org-plantuml-jar-path)
+      (url-copy-file url org-plantuml-jar-path))))
+#+END_SRC
+
 * Docker -- Containers
 
 Surprisingly, there are Emacs packages that offer a nice integration with Docker to help manage containers. 
