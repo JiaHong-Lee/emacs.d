@@ -2347,6 +2347,8 @@ Save my credential inside this self-defined file in .emacs.d dir.
 
 * Miscellaneous
 
+** Check Hanging Parenthesis
+
 The main problem I have using literate programming mode is the hanging parenthesis.
 
 #+BEGIN_SRC emacs-lisp
@@ -2414,6 +2416,8 @@ Version 2018-07-03"
                 (message "Mismtach found. The char %s has no matching pair." $stack))
             (print "All brackets/quotes match.")))))))
 #+END_SRC
+
+** Handy Small Functions
 
 Open the current file-buffer using system viewer [fn:32].
 #+BEGIN_SRC emacs-lisp
