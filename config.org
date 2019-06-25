@@ -2453,6 +2453,14 @@ Directly search the contents of files in Dropbox.
   (counsel-rg nil "~/Dropbox/DropSyncFiles" nil))
 #+END_SRC
 
+** KeyFreq
+
+#+BEGIN_SRC emacs-lisp
+(require 'keyfreq)
+(keyfreq-mode 1)
+(keyfreq-autosave-mode 1)
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 #+END_SRC
 
