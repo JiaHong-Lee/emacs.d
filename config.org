@@ -2594,7 +2594,7 @@ Make it easy to find and edit this config file.
 (provide 'init-main)
 #+END_SRC
 
-* Archived
+* Archived                                                         :noexport:
 ** Rendering HTML File-Buffer in a Browser
 
 Status: Archived
