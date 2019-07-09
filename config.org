@@ -485,13 +485,6 @@ Power up Ivy with Counsel mode.
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 #+END_SRC
 
-Enable ivy to save more virtual buffers. (Since I believe C-x b invokes recentf-file-list)
-#+BEGIN_SRC emacs-lisp
-(setq recentf-max-menu-items 10000)
-(setq recentf-max-saved-items nil)
-(setq recentf-exclude '("/tmp/" "/ssh:"))
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
 (defun sanityinc/enable-ivy-flx-matching ()
     "Make `ivy' matching work more like IDO."
@@ -517,6 +510,19 @@ Use Ivy with Historian-mode [fn:14]. Historian-mode stores the results of comple
   (find-file (file-name-directory x)))
 
 (ivy-set-actions 'ivy-switch-buffer '(("d" open-file-directory-from-path "directory")))
+#+END_SRC
+
+* Recentf 
+
+Settings for tracking recent files.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'after-init-hook 'recentf-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq-default
+ recentf-max-menu-items 10000
+ recentf-exclude '("/tmp/" "/ssh:"))
 #+END_SRC
 
 * Enable Evil mode
