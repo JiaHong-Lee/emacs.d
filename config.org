@@ -1009,6 +1009,32 @@ Not quite sure the differences between these and the =reftex-default-bibliograph
 (require-package 'org-ref)
 #+END_SRC
 
+* Projectile Mode
+
+A package for project management and navigation.
+#+BEGIN_SRC emacs-lisp
+(require-package 'projectile)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "s-p") 'projectile-command-map)
+
+;; Shorter modeline
+(setq-default projectile-mode-line-prefix " Proj")
+(setq projectile-completion-system 'ivy)
+(projectile-mode +1)
+#+END_SRC
+
+Extra:
+1. [[Ripgrep Package][Integration with Ripgrep Package]]
+   Install the ripgrep package.
+
+Note:
+1. Check out counsel-projectile package for customisation code guidance.
+
+Customisation idea:
+1. Use rg search by default, coupled with ivy completing system.
+
 * Enable YAML Mode
 
 This is useful to edit =docker-compose.yml= file.
