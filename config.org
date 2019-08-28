@@ -810,13 +810,16 @@ Load all the .txt files into org-agenda.
 Bernt Hansen[fn:30] has a good article on GTD.
 #+BEGIN_SRC emacs-lisp
 (setq org-todo-keywords
-      (quote ((sequence "TODO(t)" "NOW(n)" "|" "DONE(d)")
+      (quote ((sequence "TODO(t)" "NOW(n)" "REVIEW(r)""|" "DONE(d)")
+	      (sequence "PROJECT(p)")
 	      (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))))
 
 (setq org-todo-keyword-faces
       (quote (("TODO" :foreground "red" :weight bold)
 	      ("NOW" :foreground "blue" :weight bold)
+	      ("REVIEW" :foreground "DeepPink4" :weight bold)
 	      ("DONE" :foreground "forest green" :weight bold)
+	      ("PROJECT" :foreground "gold" :weight bold)
 	      ("WAITING" :foreground "orange" :weight bold)
 	      ("HOLD" :foreground "magenta" :weight bold)
 	      ("CANCELLED" :foreground "forest green" :weight bold))))
