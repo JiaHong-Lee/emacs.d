@@ -391,12 +391,36 @@ A useful tool to hide/redefine mode indicator at the mode line.
 (require-package 'diminish)
 #+END_SRC
 
-rg[fn:24] is an Emacs interface to =ripgrep=. This package interoperates well with =wgrep=. Similar: =deadgrep=.
+** Wgrep
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'wgrep)
+#+END_SRC
+
+** Ripgrep
+
+rg is an Emacs interface to =ripgrep=. This package interoperates well with =wgrep=. Similar: =deadgrep=.
 #+BEGIN_SRC emacs-lisp
 (require-package 'rg)
 (with-eval-after-load 'evil
   (evil-set-initial-state 'rg-mode 'emacs))
 #+END_SRC
+
+#+NAME: Ripgrep Package
+#+BEGIN_SRC emacs-lisp
+(require-package 'ripgrep) ;; for integration with projectile.
+#+END_SRC
+
+Use -i for case insensitive.
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'counsel
+  (setq counsel-rg-base-command "rg -i --no-heading --line-number --color never %s"))
+#+END_SRC
+
+References:
+1. https://oremacs.com/2018/03/05/grep-exclude/
+   For counsel-rg-base-command idea.
+2. https://github.com/dajva/rg.el
 
 Advanced undo and redo with =undo-tree=.
 #+BEGIN_SRC emacs-lisp
