@@ -464,7 +464,7 @@ Show key-binding completion suggestions or ey-binding hints.
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'after-init-hook 'guide-key-mode)
-(after-load 'guide-key
+(with-eval-after-load 'guide-key
   (diminish 'guide-key-mode))
 #+END_SRC
 
@@ -744,7 +744,7 @@ Open an org file with hard indentation by default.
 
 =(diminish 'org-indent-mode)= does not work directly. The call to it must occur after org-indent.el has ben loaded [fn:25].
 #+BEGIN_SRC emacs-lisp
-(eval-after-load 'org-indent '(diminish 'org-indent-mode))
+(with-eval-after-load 'org-indent '(diminish 'org-indent-mode))
 #+END_SRC
 
 Prevent deleting hidden texts. https://emacs.stackexchange.com/a/2091
@@ -1117,7 +1117,7 @@ ibuffer is an in-built package.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(after-load 'yasnippet
+(with-eval-after-load 'yasnippet
   (yas-reload-all))
 
 (dolist (hook '(text-mode-hook prog-mode-hook))
@@ -1419,7 +1419,7 @@ Derive and define gradle-mode from groovy-mode. Note: This code will be tangled 
 
 #+SOURCE: Purcell .emacs.d
 #+BEGIN_SRC emacs-lisp
-(after-load 'ob-plantuml
+(with-eval-after-load 'ob-plantuml
   (let ((jar-name "plantuml.jar")
         (url "http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar"))
     (setq org-plantuml-jar-path (expand-file-name jar-name (file-name-directory user-init-file)))
@@ -1622,7 +1622,7 @@ Change dired default sorting to directories first, then followed by files in alp
 #+END_SRC 
 
 #+BEGIN_SRC emacs-lisp
-(after-load 'dired
+(with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-c C-q") 'wdired-change-to-wdired-mode))
 #+END_SRC
 
@@ -2129,7 +2129,7 @@ show normally otherwise."
       (call-interactively 'elfeed-search-show-entry))
      (t (elfeed-show-visit)))))
 
-(after-load 'elfeed
+(with-eval-after-load 'elfeed
   (define-key elfeed-show-mode-map [remap shr-browse-url] #'elfeed-visit-maybe-externally))
 #+END_SRC
 
@@ -2177,7 +2177,7 @@ Read pocket from Emacs [fn:28].
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(after-load 'pocket-reader
+(with-eval-after-load 'pocket-reader
   (define-key pocket-reader-mode-map [remap pocket-reader-open-url] #'pocket-reader-open-in-external-browser)
   (defalias 'pocket-reader-toggle-read-unread 'pocket-reader-toggle-archived)
   (define-key pocket-reader-mode-map (kbd "r") #'pocket-reader-toggle-read-unread)
