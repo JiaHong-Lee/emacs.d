@@ -1565,7 +1565,7 @@ Basic EXWM setup.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(exwm-input-set-key (kbd "s-t") 'eshell)
+(exwm-input-set-key (kbd "s-t") 'vterm)
 #+END_SRC
 
 ** Run Linux Apps from Emacs
@@ -2275,7 +2275,7 @@ Note:
 1. counsel-dash-docsets-path should use absolute path only.
 2. sqlite3 binaries should be found from my $PATH.
 
-* Ansi-term, Term, Eshell
+* Ansi-term, Term, Eshell, VTerm
 
 ** Ansi-Term
 
@@ -2402,6 +2402,49 @@ https://github.com/manateelazycat/aweshell
 Trying it out <2019-06-06 Thu>.
 #+BEGIN_SRC emacs-lisp
 (require 'aweshell)
+#+END_SRC
+
+** Libvterm/VTerm
+
+*** Pre-requisite
+<2019-08-25 Sun>
+
+1. Libterm
+   #+BEGIN_SRC shell
+   sudo apt-get install libvterm-dev
+   #+END_SRC
+   
+2. Libtool-bin
+   #+BEGIN_SRC shell
+   sudo apt-get install libtool-bin
+   #+END_SRC
+
+Fullfill the prerequisite. Clone the git repo. Build. And done.
+
+*** Config
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/gitrepo/software/emacs-libvterm")
+(require 'vterm)
+#+END_SRC
+
+To make the line wrapping in VTerm works normally. Reference: https://superuser.com/a/988843
+#+BEGIN_SRC emacs-lisp
+(add-hook 'vterm-mode-hook
+	  (lambda () (setq truncate-lines t)))
+
+(add-hook 'vterm-mode-hook
+	  (lambda () (display-line-numbers-disable-hook)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(evil-set-initial-state 'vterm-mode 'emacs)
+#+END_SRC
+
+Exit buffer after exit vterm. Reference: https://github.com/akermu/emacs-libvterm/issues/24#issuecomment-438048042
+#+BEGIN_SRC emacs-lisp
+(add-hook 'vterm-exit-functions (lambda (process)
+				  (kill-buffer)))
 #+END_SRC
 
 * Gnus Authinfo
