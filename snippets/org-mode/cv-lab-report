@@ -1,0 +1,34 @@
+# -*- mode: snippet -*-
+# name: cv-lab-report
+# key: cv-lab-report
+# --
+- Main Changes:
+$1
+
+- Training Status:
+$2
+
+- Training Environment:
+
+
+- Dataset:
+$3
+- Hyperparameters:
+$4
+- Model Architecture:
+$5
+- Training Artifacts:
+$6
+- Results:
+| loss | acc | f1score | precion | recall |
+|------+-----+---------+---------+--------|
+|      |     |         |         |        |
+
+- Confusion Matrix:
+|             | Black_light | Normal_good |
+|-------------+-------------+-------------|
+| Black_light |             |             |
+| Normal_good |             |             |
+
+- Classification Report:
+$0
