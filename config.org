@@ -483,6 +483,24 @@ A useful tool to alert from the mode-line.
 (require-package 'mode-line-bell)
 #+END_SRC
 
+
+** Emacs-memento-mori
+
+A reminder of mortality. Deep dive into the reflection of life.
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'memento-mori)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq memento-mori-birth-date "1995-10-31")
+(memento-mori-mode)
+#+END_SRC
+
+References:
+1. http://manuel-uberti.github.io//emacs/2019/07/06/memento-mori/
+   Where I read about it.
+
 * Editing Utilities
 
 This is where I put codes that help with editing in general, no matter what the language be.
