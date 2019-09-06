@@ -1079,6 +1079,15 @@ Org sync with Google Calendar.
 (setq org-gcal-file-alist '(("lee.jia.hong.95@gmail.com" . "~/Dropbox/DropSyncFiles/gcal.txt")))
 #+END_SRC
 
+Sync semi-automatically.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) ))
+(add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) ))
+#+END_SRC
+
+References:
+1. https://cestlaz.github.io/posts/using-emacs-26-gcal/
+
 * Org Capture, Refile, Archive
 
 ** Org Capture
