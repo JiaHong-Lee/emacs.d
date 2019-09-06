@@ -673,6 +673,19 @@ Use evil-surround to deal with surrounding quotes or tags.
 (global-evil-surround-mode t)
 #+END_SRC
 
+Problem: evil-surround-change inserts unwanted spaces. E.g. it changes (this-form) to [ this-form ]. This code solves that. Reference: https://github.com/emacs-evil/evil-surround/issues/86#issuecomment-258552759
+#+BEGIN_SRC emacs-lisp
+;; use non-spaced pairs when surrounding with an opening brace
+(evil-add-to-alist
+ 'evil-surround-pairs-alist
+ ?\( '("(" . ")")
+ ?\[ '("[" . "]")
+ ?\{ '("{" . "}")
+ ?\) '("( " . " )")
+ ?\] '("[ " . " ]")
+ ?\} '("{ " . " }"))
+#+END_SRC
+
 ** Archived
 
 =evil-escape= is useful to define a customised key sequence to escape from insert state and everything else in Emacs, such as using =fd= to go into normal state.
