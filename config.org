@@ -1173,32 +1173,41 @@ To export an Org-file into HTML file, install package =htmlize= to export Org fi
 ** Ivy-bibtex
 
 A bibliography manager based on Ivy.
-
 #+BEGIN_SRC emacs-lisp
 (require-package 'ivy-bibtex)
 #+END_SRC
 
+Pressing <enter> triggers the "default action". This is the default behaviour -- search for PDF to open, if not, its URL or DOI.
+#+BEGIN_SRC emacs-lisp
+(setq ivy-bibtex-default-action 'ivy-bibtex-open-any)
+#+END_SRC
+
+Specify the path to all .bib files.
 #+BEGIN_SRC emacs-lisp
 (defun get-all-bib-files ()
   "Get all my bib files under the directory recursively"
   (directory-files-recursively "/home/zacque/Documents/Artificial_Intelligence/academic_papers" "bib"))
+
+(setq bibtex-completion-bibliography
+      '("~/Documents/bibliography/references.bib"
+	"~/Documents/Artificial_Intelligence/references.bib"))
+
+(setq bibtex-completion-bibliography
+      (append bibtex-completion-bibliography (get-all-bib-files)))
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(setq bibtex-completion-bibliography '("~/Documents/bibliography/references.bib" "~/Documents/Artificial_Intelligence/references.bib"))
-
-(setq bibtex-completion-bibliography (append bibtex-completion-bibliography (get-all-bib-files)))
-#+END_SRC
-
+Specify the directories to search for PDFs.
 #+BEGIN_SRC emacs-lisp
 (defun get-all-subdirs ()
   "Get all subdirectories under the directory"
-  (split-string (shell-command-to-string "find ~/Documents/Artificial_Intelligence/academic_papers/ -type d") "\n" t))
-#+END_SRC
+  (split-string (shell-command-to-string
+    "find ~/Documents/Artificial_Intelligence/academic_papers/ -type d") "\n" t))
 
-#+BEGIN_SRC emacs-lisp
-(setq bibtex-completion-library-path '("~/Documents/bibliography/pdfs/" "/home/zacque/Documents/Artificial_Intelligence/computer_vision/"))
-(setq bibtex-completion-library-path (append bibtex-completion-library-path (get-all-subdirs)))
+(setq bibtex-completion-library-path
+      '("~/Documents/bibliography" "~/Documents/bibliography/pdfs/" "~/Documents/Artificial_Intelligence"))
+
+(setq bibtex-completion-library-path
+      (append bibtex-completion-library-path (get-all-subdirs)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1256,8 +1265,9 @@ References:
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq reftex-default-bibliography '("~/Documents/bibliography/references.bib"
-				    "~/Documents/Artificial_Intelligence/references.bib"))
+(setq reftex-default-bibliography
+      '("~/Documents/bibliography/references.bib"
+	"~/Documents/Artificial_Intelligence/references.bib"))
 #+END_SRC
 
 Not quite sure the differences between these and the =reftex-default-bibliography= variable.
