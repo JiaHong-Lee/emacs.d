@@ -953,16 +953,41 @@ Override Org-mode subscript and superscripts default behaviours during export.
 (global-set-key (kbd "C-c a") 'org-agenda)
 #+END_SRC
 
+Override the default to begin a week on Sunday. Source: https://stackoverflow.com/a/32426234
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-start-on-weekday 0)
+#+END_SRC
+
 Load all the .txt files into org-agenda.
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-file-regexp "\\`[^.].*\\(\\.org\\|\\.txt\\)\\'")
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq org-agenda-files '("~/Dropbox/DropSyncFiles/"))
+(setq org-agenda-files '("~/Dropbox/DropSyncFiles/focus.txt"))
 #+END_SRC
 
-** Org TODO
+#+BEGIN_SRC emacs-lisp :tangel no
+(setq org-tags-match-list-sublevels 'indented)
+#+END_SRC
+
+Start showing the deadline in Org-Agenda for task going to due in 90 days.
+#+BEGIN_SRC emacs-lisp
+(setq org-deadline-warning-days 14)
+#+END_SRC
+
+Customise Org-agenda TODO view.
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq org-agenda-prefix-format
+      '((agenda . " %i %-12:c%?-12t% s")
+	(todo . " %i %-12:c %l")
+	(tags . " %i %-12:c")
+	(search . " %i %-12:c")))
+#+END_SRC
+
+References:
+1. https://emacs.stackexchange.com/questions/5900/how-can-i-view-the-hierarchy-of-todo-keywords-in-org-agenda-mode
+
 
 Bernt Hansen[fn:30] has a good article on GTD.
 #+BEGIN_SRC emacs-lisp
