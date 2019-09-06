@@ -2991,6 +2991,9 @@ Works for packages on =package-archives= and also any elisp file from the Web.
 (require-package 'try)
 #+END_SRC
 
+References:
+1. https://github.com/larstvei/try
+
 * Miscellaneous
 
 ** Check Hanging Parenthesis
