@@ -796,9 +796,10 @@ Open an org file with hard indentation by default.
 (setq org-startup-indented t)
 #+END_SRC
 
-=(diminish 'org-indent-mode)= does not work directly. The call to it must occur after org-indent.el has ben loaded [fn:25].
+=(diminish 'org-indent-mode)= does not work directly. The call to it must occur after org-indent.el has ben loaded. Reference: https://emacs.stackexchange.com/questions/22531/diminish-org-indent-mode
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'org-indent '(diminish 'org-indent-mode))
+(with-eval-after-load 'org-indent
+  (diminish 'org-indent-mode))
 #+END_SRC
 
 Prevent deleting hidden texts. https://emacs.stackexchange.com/a/2091
@@ -2801,8 +2802,6 @@ Sometimes I would have to read HTML files. Not to read its code, but its code. S
 [fn:27] [[info:emacs#Fonts][info:emacs#Fonts]] 
 
 [fn:26] https://emacs.stackexchange.com/a/38241
-
-[fn:25] https://emacs.stackexchange.com/questions/22531/diminish-org-indent-mode
 
 [fn:24] https://github.com/dajva/rg.el
 
