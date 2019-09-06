@@ -387,12 +387,23 @@ Check if an executable is installed.
 
 #+END_SRC
 
+** list-packages
+
+Open list-packages in fullframe.
+#+BEGIN_SRC emacs-lisp
+(fullframe list-packages quit-window)
+#+END_SRC
+
 * Utility Third Library
+
+** Fullframe
 
 Display some windows into "full-screen" mode.
 #+BEGIN_SRC emacs-lisp
 (require-package 'fullframe)
 #+END_SRC
+
+** Page-Break_lines
 
 Display ugly ^L page breaks as tidy horizontal lines.
 #+BEGIN_SRC emacs-lisp
@@ -403,6 +414,8 @@ Display ugly ^L page breaks as tidy horizontal lines.
   (diminish 'page-break-lines-mode))
 #+END_SRC
 
+** List-unicode-display
+
 Provides a command which searches for unicode characters by name, and displays a list of matching characters with their names in a buffer.
 #+BEGIN_SRC emacs-lisp
 (require-package 'list-unicode-display)
@@ -411,6 +424,7 @@ Provides a command which searches for unicode characters by name, and displays a
 #+BEGIN_SRC emacs-lisp
 (require-package 'wgrep)
 #+END_SRC
+** Diminish
 
 A useful tool to hide/redefine mode indicator at the mode line.
 #+BEGIN_SRC emacs-lisp
@@ -448,6 +462,8 @@ References:
    For counsel-rg-base-command idea.
 2. https://github.com/dajva/rg.el
 
+** Undo-Tree
+
 Advanced undo and redo with =undo-tree=.
 #+BEGIN_SRC emacs-lisp
 (require-package 'undo-tree)
@@ -457,10 +473,13 @@ Advanced undo and redo with =undo-tree=.
 (global-undo-tree-mode 1)
 #+END_SRC
 
+** Restart-Emacs
 A handy tool to restart emacs, especially when using EXWM.
 #+BEGIN_SRC emacs-lisp
 (require-package 'restart-emacs)
 #+END_SRC
+
+** Mode-Line-Bell
 
 A useful tool to alert from the mode-line.
 #+BEGIN_SRC emacs-lisp
