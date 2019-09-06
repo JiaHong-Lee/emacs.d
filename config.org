@@ -2917,14 +2917,8 @@ References:
 2. https://www.emacswiki.org/emacs/BrowseUrl#toc29
    With private-browsing.
 
-* Enable Emacs Server
 
-Allow the use of emacsclient from terminal.
 #+BEGIN_SRC emacs-lisp
-;; ALLOW ACCESS FROM EMACSCLIENT
-(require 'server)
-(unless (server-running-p)
-  (server-start))
 #+END_SRC
 
 * Printing
@@ -2936,6 +2930,15 @@ Allow the use of emacsclient from terminal.
 Printer at my dorm can only print black-and-white colours.
 #+BEGIN_SRC emacs-lisp
 (setq ps-print-color-p 'black-white) ; always print black-and-white
+
+* Enable Emacs Server
+
+Allow the use of emacsclient from terminal.
+#+BEGIN_SRC emacs-lisp
+;; ALLOW ACCESS FROM EMACSCLIENT
+(require 'server)
+(unless (server-running-p)
+  (server-start))
 #+END_SRC
 
 * Config File Ending
