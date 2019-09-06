@@ -2929,11 +2929,17 @@ Printer at my dorm can only print black-and-white colours.
 (setq ps-print-color-p 'black-white) ; always print black-and-white
 #+END_SRC
 
+** Emacs Multimedia System (EMMS)
 
 #+BEGIN_SRC emacs-lisp
+(require-package 'emms)
+(emms-all)
+(emms-default-players)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
+(setq emms-source-file-default-directory "~/Music/")
+#+END_SRC
 
 * Enable Emacs Server
 
