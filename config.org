@@ -1388,7 +1388,7 @@ Automatic runs =rust-format-buffer= during saves. By default, it is bound to =C-
 
 ** Ob-Rust
 
-[Pre-requisite] Install =rust=, =cargo=, and =cargo-script=.
+[Prerequisite] Install =rust=, =cargo=, and =cargo-script=.
 #+BEGIN_SRC shell
 cargo install cargo-script
 #+END_SRC
