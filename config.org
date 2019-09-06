@@ -2984,6 +2984,12 @@ Save my credential inside this self-defined file in .emacs.d dir.
 (evil-set-initial-state 'epa-key-list-mode 'emacs)
 #+END_SRC
 
+* Try: Try Out Emacs Packages
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'try)
+#+END_SRC
+
 * Miscellaneous
 
 ** Check Hanging Parenthesis
