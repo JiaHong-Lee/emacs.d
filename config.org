@@ -1145,6 +1145,45 @@ A bibliography manager based on Ivy.
 References:
 1. https://github.com/tmalsburg/helm-bibtex/tree/e1391a4be629b506f06d678bcdfd17d290904482
 
+** ebib
+
+I discover that ~ivy-bibtex~ works with ~ebib~.
+#+BEGIN_SRC emacs-lisp
+(require-package 'ebib)
+#+END_SRC
+
+Launch ~ebib~ in evil-emacs-state.
+#+BEGIN_SRC emacs-lisp
+(evil-set-initial-state 'ebib-index-mode 'emacs)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq ebib-file-search-dirs '(""))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; (setq ebib-preload-bib-files bibtex-completion-bibliography)
+(setq ebib-preload-bib-files (list "/home/zacque/Documents/Artificial_Intelligence/references.bib" "/home/zacque/Documents/bibliography/references.bib" "/home/zacque/Documents/Artificial_Intelligence/academic_papers/computer_vision/references.bib" "/home/zacque/Documents/Artificial_Intelligence/academic_papers/instance_segmentation/references.bib" "/home/zacque/Documents/Artificial_Intelligence/academic_papers/video_understanding/references.bib"))
+#+END_SRC
+
+Load the provided ~org~ebib~ package to provide org-mode integration. E.g. ebib org-link-type.
+#+BEGIN_SRC emacs-lisp
+(require 'org-ebib)
+#+END_SRC
+
+*** Archived                                                     :noexport:
+
+[Archived] Integrate ebib link to org-mode.
+Status: Archived
+Reason: Load the provided ~org-ebib~ package will do.
+#+BEGIN_SRC emacs-lisp
+(org-add-link-type "ebib" 'ebib)
+#+END_SRC
+
+References:
+1. https://stackoverflow.com/a/14984481
+   Add org link type.
+
 ** Org-ref
 
 =org-ref= is an Emacs library/org-mode modules for citations, cross-references, bibliographies and other useful bibtext tools.
