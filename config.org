@@ -1550,6 +1550,10 @@ These are packages that work well with Elpy:
 
 Error: elpy-use-ipython is deprecated; see https://elpy.readthedocs.io/en/latest/ide.html#interpreter-setup
 
+#+BEGIN_SRC emacs-lisp
+(evil-define-key 'normal python-mode-map [remap evil-goto-definition] 'elpy-goto-definition)
+#+END_SRC
+
 ** Jupyter
 
 To use Emacs with Jupyter, check out =emacs-jupyter=, =ob-ipython=, and =ein=.
