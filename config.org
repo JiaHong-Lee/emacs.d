@@ -1288,15 +1288,16 @@ pip install jedi flake8
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(elpy-enable)
+(add-hook 'python-mode-hook '(lambda () (elpy-enable)))
 #+END_SRC
 
 These are packages that work well with Elpy:
 1. flycheck (as the Flymake alternative)
    #+BEGIN_SRC emacs-lisp
-   (when (require 'flycheck nil t)
-     (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-     (add-hook 'elpy-mode-hook 'flycheck-mode))
+   (with-eval-after-load 'elpy
+     (when (require 'flycheck nil t)
+       (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+       (add-hook 'elpy-mode-hook 'flycheck-mode)))
    #+END_SRC
 
 2. py-autopep8
@@ -1307,7 +1308,8 @@ These are packages that work well with Elpy:
 
 3. ein (Ipython/Jupyter integration)
    #+BEGIN_SRC emacs-lisp :tangle no
-   (elpy-use-ipython)
+   (with-eval-after-load 'elpy
+     (elpy-use-ipython))
    #+END_SRC
 
 Error: elpy-use-ipython is deprecated; see https://elpy.readthedocs.io/en/latest/ide.html#interpreter-setup
