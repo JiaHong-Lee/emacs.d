@@ -76,13 +76,6 @@ The rest is in the config.org file.
 
 * Personalise
 
-Add my personal info.
-
-#+BEGIN_SRC emacs-lisp
-(setq user-full-name    "Lee Jia Hong")
-(setq user-mail-address "jia_hong@live.com.my")
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
 ;; UI Settings
 (setq inhibit-startup-screen t)
@@ -483,6 +476,16 @@ A useful tool to alert from the mode-line.
 (require-package 'mode-line-bell)
 #+END_SRC
 
+
+* Personal Info
+
+** Name and Email
+
+Add my personal info.
+#+BEGIN_SRC emacs-lisp
+(setq user-full-name    "Lee Jia Hong")
+(setq user-mail-address "jia_hong@live.com.my")
+#+END_SRC
 
 ** Emacs-memento-mori
 
