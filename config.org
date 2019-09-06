@@ -2986,6 +2986,7 @@ Save my credential inside this self-defined file in .emacs.d dir.
 
 * Try: Try Out Emacs Packages
 
+Works for packages on =package-archives= and also any elisp file from the Web.
 #+BEGIN_SRC emacs-lisp
 (require-package 'try)
 #+END_SRC
