@@ -3220,10 +3220,6 @@ Sometimes I would have to read HTML files. Not to read its code, but its code. S
 
 [fn:26] https://emacs.stackexchange.com/a/38241
 
-[fn:24] https://github.com/dajva/rg.el
-
-[fn:23] https://github.com/lewang/flx
-
 [fn:22] https://github.com/rust-lang/rls
 
 [fn:21] https://github.com/palantir/python-language-server
