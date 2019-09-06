@@ -1263,6 +1263,11 @@ It supports =*.pip= and =requirements*.txt= files. It provides syntax highlighti
 (require-package 'pip-requirements)
 #+END_SRC
 
+[Workaround] Not sure why the mode does not auto-detect "requirements.txt" file.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("requirements.txt" . pip-requirements-mode))
+#+END_SRC
+
 References:
 1. https://github.com/Wilfred/pip-requirements.el
 
