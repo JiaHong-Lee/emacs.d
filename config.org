@@ -446,9 +446,6 @@ A useful tool to alert from the mode-line.
 This is where I put codes that help with editing in general, no matter what the language be.
 
 #+BEGIN_SRC emacs-lisp
-;; Purcell .emacs.d
-(when (fboundp 'electric-pair-mode)
-  (add-hook 'after-init-hook 'electric-pair-mode))
 #+END_SRC
 
 ** Guide Key
@@ -1201,6 +1198,13 @@ Activate this mode (globally?) to highlight matching parenthsis.
 #+END_SRC
 
 ** Enable Geiser Mode
+Reference: https://emacs.stackexchange.com/q/28857 and https://stackoverflow.com/q/27142996
+#+BEGIN_SRC emacs-lisp
+;; Purcell .emacs.d
+(when (fboundp 'electric-pair-mode)
+  (add-hook 'after-init-hook 'electric-pair-mode)
+  (setq electric-pair-preserve-balance nil))
+#+END_SRC
   
 The official website is here [fn:7]. 
 #+BEGIN_SRC emacs-lisp
