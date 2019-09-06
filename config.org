@@ -2708,7 +2708,7 @@ Define the org file used to store all the RSS links.
 (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))
 #+END_SRC
 
-* Pocker Reader
+* Pocket Reader
 
 Read pocket from Emacs [fn:28].
 #+BEGIN_SRC emacs-lisp
