@@ -556,6 +556,12 @@ Show key-binding completion suggestions or ey-binding hints.
   (diminish 'guide-key-mode))
 #+END_SRC
 
+** Multiple-cursors
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'multiple-cursors)
+#+END_SRC
+
 * Enable Ivy Mode
 
 #+BEGIN_SRC emacs-lisp
