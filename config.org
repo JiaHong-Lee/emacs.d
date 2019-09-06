@@ -312,13 +312,12 @@ Add melpa as a package source.
 
 #+BEGIN_SRC emacs-lisp
 (require 'package)
-(package-initialize)
+;; (package-initialize)
 
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 #+END_SRC
 
 Add third-party library from the ./lisp directory. This is especially useful if I clone the library from Github and work on it. Since all .el files reside in one level deep in lisp directory, I will need to add all the subdirectory to the load path.
-
 #+BEGIN_SRC emacs-lisp
 ;; A helper function
 ;; Source: https://stackoverflow.com/a/17165074
