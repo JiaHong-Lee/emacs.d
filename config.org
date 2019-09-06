@@ -2918,11 +2918,7 @@ References:
 2. https://www.emacswiki.org/emacs/BrowseUrl#toc29
    With private-browsing.
 
-
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
-
-* Printing
+** Printing
 
 #+BEGIN_SRC emacs-lisp
 (setq ps-line-number t) ; print with line numbers
@@ -2931,6 +2927,13 @@ References:
 Printer at my dorm can only print black-and-white colours.
 #+BEGIN_SRC emacs-lisp
 (setq ps-print-color-p 'black-white) ; always print black-and-white
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 
 * Enable Emacs Server
 
