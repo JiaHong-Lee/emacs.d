@@ -508,7 +508,30 @@ References:
 
 This is where I put codes that help with editing in general, no matter what the language be.
 
+** Trailing Whitespace
+Source: Purcell's init-whitespace.el
+
 #+BEGIN_SRC emacs-lisp
+(setq-default show-trailing-whitespace nil)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun jh/show-trailing-whitespace ()
+  "Enable display of trailing whitespace in this buffer."
+  (setq-local show-trailing-whitespace t))
+
+(dolist (hook '(prog-mode-hook text-mode-hook conf-mode-hook))
+  (add-hook hook 'jh/show-trailing-whitespace))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'whitespace-cleanup-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'after-init-hook 'global-whitespace-cleanup-mode)
+(with-eval-after-load 'whitespace-cleanup-mode
+  (diminish 'whitespace-cleanup-mode))
 #+END_SRC
 
 ** Guide Key
