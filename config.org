@@ -1122,12 +1122,12 @@ Define org-capture-templates.
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
       '(("t" "Org-capture for GTD")
-	("to" "Todo" entry (file+headline "" "Tasks")
+        ("to" "Todo" entry (file+headline "" "Tasks")
          "* TODO %?\n%t\n%i\n\n  " :prepend t)
-	("tt" "Task" entry (file+headline "" "Tasks")
-	 "* NOW %?\n%t\n%i\n\n " :prepend t :clock-in t :clock-keep t)
-	("i" "An Idea to Explore" entry (file+headline "" "Ideas")
-	 "* %?\n%t\n%i\n\n ")
+        ("tt" "Task" entry (file+headline "" "Tasks")
+         "* NOW %?\n%t\n%i\n\n " :prepend t :clock-in t :clock-keep t)
+        ("i" "An Idea to Explore" entry (file+headline "" "Ideas")
+         "* %?\n%t\n%i\n\n ")
         ("j" "Journal" entry (file "~/Dropbox/DropSyncFiles/journal.txt")
          "* %u %?\n%i\n\n")))
 #+END_SRC
