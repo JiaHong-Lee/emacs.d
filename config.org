@@ -476,6 +476,11 @@ A useful tool to alert from the mode-line.
 (require-package 'mode-line-bell)
 #+END_SRC
 
+** Hydra
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'hydra)
+#+END_SRC
 
 * Personal Info
 
