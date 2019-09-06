@@ -1301,6 +1301,13 @@ In Ubuntu, set org-babel to run =python3= by default.
 (setq org-babel-python-command "python3")
 #+END_SRC
 
+** Highlight Indentation
+
+Enable highlight indentation globally.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'python-mode-hook 'highlight-indentation-mode)
+#+END_SRC
+
 ** Pip-mode
 
 It supports =*.pip= and =requirements*.txt= files. It provides syntax highlighting, togglable comments, and auto-completion of package names from PyPI.
