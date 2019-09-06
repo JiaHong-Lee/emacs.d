@@ -421,9 +421,6 @@ Provides a command which searches for unicode characters by name, and displays a
 (require-package 'list-unicode-display)
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(require-package 'wgrep)
-#+END_SRC
 ** Diminish
 
 A useful tool to hide/redefine mode indicator at the mode line.
