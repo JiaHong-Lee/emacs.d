@@ -796,6 +796,16 @@ Problem: evil-surround-change inserts unwanted spaces. E.g. it changes (this-for
  ?\} '("{ " . " }"))
 #+END_SRC
 
+** Evil-Anzu
+
+To show (current match/total matches) info in the mode-line using evil-search-forward.
+#+BEGIN_SRC emacs-lisp
+(require-package 'evil-anzu)
+#+END_SRC
+
+References:
+1. https://github.com/syohex/emacs-anzu
+
 ** Archived
 
 =evil-escape= is useful to define a customised key sequence to escape from insert state and everything else in Emacs, such as using =fd= to go into normal state.
