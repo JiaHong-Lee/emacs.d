@@ -1680,7 +1680,15 @@ Derive and define gradle-mode from groovy-mode. Note: This code will be tangled 
 (require 'gradle-mode)
 #+END_SRC
 
-* PlantUML
+* Graphviz and PlantUML
+
+** Graphviz
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'graphviz-dot-mode)
+#+END_SRC
+
+** PlantUML
 
 #+BEGIN_SRC emacs-lisp
 (require-package 'plantuml-mode)
