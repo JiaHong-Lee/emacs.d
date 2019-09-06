@@ -1071,19 +1071,6 @@ Note:
 Customisation idea:
 1. Use rg search by default, coupled with ivy completing system.
 
-* Enable YAML Mode
-
-This is useful to edit =docker-compose.yml= file.
-#+BEGIN_SRC emacs-lisp
-;; YAML Mode
-(require-package 'yaml-mode)
-(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-
-(add-hook 'yaml-mode-hook
-	  '(lambda ()
-	     (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
-#+END_SRC
-
 * SQL Database
 
 Emacs has a built-in SQL suite that includes SQL highlighting and SQL consoles for all major players: SQL mode and a function =sql-ms= that can connect to a database.
@@ -1323,6 +1310,54 @@ Error: elpy-use-ipython is deprecated; see https://elpy.readthedocs.io/en/latest
 ** Jupyter
 
 To use Emacs with Jupyter, check out =emacs-jupyter=, =ob-ipython=, and =ein=.
+
+* Enable YAML Mode
+
+This is useful to edit =docker-compose.yml= file.
+#+BEGIN_SRC emacs-lisp
+;; YAML Mode
+(require-package 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+
+(add-hook 'yaml-mode-hook
+	  '(lambda ()
+	     (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+#+END_SRC
+
+** Readable YAML
+
+To make YAML readable:
+1. Highlight indentation.
+   #+BEGIN_SRC emacs-lisp
+   (add-hook 'yaml-mode-hook 'highlight-indentation-mode)
+   #+END_SRC
+   Refer to: [[*Highlight Indentation][Highlight Indentation in Python Mode]]
+
+2. Folds all code on an higher indentation level to view the outline.
+   #+BEGIN_SRC emacs-lisp
+   ;; Source: https://stackoverflow.com/a/4459159
+   (defun aj-toggle-fold (&optional arg)
+     "Toggle fold all lines larger than indentation on current line"
+     (interactive)
+     (let ((col 1))
+       (save-excursion
+         (back-to-indentation)
+         (setq col (+ 1 (current-column)))
+         (set-selective-display
+          (if selective-display nil (or col 1))))))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+   (defun evil-yaml-mode ()
+     "Override default evil key bindings for yaml mode."
+     (evil-define-key 'normal yaml-mode-map
+       "za" 'aj-toogle-fold))
+
+   (add-hook 'yaml-mode-hook 'evil-yaml-mode)
+   #+END_SRC
+
+References:
+1. https://blog.chmouel.com/2016/09/07/dealing-with-yaml-in-emacs/
 
 * Enable Rust-Mode
 
