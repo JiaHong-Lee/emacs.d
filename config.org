@@ -1243,11 +1243,6 @@ It depends on the =osql= and =isql= program. This can be installed on Ubuntu.
 sudo apt install freetds-bin unixodbc
 #+END_SRC
 
-Open list-packages in fullframe.
-#+BEGIN_SRC emacs-lisp
-(fullframe list-packages quit-window)
-#+END_SRC
-
 * Enable Yasnippet Templating
 
 =Yasnippet= is a templating tool to save boilerplate typing, such as a file header. It is very powerful and the template can even be defined dynamically.
