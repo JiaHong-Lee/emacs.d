@@ -809,21 +809,33 @@ Flycheck was once a superior alternative to Flymake. Since Emacs version 26.1, i
 
 * Company Mode
   
-Company-mode is a modular in-buffer completion framework for Emacs[fn:29]. Company stands for "complete anything". 
+Company-mode is a modular in-buffer completion framework for Emacs. Company stands for "complete anything". 
 #+BEGIN_SRC emacs-lisp
 (require-package 'company)
 (diminish 'company-mode " Ⓒ")
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
+(setq tab-always-indent 'complete)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 ;; Company Mode
 (add-hook 'after-init-hook 'global-company-mode)
 (with-eval-after-load 'company
-		 (define-key company-active-map (kbd "M-n") nil)
-		 (define-key company-active-map (kbd "M-p") nil)
-		 (define-key company-active-map (kbd "C-n") #'company-select-next)
-		 (define-key company-active-map (kbd "C-p") #'company-select-previous))
+  (define-key company-active-map (kbd "M-n") nil)
+  (define-key company-active-map (kbd "M-p") nil)
+  (define-key company-active-map (kbd "C-n") #'company-select-next)
+  (define-key company-active-map (kbd "C-p") #'company-select-previous))
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'company-quickhelp)
+(add-hook 'after-init-hook 'company-quickhelp-mode)
+#+END_SRC
+
+References:
+1. https://github.com/company-mode/company-mode
 
 * Org-Mode
 
@@ -2973,8 +2985,6 @@ Sometimes I would have to read HTML files. Not to read its code, but its code. S
 [fn:30] http://doc.norang.ca/org-mode.html#Clocking
 
 [fn:16] https://www.reddit.com/r/emacs/comments/8uu7hb/question_pdftools_use_alot_of_ram/e1ir7c0
-
-[fn:29] https://github.com/company-mode/company-mode
 
 [fn:28] https://github.com/alphapapa/pocket-reader.el
 
