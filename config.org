@@ -572,12 +572,14 @@ Show key-binding completion suggestions or ey-binding hints.
 A rewrite of ~highlight-symbol~. It highlights all the variables usages in a file.
 #+BEGIN_SRC emacs-lisp
 (require-package 'symbol-overlay)
+
+(with-eval-after-load 'symbol-overlay
+  (diminish 'symbol-overlay-mode))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (dolist (hook '(prog-mode-hook html-mode-hook yaml-mode-hook conf-mode-hook))
     (add-hook hook 'symbol-overlay-mode))
-(diminish 'symbol-overlay-mode)
 #+END_SRC
 
 * Enable Ivy Mode
@@ -1336,12 +1338,12 @@ sudo apt install freetds-bin unixodbc
 =Yasnippet= is a templating tool to save boilerplate typing, such as a file header. It is very powerful and the template can even be defined dynamically.
 #+BEGIN_SRC emacs-lisp
 (require-package 'yasnippet)
-(diminish 'yas-minor-mode  " Ⓨ")
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'yasnippet
-  (yas-reload-all))
+  (yas-reload-all)
+  (diminish 'yas-minor-mode  " Ⓨ"))
 
 (dolist (hook '(text-mode-hook prog-mode-hook))
   (add-hook hook 'yas-minor-mode))
