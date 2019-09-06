@@ -1584,6 +1584,7 @@ Derive and define gradle-mode from groovy-mode. Note: This code will be tangled 
 ;;
 
 ;;; Code:
+(require 'groovy-mode)
 
 (defvar gradle-constants '())
 
@@ -1612,7 +1613,7 @@ Derive and define gradle-mode from groovy-mode. Note: This code will be tangled 
 
 ** Gradle-mode
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (require 'gradle-mode)
 #+END_SRC
 
