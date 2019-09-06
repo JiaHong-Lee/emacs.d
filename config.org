@@ -988,6 +988,9 @@ Customise Org-agenda TODO view.
 References:
 1. https://emacs.stackexchange.com/questions/5900/how-can-i-view-the-hierarchy-of-todo-keywords-in-org-agenda-mode
 
+** Org GTD
+
+Org's "Getting Training Done".
 
 Bernt Hansen[fn:30] has a good article on GTD.
 #+BEGIN_SRC emacs-lisp
@@ -1007,7 +1010,21 @@ Bernt Hansen[fn:30] has a good article on GTD.
 	      ("CANCELLED" :foreground "forest green" :weight bold))))
 #+END_SRC
 
+For record purposes:
+#+BEGIN_SRC emacs-lisp
+(setq org-log-done 'time)
+#+END_SRC
+
+References:
+1. https://orgmode.org/manual/Closing-items.html
+   Org-log-done variable.
+
 ** Org Time Clocking
+
+#+BEGIN_SRC emacs-lisp
+(setq org-clock-persist t)
+(org-clock-persistence-insinuate)
+#+END_SRC
 
 Besides Bernt Hansen, Lee Hinman[fn:31] has good config on org-clocking. 
 #+BEGIN_SRC emacs-lisp
@@ -1033,6 +1050,16 @@ Besides Bernt Hansen, Lee Hinman[fn:31] has good config on org-clocking.
 Open prompt to resolve clock if I idle more than 120 minutes.
 #+BEGIN_SRC emacs-lisp
 (setq org-clock-idea-time 120) ;; minutes
+#+END_SRC
+
+Use =org-mru-clock= package to clock into recent org-mode tasks. By default, org can clock into the last task. But sometimes I would like to clock into recent tasks.
+#+BEGIN_SRC emacs-lisp
+(require-package 'org-mru-clock)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-mru-clock-how-many 20)
+(setq org-mru-clock-completing-read #'ivy-completing-read)
 #+END_SRC
 
 ** Org-Gcal
@@ -1070,11 +1097,13 @@ Define org-capture-templates.
 (setq org-capture-templates
       '(("t" "Org-capture for GTD")
 	("to" "Todo" entry (file+headline "" "Tasks")
-         "* TODO %?\n %t\n %i\n\n  " :prepend t)
+         "* TODO %?\n%t\n%i\n\n  " :prepend t)
 	("tt" "Task" entry (file+headline "" "Tasks")
-	 "* NOW %?\n %t\n %i\n\n " :prepend t :clock-in t :clock-keep t)
+	 "* NOW %?\n%t\n%i\n\n " :prepend t :clock-in t :clock-keep t)
+	("i" "An Idea to Explore" entry (file+headline "" "Ideas")
+	 "* %?\n%t\n%i\n\n ")
         ("j" "Journal" entry (file "~/Dropbox/DropSyncFiles/journal.txt")
-         "* %u %?\n %i\n\n")))
+         "* %u %?\n%i\n\n")))
 #+END_SRC
 
 A handy function for convenience.
