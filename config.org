@@ -582,6 +582,15 @@ A rewrite of ~highlight-symbol~. It highlights all the variables usages in a fil
     (add-hook hook 'symbol-overlay-mode))
 #+END_SRC
 
+** No Tabs
+
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+#+END_SRC
+
+References:
+1. https://www.emacswiki.org/emacs/NoTabs
+
 * Enable Ivy Mode
 
 #+BEGIN_SRC emacs-lisp
