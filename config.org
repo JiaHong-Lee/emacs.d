@@ -1243,7 +1243,6 @@ It depends on the =osql= and =isql= program. This can be installed on Ubuntu.
 sudo apt install freetds-bin unixodbc
 #+END_SRC
 
-* Buffer Windows
 
 Quick switching between buffer windows.
 #+BEGIN_SRC emacs-lisp
@@ -1254,17 +1253,6 @@ Quick switching between buffer windows.
 Open list-packages in fullframe.
 #+BEGIN_SRC emacs-lisp
 (fullframe list-packages quit-window)
-#+END_SRC
-
-** Use ibuffer to manage buffer
-
-ibuffer is an in-built package.
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(fullframe ibuffer quit-window)
 #+END_SRC
 
 * Enable Yasnippet Templating
@@ -1748,6 +1736,72 @@ Managing system services through Emacs.
 (evil-set-initial-state 'daemons-output-mode 'emacs)
 
 (fullframe daemons quit-window)
+#+END_SRC
+
+* Emacs Buffers
+
+** ibuffer
+
+ibuffer is an in-built package. Use ibuffer to manage buffer.
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'ibuffer
+  (fullframe ibuffer ibuffer-quit))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'ibuffer
+  ;; Use human readable Size column instead of original one
+  (define-ibuffer-column size-h
+    (:name "Size" :inline t)
+    (file-size-human-readable (buffer-size))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; Modify the default ibuffer-formats (toggle with `)
+(setq ibuffer-formats
+      '((mark modified read-only vc-status-mini " "
+              (name 22 22 :left :elide)
+              " "
+              (size-h 9 -1 :right)
+              " "
+              (mode 12 12 :left :elide)
+              " "
+              vc-relative-file)
+        (mark modified read-only vc-status-mini " "
+              (name 22 22 :left :elide)
+              " "
+              (size-h 9 -1 :right)
+              " "
+              (mode 14 14 :left :elide)
+              " "
+              (vc-status 12 12 :left)
+              " "
+              vc-relative-file)))
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+(setq ibuffer-filter-group-name-face 'font-lock-doc-face)
+#+END_SRC
+
+** ibuffer-vc
+
+Group buffers by vc root directory.
+#+BEGIN_SRC emacs-lisp
+(require-package 'ibuffer-vc)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun ibuffer-set-up-preferred-filters ()
+  (ibuffer-vc-set-filter-groups-by-vc-root)
+  (unless (eq ibuffer-sorting-mode 'filename/process)
+    (ibuffer-do-sort-by-filename/process)))
+
+(add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)
 #+END_SRC
 
 
