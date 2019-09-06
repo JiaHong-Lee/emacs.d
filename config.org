@@ -310,6 +310,11 @@ Add melpa as a package source.
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 #+END_SRC
 
+Auto download package info asynchronously on Emacs startup.
+#+BEGIN_SRC emacs-lisp
+(package-refresh-contents t)
+#+END_SRC
+
 Add third-party library from the ./lisp directory. This is especially useful if I clone the library from Github and work on it. Since all .el files reside in one level deep in lisp directory, I will need to add all the subdirectory to the load path.
 #+BEGIN_SRC emacs-lisp
 ;; A helper function
