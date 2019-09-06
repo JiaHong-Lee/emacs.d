@@ -2730,6 +2730,16 @@ The only functionalities that I care:
 2. Search.
 3. Open in external browser.
 
+A more intuitive function to simply ask user for URL input and then add it to Pocket.
+#+BEGIN_SRC emacs-lisp
+(defun jh/pocket-reader-add-link ()
+  "Add URL from user input to Pocket."
+  (interactive)
+  (let ((url (read-string "URL: ")))
+    (when (pocket-lib-add-urls url)
+      (message "Added: %s" url))))
+#+END_SRC
+
 * ERC -- IRC Client
 
 #+BEGIN_SRC emacs-lisp
