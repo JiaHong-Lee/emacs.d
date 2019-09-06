@@ -652,7 +652,8 @@ Settings for tracking recent files.
 
 #+BEGIN_SRC emacs-lisp
 (setq-default
- recentf-max-menu-items 10000
+ recentf-max-menu-items 1000
+ recentf-max-saved-items 1000
  recentf-exclude '("/tmp/" "/ssh:"))
 #+END_SRC
 
