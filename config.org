@@ -1787,6 +1787,7 @@ Since I didn't add my user to the Docker group, I will need to run every docker 
 (fullframe docker-containers tablist-quit)
 #+END_SRC
 
+Map <RET> to a key to show all options. By default, pressing <RET> does nothing, which is unintuitive to me.
 #+BEGIN_SRC emacs-lisp
 (define-key docker-container-mode-map (kbd "RET") 'docker-container-help-popup)
 #+END_SRC
