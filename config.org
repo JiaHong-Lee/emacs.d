@@ -870,11 +870,24 @@ Display company autocomplete immediately.
 (setq company-idle-delay 0)
 #+END_SRC
 
+Use "C-n" or "C-p" to cycle through auto-complete candidates.
+#+BEGIN_SRC emacs-lisp
+(defun reverse-company-complete-common-or-cycle ()
+  "Same function but move in reverse direction."
+  (interactive)
+  (company-complete-common-or-cycle -1))
+
 (with-eval-after-load 'company
   (define-key company-active-map (kbd "M-n") nil)
   (define-key company-active-map (kbd "M-p") nil)
   (define-key company-active-map (kbd "C-n") #'company-select-next)
-  (define-key company-active-map (kbd "C-p") #'company-select-previous))
+  (define-key company-active-map (kbd "C-p") #'company-select-previous)
+  ;; (define-key company-active-map (kbd "C-n") 'company-complete-common-or-cycle)
+  ;; (define-key company-active-map (kbd "C-p") 'reverse-company-complete-common-or-cycle)
+  (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
+  (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
+  (define-key company-active-map (kbd "S-TAB") 'reverse-company-complete-common-or-cycle)
+  (define-key company-active-map (kbd "<backtab>") 'reverse-company-complete-common-or-cycle))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
