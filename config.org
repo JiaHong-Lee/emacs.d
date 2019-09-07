@@ -844,11 +844,32 @@ Company-mode is a modular in-buffer completion framework for Emacs. Company stan
 (diminish 'company-mode " Ⓒ")
 #+END_SRC
 
+Use <TAB> to indent to popup company completion. By default, indent-for-tab + tab-alwasy-indent 'complete with popup default completion-at-point popup for me. This should override the default behaviour.
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'company
+  (define-key company-mode-map [remap indent-for-tab-command]
+    'company-indent-or-complete-common))
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 (setq tab-always-indent 'complete)
 #+END_SRC
 
+Force out of selection by typing non-match characters.
 #+BEGIN_SRC emacs-lisp
+(setq company-require-match 'never)
+#+END_SRC
+
+Disable the downcase that company does to the variables.
+#+BEGIN_SRC emacs-lisp
+(setq company-dabbrev-downcase nil)
+#+END_SRC
+
+Display company autocomplete immediately.
+#+BEGIN_SRC emacs-lisp
+(setq company-idle-delay 0)
+#+END_SRC
+
 (with-eval-after-load 'company
   (define-key company-active-map (kbd "M-n") nil)
   (define-key company-active-map (kbd "M-p") nil)
