@@ -2061,12 +2061,12 @@ Able to resize non-floating buffer with mouse.
             (unless (or (string-prefix-p "sun-awt-X11-" exwm-instance-name)
                         (string= "gimp" exwm-instance-name))
               (exwm-workspace-rename-buffer exwm-class-name))))
-;; (add-hook 'exwm-update-title-hook
-;;           (lambda ()
-;;             (when (or (not exwm-instance-name)
-;;                       (string-prefix-p "sun-awt-X11-" exwm-instance-name)
-;;                       (string= "gimp" exwm-instance-name))
-;;               (exwm-workspace-rename-buffer exwm-title))))
+(add-hook 'exwm-update-title-hook
+          (lambda ()
+            (when (or (not exwm-instance-name)
+                      (string-prefix-p "sun-awt-X11-" exwm-instance-name)
+                      (string= "gimp" exwm-instance-name))
+              (exwm-workspace-rename-buffer exwm-title))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
