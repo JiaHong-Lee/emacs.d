@@ -1883,6 +1883,11 @@ Pinyin dictionary for =pyim= package.
 (pyim-basedict-enable)
 #+END_SRC
 
+Use "pyim" as default input method. Then I can invoke =toggle-input-method= anywhere to type Chinese.
+#+BEGIN_SRC emacs-lisp
+(setq default-input-method "pyim")
+#+END_SRC
+
 * Managing System Services
 
 Managing system services through Emacs.
