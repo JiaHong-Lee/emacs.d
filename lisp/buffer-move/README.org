@@ -1,0 +1,11 @@
+#+TITLE:  Buffer-Move.el
+#+AUTHOR: Lee Jia Hong
+#+EMAIL:  jia_hong@live.com.my
+#+DATE:   [2019-07-05 Fri]
+#+TAGS:   lisp library
+
+* Introduction
+
+This is a library used to swap between two buffer windows.
+
+Source: https://www.emacswiki.org/emacs/buffer-move.el

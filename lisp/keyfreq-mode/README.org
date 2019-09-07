@@ -1,0 +1,14 @@
+#+TITLE:  Key Freq Mode
+#+AUTHOR: Lee Jia Hong
+#+EMAIL:  jia_hong@live.com.my
+#+DATE:   [2019-06-12 Wed]
+#+TAGS:   keyfreq emacs key binding
+
+* Introduction
+
+Here are some notes about this keyfreq mode.
+
+I learned about it from: https://two-wrongs.com/why-you-should-buy-into-the-emacs-platform.
+And found it from github: https://github.com/dacap/keyfreq.
+
+The idea of using it is to know which keybinding that I use most frequently.

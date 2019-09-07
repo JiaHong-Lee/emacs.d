@@ -1,0 +1,9 @@
+#+TITLE:  README
+#+AUTHOR: Lee Jia Hong
+#+EMAIL:  jia_hong@live.com.my
+#+DATE:   [2019-07-12 Fri]
+#+TAGS:   
+
+* Introduction
+
+This mode was taken from https://github.com/Lindydancer/ini-mode for editing Ansible inventory list.

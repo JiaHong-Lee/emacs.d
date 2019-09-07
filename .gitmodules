@@ -1,3 +1,6 @@
 [submodule "lisp/aweshell"]
 	path = lisp/aweshell
 	url = https://github.com/manateelazycat/aweshell
+[submodule "lisp/counsel-firefox-bookmarks"]
+	path = lisp/counsel-firefox-bookmarks
+	url = https://github.com/tangxinfa/counsel-firefox-bookmarks

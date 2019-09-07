@@ -1,0 +1,12 @@
+#+TITLE:  Evil-Numbers
+#+AUTHOR: Lee Jia Hong
+#+EMAIL:  jia_hong@live.com.my
+#+DATE:   [2019-09-07 Sat]
+#+TAGS:   evil number
+
+* Introduction
+
+This is a package that helps to perform increment or decrement a number under cursor.
+
+References:
+1. https://github.com/cofi/evil-numbers/blob/master/evil-numbers.el

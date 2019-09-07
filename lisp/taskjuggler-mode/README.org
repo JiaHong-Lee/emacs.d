@@ -1,0 +1,10 @@
+#+TITLE:  Task Juggler
+#+AUTHOR: Lee Jia Hong
+#+EMAIL:  jia_hong@live.com.my
+#+DATE:   [2019-06-27 Thu]
+#+TAGS:   project
+
+* Introduction
+
+Source:
+https://www.skamphausen.de/cgi-bin/ska/taskjuggler-mode
