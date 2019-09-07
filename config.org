@@ -74,7 +74,7 @@ The rest is in the config.org file.
 ;;; -*- lexical-binding: t; -*-
 #+END_SRC
 
-* Personalise
+* Personalise & Aesthetic
 
 #+BEGIN_SRC emacs-lisp
 ;; UI Settings
@@ -226,6 +226,16 @@ where nameN can be one of 'slant', 'weight', 'style', width', and 'spacing.
 Override the default font in Emacs to using Overpass Mono developed by Redhat [fn:26].
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'default-frame-alist '(font . "Overpass Mono"))
+#+END_SRC
+
+I feel like wanting a different font for coding. Reference: https://www.emacswiki.org/emacs/FacesPerBuffer.
+#+BEGIN_SRC emacs-lisp
+(defun jh/my-buffer-face-mode-fixed ()
+  "Sets a fixed width (monospace) font in current buffer"
+  (interactive)
+  (buffer-face-set '(:family "IBM Plex Mono")))
+
+(add-hook 'prog-mode-hook 'jh/my-buffer-face-mode-fixed)
 #+END_SRC
 
 ** Display Relative Line Numbers
