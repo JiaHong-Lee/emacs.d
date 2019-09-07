@@ -2599,7 +2599,7 @@ Override the default directory for saving attachements.
 #+END_SRC
 
 Autofetching every 1 hour.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (add-hook 'emacs-startup-hook (lambda () (run-at-time nil (* 3 60 60) 'elfeed-update)))
 #+END_SRC
 
