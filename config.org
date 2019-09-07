@@ -839,6 +839,8 @@ Flycheck was once a superior alternative to Flymake. Since Emacs version 26.1, i
 Company-mode is a modular in-buffer completion framework for Emacs. Company stands for "complete anything". 
 #+BEGIN_SRC emacs-lisp
 (require-package 'company)
+(add-hook 'after-init-hook 'global-company-mode)
+
 (diminish 'company-mode " Ⓒ")
 #+END_SRC
 
@@ -847,8 +849,6 @@ Company-mode is a modular in-buffer completion framework for Emacs. Company stan
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-;; Company Mode
-(add-hook 'after-init-hook 'global-company-mode)
 (with-eval-after-load 'company
   (define-key company-active-map (kbd "M-n") nil)
   (define-key company-active-map (kbd "M-p") nil)
