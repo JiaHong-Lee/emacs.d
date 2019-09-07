@@ -890,6 +890,7 @@ Use "C-n" or "C-p" to cycle through auto-complete candidates.
   (define-key company-active-map (kbd "<backtab>") 'reverse-company-complete-common-or-cycle))
 #+END_SRC
 
+Display function/variable documentation on selected candidates.
 #+BEGIN_SRC emacs-lisp
 (require-package 'company-quickhelp)
 (add-hook 'after-init-hook 'company-quickhelp-mode)
@@ -897,6 +898,12 @@ Use "C-n" or "C-p" to cycle through auto-complete candidates.
 
 References:
 1. https://github.com/company-mode/company-mode
+2. https://emacs.stackexchange.com/a/23937
+3. https://github.com/company-mode/company-mode/wiki/Switching-from-AC
+4. https://github.com/company-mode/company-mode/issues/526
+   YouCompleteMe-style tab completion.
+5. https://github.com/company-mode/company-mode/issues/94
+   Integrate company with 'ident-for-tab-command'.
 
 * Org-Mode
 
