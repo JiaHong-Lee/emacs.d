@@ -3248,6 +3248,13 @@ Printer at my dorm can only print black-and-white colours.
 (setq emms-source-file-default-directory "~/Music/")
 #+END_SRC
 
+** Immortal Scratch
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'immortal-scratch)
+(add-hook 'after-init-hook 'immortal-scratch-mode)
+#+END_SRC
+
 * Enable Emacs Server
 
 Allow the use of emacsclient from terminal.
