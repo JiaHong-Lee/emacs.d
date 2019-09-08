@@ -1491,6 +1491,13 @@ Reference: https://emacs.stackexchange.com/q/28857 and https://stackoverflow.com
   (setq electric-pair-preserve-balance nil))
 #+END_SRC
 
+** Rainbow-Delimiters
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'rainbow-delimiters)
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+#+END_SRC
+
 * Enable Geiser Mode
   
 The official website is here [fn:7]. 
