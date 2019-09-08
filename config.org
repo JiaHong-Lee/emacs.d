@@ -350,20 +350,16 @@ With the helper function, =(my-directory-files ~/.emacs.d/lisp)= should return a
 
 ** Require-package
   
+A code orginally taken from Purcell, but now modified to suit my need.
 #+BEGIN_SRC emacs-lisp
-(defun require-package (package &optional min-version no-refresh)
-  "Install given PACKAGE, optionally requiring MIN-VERSION.
-If NO-REFRESH is non-nil, the available package lists will not be
-re-downloaded in order to locate PACKAGE."
-  (or (package-installed-p package min-version)
-      (let* ((known (cdr (assoc package package-archive-contents)))
-             (versions (mapcar #'package-desc-version known)))
-        (if (cl-find-if (lambda (v) (version-list-<= min-version v)) versions)
-            (package-install package)
-          (if no-refresh
-              (error "No version of %s >= %S is available" package min-version)
-            (package-refresh-contents)
-            (require-package package min-version t))))))
+(defun require-package (package)
+  "Require a PACKAGE. Install PACKAGE if not already installed. PACKAGE will be required immediately after installation."
+  (if (package-installed-p package)
+      (require package)
+    (unless package-archive-contents
+      (package-refresh-contents))
+    (package-install package)
+    (require package)))
 #+END_SRC
 
 ** External Program Dependencies
