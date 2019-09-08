@@ -263,18 +263,6 @@ Define a function to make it easy to disable page number display inside a mode. 
 
 * Utility Code
 
-These are some useful utility codes taken from Purcell.
-
-#+BEGIN_SRC emacs-lisp
-(if (fboundp 'with-eval-after-load)
-    (defalias 'after-load 'with-eval-after-load)
-  (defmacro after-load (feature &rest body)
-    "After FEATURE is loaded, evaluate BODY."
-    (declare (indent defun))
-    `(eval-after-load ,feature
-       '(progn ,@body))))
-#+END_SRC
-
 ** GC Tweaks
 
 Emacs GC optimisation.
