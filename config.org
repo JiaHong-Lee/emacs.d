@@ -1498,6 +1498,14 @@ Reference: https://emacs.stackexchange.com/q/28857 and https://stackoverflow.com
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 #+END_SRC
 
+** Paredit
+
+A mode that enables AST transformation.
+#+BEGIN_SRC emacs-lisp
+(require-package 'paredit)
+(diminish 'paredit " Par")
+#+END_SRC
+
 * Enable Geiser Mode
   
 The official website is here [fn:7]. 
