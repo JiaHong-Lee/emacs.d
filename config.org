@@ -3203,6 +3203,10 @@ Directly search the contents of files in Dropbox.
 (keyfreq-autosave-mode 1)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(setq keyfreq-file (jh/emacs-subdirectory "emacs.keyfreq"))
+#+END_SRC
+
 ** Counsel-firefox-bookmarks
 
 A handy tool for me to search firefox bookmarks from within Emacs.
