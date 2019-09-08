@@ -535,8 +535,7 @@ Source: Purcell's init-whitespace.el
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'after-init-hook 'global-whitespace-cleanup-mode)
-(with-eval-after-load 'whitespace-cleanup-mode
-  (diminish 'whitespace-cleanup-mode))
+(diminish 'whitespace-cleanup-mode)
 #+END_SRC
 
 ** Guide Key
@@ -552,8 +551,7 @@ Show key-binding completion suggestions or ey-binding hints.
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'after-init-hook 'guide-key-mode)
-(with-eval-after-load 'guide-key
-  (diminish 'guide-key-mode))
+(diminish 'guide-key-mode)
 #+END_SRC
 
 ** Multiple-cursors
@@ -567,9 +565,7 @@ Show key-binding completion suggestions or ey-binding hints.
 A rewrite of ~highlight-symbol~. It highlights all the variables usages in a file.
 #+BEGIN_SRC emacs-lisp
 (require-package 'symbol-overlay)
-
-(with-eval-after-load 'symbol-overlay
-  (diminish 'symbol-overlay-mode))
+(diminish 'symbol-overlay-mode)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -841,9 +837,8 @@ Company-mode is a modular in-buffer completion framework for Emacs. Company stan
 
 Use <TAB> to indent to popup company completion. By default, indent-for-tab + tab-alwasy-indent 'complete with popup default completion-at-point popup for me. This should override the default behaviour.
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'company
-  (define-key company-mode-map [remap indent-for-tab-command]
-    'company-indent-or-complete-common))
+(define-key company-mode-map [remap indent-for-tab-command]
+    'company-indent-or-complete-common)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -872,17 +867,14 @@ Use "C-n" or "C-p" to cycle through auto-complete candidates.
   (interactive)
   (company-complete-common-or-cycle -1))
 
-(with-eval-after-load 'company
-  (define-key company-active-map (kbd "M-n") nil)
-  (define-key company-active-map (kbd "M-p") nil)
-  (define-key company-active-map (kbd "C-n") #'company-select-next)
-  (define-key company-active-map (kbd "C-p") #'company-select-previous)
-  ;; (define-key company-active-map (kbd "C-n") 'company-complete-common-or-cycle)
-  ;; (define-key company-active-map (kbd "C-p") 'reverse-company-complete-common-or-cycle)
-  (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
-  (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
-  (define-key company-active-map (kbd "S-TAB") 'reverse-company-complete-common-or-cycle)
-  (define-key company-active-map (kbd "<backtab>") 'reverse-company-complete-common-or-cycle))
+(define-key company-active-map (kbd "M-n") nil)
+(define-key company-active-map (kbd "M-p") nil)
+(define-key company-active-map (kbd "C-n") #'company-complete-common-or-cycle)
+(define-key company-active-map (kbd "C-p") #'reverse-company-complete-common-or-cycle)
+(define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
+(define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
+(define-key company-active-map (kbd "S-TAB") 'reverse-company-complete-common-or-cycle)
+(define-key company-active-map (kbd "<backtab>") 'reverse-company-complete-common-or-cycle)
 #+END_SRC
 
 Display function/variable documentation on selected candidates.
@@ -938,8 +930,8 @@ Open an org file with hard indentation by default.
 
 =(diminish 'org-indent-mode)= does not work directly. The call to it must occur after org-indent.el has ben loaded. Reference: https://emacs.stackexchange.com/questions/22531/diminish-org-indent-mode
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'org-indent
-  (diminish 'org-indent-mode))
+(require 'org-indent)
+(diminish 'org-indent-mode)
 #+END_SRC
 
 Prevent deleting hidden texts. https://emacs.stackexchange.com/a/2091
@@ -1385,10 +1377,11 @@ sudo apt install freetds-bin unixodbc
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'yasnippet
-  (yas-reload-all)
-  (diminish 'yas-minor-mode  " Ⓨ"))
+(yas-reload-all)
+(diminish 'yas-minor-mode  " Ⓨ")
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
 (dolist (hook '(text-mode-hook prog-mode-hook))
   (add-hook hook 'yas-minor-mode))
 #+END_SRC
@@ -1574,10 +1567,9 @@ pip install jedi flake8
 These are packages that work well with Elpy:
 1. flycheck (as the Flymake alternative)
    #+BEGIN_SRC emacs-lisp
-   (with-eval-after-load 'elpy
-     (when (require 'flycheck nil t)
+   (when (require 'flycheck nil t)
        (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-       (add-hook 'elpy-mode-hook 'flycheck-mode)))
+       (add-hook 'elpy-mode-hook 'flycheck-mode))
    #+END_SRC
 
 2. py-autopep8
@@ -1588,8 +1580,7 @@ These are packages that work well with Elpy:
 
 3. ein (Ipython/Jupyter integration)
    #+BEGIN_SRC emacs-lisp :tangle no
-   (with-eval-after-load 'elpy
-     (elpy-use-ipython))
+   (elpy-use-ipython)
    #+END_SRC
 
 Error: elpy-use-ipython is deprecated; see https://elpy.readthedocs.io/en/latest/ide.html#interpreter-setup
@@ -1666,8 +1657,7 @@ Automatic runs =rust-format-buffer= during saves. By default, it is bound to =C-
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'rust-mode
-  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+(add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
 #+END_SRC
 
 ** Ob-Rust
@@ -1824,8 +1814,7 @@ Since I didn't add my user to the Docker group, I will need to run every docker 
 
 Map <RET> to a key to show all options. By default, pressing <RET> does nothing, which is unintuitive to me.
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'docker-containers
-  (define-key docker-container-mode-map (kbd "RET") 'docker-container-help-popup))
+(define-key docker-container-mode-map (kbd "RET") 'docker-container-help-popup)
 #+END_SRC
 
 * Magit -- Git Client
@@ -1894,16 +1883,14 @@ ibuffer is an in-built package. Use ibuffer to manage buffer.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'ibuffer
-  (fullframe ibuffer ibuffer-quit))
+(fullframe ibuffer ibuffer-quit)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'ibuffer
-  ;; Use human readable Size column instead of original one
-  (define-ibuffer-column size-h
-    (:name "Size" :inline t)
-    (file-size-human-readable (buffer-size))))
+;; Use human readable Size column instead of original one
+(define-ibuffer-column size-h
+  (:name "Size" :inline t)
+  (file-size-human-readable (buffer-size)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -2210,8 +2197,7 @@ Change dired default sorting to directories first, then followed by files in alp
 #+END_SRC 
 
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "C-c C-q") 'wdired-change-to-wdired-mode))
+(define-key dired-mode-map (kbd "C-c C-q") 'wdired-change-to-wdired-mode)
 #+END_SRC
 
 #+SOURCE: https://oremacs.com/2015/07/27/counsel-recoll/
@@ -2716,8 +2702,7 @@ show normally otherwise."
       (call-interactively 'elfeed-search-show-entry))
      (t (elfeed-show-visit)))))
 
-(with-eval-after-load 'elfeed
-  (define-key elfeed-show-mode-map [remap shr-browse-url] #'elfeed-visit-maybe-externally))
+(define-key elfeed-show-mode-map [remap shr-browse-url] #'elfeed-visit-maybe-externally)
 #+END_SRC
 
 #+NAME: Elfeed_Dependency
@@ -2764,11 +2749,10 @@ Read pocket from Emacs [fn:28].
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'pocket-reader
-  (define-key pocket-reader-mode-map [remap pocket-reader-open-url] #'pocket-reader-open-in-external-browser)
-  (defalias 'pocket-reader-toggle-read-unread 'pocket-reader-toggle-archived)
-  (define-key pocket-reader-mode-map (kbd "r") #'pocket-reader-toggle-read-unread)
-  (define-key pocket-reader-mode-map (kbd "g") #'pocket-reader-refresh))
+(define-key pocket-reader-mode-map [remap pocket-reader-open-url] #'pocket-reader-open-in-external-browser)
+(defalias 'pocket-reader-toggle-read-unread 'pocket-reader-toggle-archived)
+(define-key pocket-reader-mode-map (kbd "r") #'pocket-reader-toggle-read-unread)
+(define-key pocket-reader-mode-map (kbd "g") #'pocket-reader-refresh)
 #+END_SRC
 
 The only functionalities that I care:
