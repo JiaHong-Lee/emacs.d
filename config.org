@@ -830,6 +830,22 @@ Use the keypad + and - without shadowing the regular + and -.
 References:
 1. https://github.com/cofi/evil-numbers
 
+** Evil-Exchange
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'evil-exchange)
+#+END_SRC
+
+Use define-key instead of =evil-exchange-cx-install=. Wrapping it in a function makes it feels difficult and opaque.
+#+BEGIN_SRC emacs-lisp
+(define-key evil-operator-state-map "x" 'evil-exchange/cx)
+(define-key evil-visual-state-map "X" 'evil-exchange)
+#+END_SRC
+
+References:
+1. https://github.com/Dewdrops/evil-exchange
+2. http://vimcasts.org/episodes/swapping-two-regions-of-text-with-exchange-vim
+
 ** Archived
 
 =evil-escape= is useful to define a customised key sequence to escape from insert state and everything else in Emacs, such as using =fd= to go into normal state.
