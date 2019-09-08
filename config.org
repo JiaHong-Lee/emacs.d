@@ -596,6 +596,13 @@ A rewrite of ~highlight-symbol~. It highlights all the variables usages in a fil
 References:
 1. https://www.emacswiki.org/emacs/NoTabs
 
+** Aggressive Indentation
+
+Found this package from Purcell's config.
+#+BEGIN_SRC emacs-lisp
+(require-package 'aggressive-indent)
+#+END_SRC
+
 * Enable Ivy Mode
 
 #+BEGIN_SRC emacs-lisp
