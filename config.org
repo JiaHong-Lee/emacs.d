@@ -1472,7 +1472,7 @@ Instead of replace the file content on every tangle, use this to append code to 
 
 * Parentheses Fun
 
-To deal with parens, quotes, and more, check out =smartparens= or =electric-pair-mode=. To highlight parentheses according to their depth, check out =rainbow-delimiters=.
+A section about parentheses and lisp modes in general. Might deal with parens, quotes,and mode.
 
 #+BEGIN_SRC emacs-lisp
 (setq show-paren-delay 0)
