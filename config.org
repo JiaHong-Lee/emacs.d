@@ -687,6 +687,8 @@ Settings for tracking recent files.
 
 * Enable Evil mode
 
+** Evil
+
 #+BEGIN_SRC emacs-lisp
 ;; Evil mode
 (require-package 'evil)
@@ -753,6 +755,7 @@ Redefine =evil-ex-commands= to close buffers instead of the frame (Emacs windows
 (evil-ex-define-cmd "wq" 'jh/evil-save-and-close-buffer)
 #+END_SRC
 
+** Evil-Sentence
 
 Use evil-sentence to operate on a text sentence object.
 
@@ -765,6 +768,8 @@ Use evil-sentence to operate on a text sentence object.
 (define-key evil-inner-text-objects-map "s" 'sentence-nav-evil-inner-sentence)
 #+END_SRC
 
+** Evil-Matchit
+
 Use evil-matchit to jump between HTML tags using '%'.
 
 #+BEGIN_SRC emacs-lisp
@@ -774,6 +779,8 @@ Use evil-matchit to jump between HTML tags using '%'.
 #+BEGIN_SRC emacs-lisp
 (global-evil-matchit-mode t)
 #+END_SRC
+
+** Evil-Surround
 
 Use evil-surround to deal with surrounding quotes or tags.
 
