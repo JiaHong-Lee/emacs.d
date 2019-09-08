@@ -1877,6 +1877,10 @@ Managing system services through Emacs.
 
 ** ibuffer
 
+#+BEGIN_SRC emacs-lisp
+(require 'ibuffer)
+#+END_SRC
+
 ibuffer is an in-built package. Use ibuffer to manage buffer.
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-x C-b") 'ibuffer)
@@ -2182,6 +2186,10 @@ Check out: Hydra + Ace-window. https://www.youtube.com/watch?v=_qZliI1BKzI
 In this section, I'll configure the regarding files editing, reading, and directory operations.
 
 ** Dired Configuration
+
+#+BEGIN_SRC emacs-lisp
+(require 'dired)
+#+END_SRC
 
 Set the default dired target to an adjacent dired buffer location.
 
