@@ -1506,6 +1506,47 @@ A mode that enables AST transformation.
 (diminish 'paredit " Par")
 #+END_SRC
 
+** Lispy Hooks
+
+Check parens on save. Taken from Purcell.
+#+BEGIN_SRC emacs-lisp
+(defun jh/enable-check-parens-on-save ()
+  "Run `check-parens' when the current buffer is saved."
+  (add-hook 'after-save-hook #'check-parens nil t))
+#+END_SRC
+
+Define all hooks to run in all Lisp modes based on Purcell's config.
+#+BEGIN_SRC emacs-lisp
+(defvar jh/lispy-modes-hook
+  '(jh/enable-check-parens-on-save
+    enable-paredit-mode
+    aggressive-indent-mode)
+  "Define all hooks to run in all Lisp modes.")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun jh/lisp-setup()
+  "Enable features useful in all Lisp modes."
+  (run-hooks 'jh/lispy-modes-hook))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defconst jh/lispy-modes
+  '(lisp-mode lisp-interaction-mode inferior-lisp-mode
+              emacs-lisp-mode common-lisp-mode geiser-mode)
+  "All lisp modes.")
+#+END_SRC
+
+An in-built Elisp library.
+#+BEGIN_SRC emacs-lisp
+(require 'derived)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(dolist (hook (mapcar #'derived-mode-hook-name jh/lispy-modes))
+  (add-hook hook 'jh/lisp-setup))
+#+END_SRC
+
 * Enable Geiser Mode
   
 The official website is here [fn:7]. 
