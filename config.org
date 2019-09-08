@@ -261,6 +261,14 @@ Define a function to make it easy to disable page number display inside a mode. 
   (display-line-numbers-mode -1))
 #+END_SRC
 
+** Initial Scratch Message
+
+Taken from Purcell.
+#+BEGIN_SRC emacs-lisp
+(setq-default initial-scratch-message
+              (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
+#+END_SRC
+
 * Utility Code
 
 ** GC Tweaks
