@@ -236,6 +236,7 @@ I feel like wanting a different font for coding. Reference: https://www.emacswik
   (buffer-face-set '(:family "IBM Plex Mono")))
 
 (add-hook 'prog-mode-hook 'jh/my-buffer-face-mode-fixed)
+(diminish 'buffer-face-mode)
 #+END_SRC
 
 ** Display Relative Line Numbers
