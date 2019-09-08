@@ -1547,6 +1547,19 @@ An in-built Elisp library.
   (add-hook hook 'jh/lisp-setup))
 #+END_SRC
 
+* Emacs Lisp
+
+Taken from Purcell. This package might prettier elisp expessions output.
+#+BEGIN_SRC emacs-lisp
+(require-package 'ipretty)
+(add-hook 'after-init-hook 'ipretty-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'highlight-quoted)
+(add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode)
+#+END_SRC
+
 * Enable Geiser Mode
   
 The official website is here [fn:7]. 
