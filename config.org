@@ -387,7 +387,8 @@ Check if an executable is installed.
 
 Open list-packages in fullframe.
 #+BEGIN_SRC emacs-lisp
-(fullframe list-packages quit-window)
+(with-eval-after-load 'fullframe
+ (fullframe list-packages quit-window))
 #+END_SRC
 
 * Utility Third Library
