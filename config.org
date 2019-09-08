@@ -753,32 +753,6 @@ Redefine =evil-ex-commands= to close buffers instead of the frame (Emacs windows
 (evil-ex-define-cmd "wq" 'jh/evil-save-and-close-buffer)
 #+END_SRC
 
-Increment numbers/characters at point [fn:10].
-
-#+BEGIN_SRC emacs-lisp
-(defun my-change-number-at-point (change)
-  (let ((number (number-at-point))
-        (point (point)))
-    (when number
-      (progn
-        (forward-word)
-        (search-backward (number-to-string number))
-        (replace-match (number-to-string (funcall change number)))
-        (goto-char point)))))
-(defun jh/increment-number-at-point ()
-  "Increment number at point like vim's C-a"
-  (interactive)
-  (my-change-number-at-point '1+))
-(defun jh/decrement-number-at-point ()
-  "Decrement number at point like vim's C-x"
-  (interactive)
-  (my-change-number-at-point '1-))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(global-set-key (kbd "C-c a") 'jh/increment-number-at-point)
-(global-set-key (kbd "C-c x") 'jh/decrement-number-at-point)
-#+END_SRC
 
 Use evil-sentence to operate on a text sentence object.
 
@@ -833,6 +807,21 @@ To show (current match/total matches) info in the mode-line using evil-search-fo
 
 References:
 1. https://github.com/syohex/emacs-anzu
+
+** Evil-Numbers
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'evil-numbers)
+#+END_SRC
+
+Use the keypad + and - without shadowing the regular + and -.
+#+BEGIN_SRC emacs-lisp
+(define-key evil-normal-state-map (kbd "<kp-add>") 'evil-numbers/inc-at-pt)
+(define-key evil-normal-state-map (kbd "<kp-subtract>") 'evil-numbers/dec-at-pt)
+#+END_SRC
+
+References:
+1. https://github.com/cofi/evil-numbers
 
 ** Archived
 
@@ -3430,8 +3419,6 @@ Sometimes I would have to read HTML files. Not to read its code, but its code. S
 [fn:12] https://github.com/skeeto/elfeed/issues/267 OR https://gitlab.com/ambrevar/dotfiles/blob/master/.emacs.d/lisp/init-elfeed.el
 
 [fn:11] https://robmoss.github.io/2018/02/19/Live-coding-Emacs-and-ghci
-
-[fn:10] https://www.emacswiki.org/emacs/IncrementNumber
 
 [fn:9] https://realpython.com/emacs-the-best-python-editor/
 
