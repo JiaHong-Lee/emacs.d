@@ -317,6 +317,11 @@ Add melpa as a package source.
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 #+END_SRC
 
+Load .el if newer than corresponding .elc.
+#+BEGIN_SRC emacs-lisp
+(setq load-prefer-newer t)
+#+END_SRC
+
 Auto download package info asynchronously on Emacs startup.
 #+BEGIN_SRC emacs-lisp
 (package-refresh-contents t)
