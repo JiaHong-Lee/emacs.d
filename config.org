@@ -1201,7 +1201,7 @@ Define org-capture-templates.
          "* NOW %?\n%t\n%i\n\n " :prepend t :clock-in t :clock-keep t)
         ("i" "An Idea to Explore" entry (file+headline "" "Ideas")
          "* %?\n%t\n%i\n\n ")
-        ("j" "Journal" item (file+olp+datetree "~/Dropbox/DropSyncFiles/journal.txt") "%?\n%i\n" :empty-lines 1)))
+        ("j" "Journal" item (file+olp+datetree "~/Dropbox/DropSyncFiles/journal.txt") "(%<%R>) %?\n%i\n" :empty-lines 1)))
 #+END_SRC
 
 A handy function for convenience.
