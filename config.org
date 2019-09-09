@@ -888,6 +888,30 @@ References:
 1. https://github.com/Dewdrops/evil-exchange
 2. http://vimcasts.org/episodes/swapping-two-regions-of-text-with-exchange-vim
 
+** Evil-Args
+
+Funtion arguments as textobjects.
+#+BEGIN_SRC emacs-lisp
+(require-package 'evil-args)
+#+END_SRC
+
+Bind evil-args text objects.
+#+BEGIN_SRC emacs-lisp
+(define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
+(define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
+#+END_SRC
+
+For C-derivative modes.
+#+BEGIN_SRC emacs-lisp
+(defun jh/evil-args-switch-to-c-mode ()
+  "Switch evil-args parameters to adapt to C-derivative modes"
+  (setq evil-args-delimiters '(", " ";")))
+
+(add-hook 'c-mode-hook #'jh/evil-args-switch-to-c-mode)
+#+END_SRC
+
+For Lispy modes, see [[evil-lisp-args][evil-lisp-args]].
+
 ** Archived
 
 =evil-escape= is useful to define a customised key sequence to escape from insert state and everything else in Emacs, such as using =fd= to go into normal state.
@@ -1572,10 +1596,22 @@ Check parens on save. Taken from Purcell.
   (add-hook 'after-save-hook #'check-parens nil t))
 #+END_SRC
 
+Adapt evil-args to lisp. 
+Issues: 
+1. Have to consider the spaces in strings.
+2. Have to consider arguments between newline characters as well. (applied to c-modes)
+#+NAME: evil-lisp-args
+#+BEGIN_SRC emacs-lisp
+(defun jh/evil-args-switch-to-lisp-mode ()
+  "Switch evil-args parameters to adapt to lisp-modes."
+  (setq evil-args-delimiters '(" ")))
+#+END_SRC
+
 Define all hooks to run in all Lisp modes based on Purcell's config.
 #+BEGIN_SRC emacs-lisp
 (defvar jh/lispy-modes-hook
   '(jh/enable-check-parens-on-save
+    jh/evil-args-switch-to-lisp-mode
     enable-paredit-mode
     aggressive-indent-mode)
   "Define all hooks to run in all Lisp modes.")
