@@ -2818,7 +2818,11 @@ Override the default directory for saving attachements.
 
 Autofetching every 1 hour.
 #+BEGIN_SRC emacs-lisp :tangle no
-(add-hook 'emacs-startup-hook (lambda () (run-at-time nil (* 3 60 60) 'elfeed-update)))
+(defun jh/elfeed-background-update ()
+  "Update elfeed in the background after HOUR."
+  (run-at-time nil (* 3 60 60) 'elfeed-update))
+
+(add-hook 'emacs-startup-hook 'jh/elfeed-background-update)
 #+END_SRC
 
 Open elfeed in fullframe.
