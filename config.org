@@ -1001,15 +1001,18 @@ Beautifying org-mode.
 Customising Evil mode for Org-mode. I'm overriding "z-a" to org-cycle because in some cases, especially where the cursor is at a list, z-a will collaspe the entire subtree instead of the list. This behaviour is unexpected.
 #+NAME: evil-org-mode
 #+BEGIN_SRC emacs-lisp
+(defun jh/org-goto-first-child ()
+  "Wrapper function for the original function."
+  (interactive)
+  (org-goto-first-child))
+
 (defun evil-org-mode()
   "Integrating Evil into Org-mode."
   (evil-define-key 'normal org-mode-map
-    "gp" 'outline-up-heading ;; or maybe "gu"?
-    "gh" 'outline-previous-visible-heading
-    "gj" 'org-forward-heading-same-level
-    "gk" 'org-backward-heading-same-level
-    "gl" 'outline-next-visible-heading
-    ;; "gn" evil-next-match
+    "gh" 'outline-up-heading ;; or maybe "gu"?
+    "gj" 'outline-next-visible-heading
+    "gk" 'outline-previous-visible-heading
+    "gl" 'jh/org-goto-first-child
     "za" 'org-cycle))
 #+END_SRC
 
