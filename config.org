@@ -588,7 +588,8 @@ A rewrite of ~highlight-symbol~. It highlights all the variables usages in a fil
 ** No Tabs
 
 #+BEGIN_SRC emacs-lisp
-(setq-default indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil
+              tab-width 4)
 #+END_SRC
 
 References:
