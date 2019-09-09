@@ -2357,7 +2357,7 @@ Visit the next/previous files in the same directory directly from the file-buffe
 
 #+BEGIN_SRC emacs-lisp
 ;; GO TO THE NEXT/PREVIOUS FILE (BY NAME). USE PREFIX C-U TO GO BACK.
-(defun goto-next-file (&optional backward)
+(defun jh/goto-next-file (&optional backward)
   "Find the next file (by name) in the current directory.
      With prefix arg, find the previous file."
   (interactive "P")
@@ -2369,7 +2369,7 @@ Visit the next/previous files in the same directory directly from the file-buffe
                      (length files))))
       (find-file (nth pos files)))))
 
-(defun goto-previous-file ()
+(defun jh/goto-previous-file ()
   (interactive)
   (goto-next-file t))
 #+END_SRC
