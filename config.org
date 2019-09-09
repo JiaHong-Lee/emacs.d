@@ -1422,7 +1422,7 @@ References:
 #+BEGIN_SRC emacs-lisp
 (setq reftex-default-bibliography
       '("~/Documents/bibliography/references.bib"
-	"~/Documents/Artificial_Intelligence/references.bib"))
+        "~/Documents/Artificial_Intelligence/references.bib"))
 #+END_SRC
 
 Not quite sure the differences between these and the =reftex-default-bibliography= variable.
