@@ -761,6 +761,30 @@ Redefine =evil-ex-commands= to close buffers instead of the frame (Emacs windows
 (evil-ex-define-cmd "wq" 'jh/evil-save-and-close-buffer)
 #+END_SRC
 
+** Evil Search
+
+Make evil-search similar to Vim's search. 
+Issue: 
+1. Highlight does not go away.
+#+BEGIN_SRC emacs-lisp :tangle no
+(evil-select-search-module 'evil-search-module 'evil-search)
+#+END_SRC
+
+Default values. Make it explicit.
+#+BEGIN_SRC emacs-lisp
+(setq evil-search-wrap t
+      evil-regexp-search t)
+#+END_SRC
+
+To show (current match/total matches) info in the mode-line using evil-search-forward.
+#+BEGIN_SRC emacs-lisp
+(require-package 'evil-anzu)
+#+END_SRC
+
+References:
+1. https://github.com/syohex/emacs-anzu
+2. https://stackoverflow.com/a/42371439
+
 ** Evil-Sentence
 
 Use evil-sentence to operate on a text sentence object.
@@ -810,16 +834,6 @@ Problem: evil-surround-change inserts unwanted spaces. E.g. it changes (this-for
  ?\] '("[ " . " ]")
  ?\} '("{ " . " }"))
 #+END_SRC
-
-** Evil-Anzu
-
-To show (current match/total matches) info in the mode-line using evil-search-forward.
-#+BEGIN_SRC emacs-lisp
-(require-package 'evil-anzu)
-#+END_SRC
-
-References:
-1. https://github.com/syohex/emacs-anzu
 
 ** Evil-Numbers
 
