@@ -2851,8 +2851,8 @@ Start =elfeed= in =evil-emacs-mode=.
 (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)
 #+END_SRC
 
-Play video directly from the URL of a feed [fn:12]. (With a little modification to play "unlimited" resolution by default.
-#+BEGIN_SRC emacs-lisp
+[Disable] Play video directly from the URL of a feed [fn:12]. (With a little modification to play "unlimited" resolution by default.
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun elfeed-play-with-mpv ()
   "Play entry link with mpv."
   (interactive)
