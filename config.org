@@ -270,9 +270,7 @@ Taken from Purcell.
               (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
 #+END_SRC
 
-* Utility Code
-
-** GC Tweaks
+* GC Tweaks
 
 Emacs GC optimisation.
 
