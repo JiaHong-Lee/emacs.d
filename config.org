@@ -236,7 +236,11 @@ I feel like wanting a different font for coding. Reference: https://www.emacswik
   (buffer-face-set '(:family "IBM Plex Mono")))
 
 (add-hook 'prog-mode-hook 'jh/my-buffer-face-mode-fixed)
-(diminish 'buffer-face-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'diminish
+  (diminish 'buffer-face-mode))
 #+END_SRC
 
 ** Display Relative Line Numbers
@@ -600,6 +604,9 @@ References:
 Found this package from Purcell's config.
 #+BEGIN_SRC emacs-lisp
 (require-package 'aggressive-indent)
+(diminish 'aggressive-indent-mode)
+#+END_SRC
+
 #+END_SRC
 
 * Enable Ivy Mode
