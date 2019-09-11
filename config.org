@@ -3575,4 +3575,3 @@ Sometimes I would have to read HTML files. Not to read its code, but its code. S
 
 [fn:2] https://emacsredux.com/blog/2013/05/04/rename-file-and-buffer/
 
-[fn:1] https://www.reddit.com/r/emacs/comments/99e49n/displaylinenumbersmode_relative_line_numbers/e4n0271
