@@ -2946,7 +2946,7 @@ Use curl to fetch feed. This will be faster.
 
 #+BEGIN_SRC emacs-lisp
 ;; Source: https://emacs.stackexchange.com/a/2441
-(defun elfeed-mark-all-as-read()
+(defun jh/elfeed-mark-all-as-read()
   "Mark all messages as read."
   (interactive)
   (mark-whole-buffer)
