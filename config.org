@@ -2042,12 +2042,21 @@ Map <RET> to a key to show all options. By default, pressing <RET> does nothing,
 
 * Magit -- Git Client
 
+** Magit 
+
 #+BEGIN_SRC emacs-lisp
 (require-package 'magit)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (fullframe magit-status magit-mode-quit-window)
+#+END_SRC
+
+** Forge -- Working with GitHub and GitLab
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'magit
+  (require-package 'forge))
 #+END_SRC
 
 * Eglot -- LSP Client
