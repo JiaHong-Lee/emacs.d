@@ -1523,6 +1523,12 @@ sudo apt install freetds-bin unixodbc
   (add-hook hook 'yas-minor-mode))
 #+END_SRC
 
+* GNU Global
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'ggtags)
+#+END_SRC
+
 * Org Literate Programming
 
 List the supported language for org-babel.
