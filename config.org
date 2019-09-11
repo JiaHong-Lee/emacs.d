@@ -309,6 +309,19 @@ Combine two characters into one composed character. Taken from Purcell.
 (add-hook 'after-init-hook 'global-prettify-symbols-mode)
 #+END_SRC
 
+** 80% Width
+
+Center align content for better reading experience. Set-face-attribute is needed to remove the grey background colour.
+#+BEGIN_SRC emacs-lisp
+(defun jh/centre-align-buffer-content ()
+  "Set the fringe to center align content to 80% width as in CSS."
+  (interactive)
+  (let ((full-width (window-width))
+        (target-width (* .60 (window-width))))
+    (set-fringe-style (round (- full-width target-width)))
+    (set-face-attribute 'fringe nil :background nil)))
+#+END_SRC
+
 * GC Tweaks
 
 Emacs GC optimisation.
