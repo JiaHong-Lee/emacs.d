@@ -627,6 +627,13 @@ A rewrite of ~highlight-symbol~. It highlights all the variables usages in a fil
 References:
 1. https://www.emacswiki.org/emacs/NoTabs
 
+** Auto-Revert
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'autorevert
+  (diminish 'auto-revert-mode))
+#+END_SRC
+
 ** Aggressive Indentation
 
 Found this package from Purcell's config.
@@ -1737,6 +1744,11 @@ In Ubuntu, set org-babel to run =python3= by default.
 Enable highlight indentation globally.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'python-mode-hook 'highlight-indentation-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'highlight-indentation
+  (diminish 'highlight-indentation-mode))
 #+END_SRC
 
 ** Pip-mode
