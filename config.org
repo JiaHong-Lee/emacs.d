@@ -238,6 +238,17 @@ I feel like wanting a different font for coding. Reference: https://www.emacswik
 (add-hook 'prog-mode-hook 'jh/toggle-coding-face-mode)
 #+END_SRC
 
+I feel like wanting another font for reading. 
+#+BEGIN_SRC emacs-lisp :tangle no
+(defun jh/toggle-reading-face-mode ()
+  "Sets a distinct font for plain reading mode, e.g. Info."
+  (interactive)
+  (buffer-face-set '(:family "Montserrat")))
+
+(dolist (hook '(Info-mode-hook))
+  (add-hook hook 'jh/toggle-reading-face-mode))
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'diminish
   (diminish 'buffer-face-mode))
