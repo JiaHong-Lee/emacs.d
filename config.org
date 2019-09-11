@@ -230,12 +230,12 @@ Override the default font in Emacs to using Overpass Mono developed by Redhat [f
 
 I feel like wanting a different font for coding. Reference: https://www.emacswiki.org/emacs/FacesPerBuffer.
 #+BEGIN_SRC emacs-lisp
-(defun jh/my-buffer-face-mode-fixed ()
+(defun jh/toggle-coding-face-mode ()
   "Sets a fixed width (monospace) font in current buffer"
   (interactive)
   (buffer-face-set '(:family "IBM Plex Mono")))
 
-(add-hook 'prog-mode-hook 'jh/my-buffer-face-mode-fixed)
+(add-hook 'prog-mode-hook 'jh/toggle-coding-face-mode)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
