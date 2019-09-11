@@ -251,7 +251,8 @@ I feel like wanting another font for reading.
 
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'diminish
-  (diminish 'buffer-face-mode))
+  (with-eval-after-load 'face-remap
+    (diminish 'buffer-face-mode)))
 #+END_SRC
 
 ** Display Relative Line Numbers
