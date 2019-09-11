@@ -257,18 +257,23 @@ I feel like wanting another font for reading.
 
 ** Display Relative Line Numbers
 
-Get the code from the web [fn:1].
+Display relative line numbers. Reference: https://www.reddit.com/r/emacs/comments/99e49n/displaylinenumbersmode_relative_line_numbers/e4n0271
 #+BEGIN_SRC emacs-lisp
-;; Display Relative Line Numbers for Easy Vim Editing
-(setq-default display-line-numbers 'visual
-	      display-line-numbers-current-absolute t
-	      display-line-numbers-width 4
-	      display-line-numbers-widen t)
+(defun jh/display-visual-line-numbers ()
+  "Display visual line numbers relatively."
+  (interactive)
+  (display-line-numbers-mode 1)
+  (setq display-line-numbers 'visual
+        display-line-numbers-current-absolute t
+        display-line-numbers-width 4
+        display-line-numbers-widen t))
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp :tangle no
-(add-hook 'text-mode-hook #'display-line-numbers-mode)
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook #'jh/display-visual-line-numbers)
+(add-hook 'prog-mode-hook #'jh/display-visual-line-numbers)
+#+END_SRC
+
 #+END_SRC
 
 Define a function to make it easy to disable page number display inside a mode. It is used in pdf-view-mode.
