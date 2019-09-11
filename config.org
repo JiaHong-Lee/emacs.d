@@ -302,6 +302,13 @@ Taken from Purcell.
               (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
 #+END_SRC
 
+** Prettify Symbol
+
+Combine two characters into one composed character. Taken from Purcell. 
+#+BEGIN_SRC emacs-lisp
+(add-hook 'after-init-hook 'global-prettify-symbols-mode)
+#+END_SRC
+
 * GC Tweaks
 
 Emacs GC optimisation.
