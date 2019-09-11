@@ -274,6 +274,17 @@ Display relative line numbers. Reference: https://www.reddit.com/r/emacs/comment
 (add-hook 'prog-mode-hook #'jh/display-visual-line-numbers)
 #+END_SRC
 
+Prettify line-number faces. Reference: https://www.reddit.com/r/emacs/comments/6noyxa/customizing_the_new_native_line_numbers_in_emacs
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'line-number nil
+                    :font "Hack"
+                    :height 80)
+
+(set-face-attribute 'line-number-current-line nil
+                    :font "Hack"
+                    :height 80
+                    :background "#ffdfaa"
+                    :foreground "#3a3a3a")
 #+END_SRC
 
 Define a function to make it easy to disable page number display inside a mode. It is used in pdf-view-mode.
@@ -2616,12 +2627,6 @@ rotate entire document."
   (pdf-view--rotate :counterclockwise (not arg)))
 #+END_SRC
 
-Disable line number displayed in pdf-view.
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'pdf-view-mode-hook 'display-line-numbers-disable-hook)
-#+END_SRC
-
 ** Reading Info Manual
 
 #+BEGIN_SRC emacs-lisp
@@ -3222,9 +3227,6 @@ To make the line wrapping in VTerm works normally. Reference: https://superuser.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'vterm-mode-hook
 	  (lambda () (setq truncate-lines t)))
-
-(add-hook 'vterm-mode-hook
-	  (lambda () (display-line-numbers-disable-hook)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
