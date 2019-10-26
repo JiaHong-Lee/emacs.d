@@ -1994,6 +1994,12 @@ Derive and define gradle-mode from groovy-mode. Note: This code will be tangled 
 (require 'gradle-mode)
 #+END_SRC
 
+* Enable toml-mode
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'toml-mode)
+#+END_SRC
+
 * Graphviz and PlantUML
 
 ** Graphviz
