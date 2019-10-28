@@ -371,7 +371,7 @@ Add melpa as a package source.
 (require 'package)
 ;; (package-initialize)
 
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 #+END_SRC
 
 Load .el if newer than corresponding .elc.
