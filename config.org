@@ -3138,6 +3138,17 @@ Save my credential inside this self-defined file in .emacs.d dir.
 (evil-set-initial-state 'epa-key-list-mode 'emacs)
 #+END_SRC
 
+* A Mode for Reading
+
+Use writeroom-mode. The package is written for a distraction free writing experience. It turns out that it is also good for reading.
+#+BEGIN_SRC emacs-lisp
+(require-package 'writeroom-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq writeroom-width 0.6)
+#+END_SRC
+
 * Try: Try Out Emacs Packages
 
 Works for packages on =package-archives= and also any elisp file from the Web.
