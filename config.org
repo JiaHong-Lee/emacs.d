@@ -2189,6 +2189,18 @@ Use "pyim" as default input method. Then I can invoke =toggle-input-method= anyw
 (setq default-input-method "pyim")
 #+END_SRC
 
+** Spelling Checker (Flyspell-mode)
+
+Flyspell-mode is a built-in package with Emacs.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook #'flyspell-mode)
+#+END_SRC
+
+I prefer British spelling to US spelling.
+#+BEGIN_SRC emacs-lisp
+(setq ispell-dictionary "british-ise")
+#+END_SRC
+
 * Managing System Services
 
 Managing system services through Emacs.
