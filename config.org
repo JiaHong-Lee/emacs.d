@@ -1901,6 +1901,7 @@ pip install jedi flake8
 
 #+BEGIN_SRC emacs-lisp
 (setq elpy-rpc-python-command "python3")
+(setq elpy-rpc-virtualenv-path 'current)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
