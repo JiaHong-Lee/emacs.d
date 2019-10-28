@@ -1167,6 +1167,12 @@ References:
 3. https://github.com/GuiltyDolphin/org-evil
    Or this. I didn't use this as well.
 
+* Org Sidebar
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'org-sidebar)
+#+END_SRC
+
 * Org Export
 
 Override Org-mode subscript and superscripts default behaviours during export.
