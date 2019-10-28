@@ -755,6 +755,17 @@ Use Ivy with Historian-mode [fn:14]. Historian-mode stores the results of comple
 (ivy-set-actions 'ivy-switch-buffer '(("d" open-file-directory-from-path "directory")))
 #+END_SRC
 
+** Counsel-Search
+
+Add a custom ddg search engine to use familiar ddg search result page.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'counsel-search-engines-alist '(ddgz "https://duckduckgo.com/ac/" "https://duckduckgo.com/?q=" counsel--search-request-data-ddg))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq counsel-search-engine 'ddgz)
+#+END_SRC
+
 * Recentf 
 
 Settings for tracking recent files.
