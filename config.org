@@ -1169,6 +1169,13 @@ References:
 3. https://github.com/GuiltyDolphin/org-evil
    Or this. I didn't use this as well.
 
+** Org-Tags
+
+Reduce the distance for better viewing at half-split windows.
+#+BEGIN_SRC emacs-lisp
+(setq org-tags-column -40)
+#+END_SRC
+
 * Org Sidebar
 
 #+BEGIN_SRC emacs-lisp
