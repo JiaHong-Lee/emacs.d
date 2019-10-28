@@ -1127,6 +1127,11 @@ Override Org-mode subscript and superscripts default behaviours for display. Mix
 (setq org-use-sub-superscripts "{}")
 #+END_SRC
 
+Align all tables automatically upon opening the file. If not, I would have to C-c C-c to hide them.
+#+BEGIN_SRC emacs-lisp
+(setq org-startup-align-all-tables t)
+#+END_SRC
+
 ** Personalisation
 
 Beautifying org-mode.
