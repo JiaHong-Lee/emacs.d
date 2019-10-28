@@ -707,7 +707,7 @@ Issue:
 Remove =counsel-M-x= initial-inputs "^" character [fn:19].
 #+BEGIN_SRC emacs-lisp
 (setq-default ivy-initial-inputs-alist '((man . "^")
-					 (woman . "^")))
+                                         (woman . "^")))
 #+END_SRC
 
 IDO-style directory navigation [fn:13]. 
@@ -3424,6 +3424,13 @@ Make it easy to find and edit this config file.
   "Edit config.org."
   (interactive)
   (find-file "~/.emacs.d/config.org"))
+#+END_SRC
+
+** Temp for counsel-input-alist
+
+#+BEGIN_SRC emacs-lisp
+(setq-default ivy-initial-inputs-alist '((man . "^")
+                                         (woman . "^")))
 #+END_SRC
 
 ** Provide =init-main= variable
