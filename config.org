@@ -2001,6 +2001,16 @@ Derive and define gradle-mode from groovy-mode. Note: This code will be tangled 
 (require 'gradle-mode)
 #+END_SRC
 
+* Enable BNF-Mode
+
+For editing BNF grammars.
+#+BEGIN_SRC emacs-lisp
+(require-package 'bnf-mode)
+#+END_SRC
+
+References:
+1. https://github.com/sergeyklay/bnf-mode
+
 * Enable ini-mode
 
 #+BEGIN_SRC emacs-lisp
