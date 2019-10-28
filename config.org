@@ -1392,6 +1392,29 @@ This is added because during refiling, my Ivy had an issue displaying all the op
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 #+END_SRC
 
+Source: https://stackoverflow.com/a/26683663
+#+BEGIN_SRC emacs-lisp
+(defun jh/org-refile-to-datetree ()
+  "Refile a subtree to a datetree corresponding to it's timestamp."
+  (interactive)
+  (let* ((datetree-date (org-entry-get nil "TIMESTAMP" t))
+         (date (org-date-to-gregorian datetree-date)))
+    (when date
+      (save-excursion
+        (org-cut-subtree)
+        (org-datetree-find-date-create date)
+        (org-narrow-to-subtree)
+        (show-subtree)
+        (org-end-of-subtree t)
+        (newline)
+        (goto-char (point-max))
+        (org-paste-subtree 4)
+        (widen)
+        )
+      )
+    ))
+#+END_SRC
+
 References:
 1. https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
 
