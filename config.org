@@ -2001,6 +2001,16 @@ Derive and define gradle-mode from groovy-mode. Note: This code will be tangled 
 (require 'gradle-mode)
 #+END_SRC
 
+* Enable ini-mode
+
+#+BEGIN_SRC emacs-lisp
+(require 'ini-mode)
+(add-to-list 'auto-mode-alist '("\\.ini\\'" . ini-mode))
+#+END_SRC
+
+References:
+1. https://github.com/Lindydancer/ini-mode
+
 * Enable toml-mode
 
 #+BEGIN_SRC emacs-lisp
