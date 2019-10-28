@@ -2201,6 +2201,16 @@ I prefer British spelling to US spelling.
 (setq ispell-dictionary "british-ise")
 #+END_SRC
 
+** Whitespace Alignment
+
+Source: http://pragmaticemacs.com/emacs/aligning-text/
+#+BEGIN_SRC emacs-lisp
+(defun jh/align-whitespace (start end)
+  "Align columns by whitespace."
+  (interactive "r")
+  (align-regexp start end "\\(\\s-*\\)\\s-" 1 0 t))
+#+END_SRC
+
 * Managing System Services
 
 Managing system services through Emacs.
