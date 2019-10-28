@@ -1259,9 +1259,15 @@ For record purposes:
 (setq org-log-done 'time)
 #+END_SRC
 
+Enforce TODO dependencies. To do A before B, before C, ... 
+#+BEGIN_SRC emacs-lisp
+(setq org-enforce-todo-dependencies t)
+#+END_SRC
+
 References:
 1. https://orgmode.org/manual/Closing-items.html
    Org-log-done variable.
+2. [[info:org#TODO%20dependencies][info:org#TODO dependencies]]
 
 ** Org Time Clocking
 
