@@ -1498,6 +1498,16 @@ Not quite sure the differences between these and the =reftex-default-bibliograph
 (require-package 'org-ref)
 #+END_SRC
 
+** Arxiv
+
+Load the library to enable arxiv org-link support, e.g. arxiv:0801.1144.
+#+BEGIN_SRC emacs-lisp
+(require 'org-ref-arxiv)
+#+END_SRC
+
+References:
+1. http://kitchingroup.cheme.cmu.edu/blog/2015/03/09/Bibtex-Entries-from-Arxiv-org/
+
 * Projectile Mode
 
 A package for project management and navigation.
