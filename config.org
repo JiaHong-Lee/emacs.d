@@ -1210,7 +1210,7 @@ Load all the .txt files into org-agenda.
 
 Start showing the deadline in Org-Agenda for task going to due in 90 days.
 #+BEGIN_SRC emacs-lisp
-(setq org-deadline-warning-days 14)
+(setq org-deadline-warning-days 0)
 #+END_SRC
 
 Customise Org-agenda TODO view.
