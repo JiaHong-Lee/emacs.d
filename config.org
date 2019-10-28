@@ -215,6 +215,13 @@ Dark mode.
 (load-theme 'manoj-dark t)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'custom-theme-load-path (expand-file-name (concat jh/emacs-directory "themes")))
+#+END_SRC
+
+Beautiful Emacs themes:
+1. https://github.com/mauforonda/emacs/blob/master/personal-theme.org
+
 ** Default Font
 
 Express a font name using a Fontconfig pattern [fn:27]:
