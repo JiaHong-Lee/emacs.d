@@ -2,7 +2,7 @@
 #+AUTHOR: Lee Jia Hong
 #+EMAIL:  jia_hong@live.com.my
 #+DATE:   [2018-06-09 Sat]
-#+TAGS:   literate emacs config dotfile
+#+TAGS:   literate emacs config dotfile noexport
 
 * Introduction
 
@@ -2695,196 +2695,6 @@ rotate entire document."
 (add-to-list 'Info-directory-list "~/Info_Files_Manual")
 #+END_SRC
 
-* mu4e -- Email Client
-
-I use =mu4e= to read emails from Emacs. On the desktop, =isync= package needs to be installed.
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-(require 'mu4e)
-#+END_SRC
-
-Open in full frame.
-#+BEGIN_SRC emacs-lisp
-(fullframe mu4e mu4e-quit)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq mu4e-confirm-quit nil)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq mu4e-hide-index-messages t)
-#+END_SRC
-
-Use mu4e as the default Emacs program to send email for =C-x m (compose-mail)= or =report-emacs-bug=.
-#+BEGIN_SRC emacs-lisp
-(setq mail-user-agent 'mu4e-user-agent) ;; use a the default client on emacs
-#+END_SRC
-
-Overrides the default folders to store messages. Note: The folder can be defined dynamically at runtime and changes according to the attributes of an email.
-#+BEGIN_SRC emacs-lisp
-(setq mu4e-maildir	 "~/Mail/outlook") ;; top-level Maildir
-
-(setq mu4e-sent-folder "/Sent" ;; sent messages
-      mu4e-drafts-folder "/Drafts" ;; unfinished messages
-      mu4e-trash-folder "/Deleted" ;; trashed messages
-      mu4e-refile-folder "/Archives") ;; saved messages
-#+END_SRC
-
-Override default to show both sender name and address. This makes me easier to filter sender using search query.
-#+BEGIN_SRC emacs-lisp
-(setq mu4e-view-show-addresses t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'message-send-hook
-  (lambda ()
-    (unless (yes-or-no-p "Sure you want to send this?")
-      (signal 'quit nil))))
-#+END_SRC
-
-Defines the shell command to retrieve mails. Updates mail and index periodically for every N seconds.
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq mu4e-get-mail-command "mbsync -a"
-      mu4e-update-interval (* 10 60)) ;; re-index every 10 minutes
-#+END_SRC
-
-Update using systemd in the background.
-#+BEGIN_SRC emacs-lisp
-(setq mu4e-index-update-in-background nil
-      mu4e-update-interval nil)
-#+END_SRC
-
-Speeds up mu4e updates.
-#+BEGIN_SRC emacs-lisp
-(setq mu4e-index-cleanup nil  ;; don't do a full cleanup check
-      mu4e-index-lazy-check t) ;; don't consider up-to-date dirs
-#+END_SRC
-
-Sending mail from mu4e.
-#+BEGIN_SRC emacs-lisp
-;; Tell message-mode how to send email
-(setq message-send-mail-function 'smtpmail-send-it)
-
-;; Define the mail server to send email
-(setq smtpmail-smtp-server "smtp-mail.outlook.com"
-      smtpmail-smtp-service 587
-      smtpmail-stream-type 'starttls)
-
-;; Kill buffer after sending, instead of burying the buffer away
-(setq message-kill-buffer-on-exit t) 
-#+END_SRC
-
-Queuing email is useful for offline mode.
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq smtpmail-queue-mail nil
-      smtpmail-queue-dir "~/Mail/outlook/queue")
-#+END_SRC
-
-#+BEGIN_SRC shell
-mkdir ~/Mail/outlook/queue
-touch ~/Mail/outlook/queue/.noindex # informs mu not to index this dir
-#+END_SRC
-
-Enable viewing images inline.
-#+BEGIN_SRC emacs-lisp
-;; Enable inline images
-(setq mu4e-view-show-images t)
-;; use imagemagick support
-(when (fboundp 'imagemagick-register-types)
-  (imagemagick-register-types))
-#+END_SRC
-
-Display rich-text messages in HTML. Set =shr-color-visible-luminance-min= to 80 if I am using dark theme.
-#+BEGIN_SRC emacs-lisp
-(setq mu4e-view-prefer-html t)
-
-(add-hook 'mu4e-view-mode-hook
-	  (lambda()
-	    ;; try to emulate some of the eww key-bindings
-	    (local-set-key (kbd "<tab>") 'shr-next-link)
-	    (local-set-key (kbd "<backtab>") 'shr-previous-link)))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; Use fancy non-ASCII char in various places
-(setq mu4e-use-fancy-chars t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; Works better for mbsync
-(setq mu4e-change-filenames-when-moving t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq mu4e-completing-read-function 'ivy-completing-read)
-#+END_SRC
-
-Gets an audio notification when indexing process sees an update.
-#+BEGIN_SRC emacs-lisp :tangle no
-(add-hook 'mu4e-index-updated-hook
-  (defun new-mail-sound ()
-    (shell-command "mpv ~/Sounds/prayer_bell.mp3&")))
-#+END_SRC
-
-Speed up mu4e html rendering speed. It's very slow whenever I open an email.
-Dependency: =w3m=.
-#+BEGIN_SRC emacs-lisp
-;; (setq mu4e-html2text-command "w3m -T text/html")
-
-(setq w3m-default-display-inline-images t)
-
-;; Source: https://etienne.depar.is/emacs.d/mu4e.html
-(setq mu4e-html2text-command "w3m -dump -I utf8 -O utf8 -T text/html -cols 72 -o display_link_number=true -o auto_image=true -o display_image=true -o ignore_null_img_alt=true")
-#+END_SRC
-
-Open unreadable file in browser.
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'mu4e-view-actions
-  '("ViewInBrowser" . mu4e-action-view-in-browser) t)
-#+END_SRC
-
-** Personal Settings
-
-Maildirs that I use frequently; access them with 'j' ('jump').
-#+BEGIN_SRC emacs-lisp
-(setq mu4e-maildir-shortcuts
-      '(("/Inbox" . ?i)
-	("/Archives/2019" . ?a)
-	("/Deleted" . ?d)
-	("/Sent" . ?s)))
-#+END_SRC
-
-Defines mu4e search bookmarks.
-#+BEGIN_SRC emacs-lisp
-(setq mu4e-bookmarks
-  `( ,(make-mu4e-bookmark
-       :name  "Inbox unread messages"
-       :query "maildir:/Inbox AND flag:unread"
-       :key ?u)
-     ,(make-mu4e-bookmark
-       :name "Today's messages"
-       :query "date:today..now"
-       :key ?t)
-     ,(make-mu4e-bookmark
-       :name "Last 7 days"
-       :query "date:7d..now"
-       :key ?w)
-     ,(make-mu4e-bookmark
-       :name "Flagged in INBOX"
-       :query "maildir:\"/INBOX\" and flag:flagged"
-       :key ?f)
-     ,(make-mu4e-bookmark
-       :name  "Inbox messages with pdf attachment"
-       :query "mime:application/pdf and maildir:/Inbox"
-       :key ?a)))
-#+END_SRC
-
-Override the default directory for saving attachements.
-#+BEGIN_SRC emacs-lisp
-(setq mu4e-attachment-dir "~/Downloads")
-#+END_SRC
-
 * Elfeed -- RSS Reader
 
 #+BEGIN_SRC emacs-lisp
@@ -3542,7 +3352,10 @@ Make it easy to find and edit this config file.
 (provide 'init-main)
 #+END_SRC
 
-* Archived                                                         :noexport:
+* Archived                    :noexport:
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 ** Rendering HTML File-Buffer in a Browser
 
 Status: Archived
@@ -3560,6 +3373,196 @@ Sometimes I would have to read HTML files. Not to read its code, but its code. S
              (tramp-tramp-file-p file-name))
         (error "Cannot open tramp file")
       (browse-url (concat "file://" file-name)))))
+#+END_SRC
+
+** mu4e -- Email Client
+
+I use =mu4e= to read emails from Emacs. On the desktop, =isync= package needs to be installed.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+(require 'mu4e)
+#+END_SRC
+
+Open in full frame.
+#+BEGIN_SRC emacs-lisp
+(fullframe mu4e mu4e-quit)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-confirm-quit nil)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-hide-index-messages t)
+#+END_SRC
+
+Use mu4e as the default Emacs program to send email for =C-x m (compose-mail)= or =report-emacs-bug=.
+#+BEGIN_SRC emacs-lisp
+(setq mail-user-agent 'mu4e-user-agent) ;; use a the default client on emacs
+#+END_SRC
+
+Overrides the default folders to store messages. Note: The folder can be defined dynamically at runtime and changes according to the attributes of an email.
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-maildir	 "~/Mail/outlook") ;; top-level Maildir
+
+(setq mu4e-sent-folder "/Sent" ;; sent messages
+      mu4e-drafts-folder "/Drafts" ;; unfinished messages
+      mu4e-trash-folder "/Deleted" ;; trashed messages
+      mu4e-refile-folder "/Archives") ;; saved messages
+#+END_SRC
+
+Override default to show both sender name and address. This makes me easier to filter sender using search query.
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-view-show-addresses t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'message-send-hook
+  (lambda ()
+    (unless (yes-or-no-p "Sure you want to send this?")
+      (signal 'quit nil))))
+#+END_SRC
+
+Defines the shell command to retrieve mails. Updates mail and index periodically for every N seconds.
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq mu4e-get-mail-command "mbsync -a"
+      mu4e-update-interval (* 10 60)) ;; re-index every 10 minutes
+#+END_SRC
+
+Update using systemd in the background.
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-index-update-in-background nil
+      mu4e-update-interval nil)
+#+END_SRC
+
+Speeds up mu4e updates.
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-index-cleanup nil  ;; don't do a full cleanup check
+      mu4e-index-lazy-check t) ;; don't consider up-to-date dirs
+#+END_SRC
+
+Sending mail from mu4e.
+#+BEGIN_SRC emacs-lisp
+;; Tell message-mode how to send email
+(setq message-send-mail-function 'smtpmail-send-it)
+
+;; Define the mail server to send email
+(setq smtpmail-smtp-server "smtp-mail.outlook.com"
+      smtpmail-smtp-service 587
+      smtpmail-stream-type 'starttls)
+
+;; Kill buffer after sending, instead of burying the buffer away
+(setq message-kill-buffer-on-exit t) 
+#+END_SRC
+
+Queuing email is useful for offline mode.
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq smtpmail-queue-mail nil
+      smtpmail-queue-dir "~/Mail/outlook/queue")
+#+END_SRC
+
+#+BEGIN_SRC shell
+mkdir ~/Mail/outlook/queue
+touch ~/Mail/outlook/queue/.noindex # informs mu not to index this dir
+#+END_SRC
+
+Enable viewing images inline.
+#+BEGIN_SRC emacs-lisp
+;; Enable inline images
+(setq mu4e-view-show-images t)
+;; use imagemagick support
+(when (fboundp 'imagemagick-register-types)
+  (imagemagick-register-types))
+#+END_SRC
+
+Display rich-text messages in HTML. Set =shr-color-visible-luminance-min= to 80 if I am using dark theme.
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-view-prefer-html t)
+
+(add-hook 'mu4e-view-mode-hook
+	  (lambda()
+	    ;; try to emulate some of the eww key-bindings
+	    (local-set-key (kbd "<tab>") 'shr-next-link)
+	    (local-set-key (kbd "<backtab>") 'shr-previous-link)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; Use fancy non-ASCII char in various places
+(setq mu4e-use-fancy-chars t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; Works better for mbsync
+(setq mu4e-change-filenames-when-moving t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-completing-read-function 'ivy-completing-read)
+#+END_SRC
+
+Gets an audio notification when indexing process sees an update.
+#+BEGIN_SRC emacs-lisp :tangle no
+(add-hook 'mu4e-index-updated-hook
+  (defun new-mail-sound ()
+    (shell-command "mpv ~/Sounds/prayer_bell.mp3&")))
+#+END_SRC
+
+Speed up mu4e html rendering speed. It's very slow whenever I open an email.
+Dependency: =w3m=.
+#+BEGIN_SRC emacs-lisp
+;; (setq mu4e-html2text-command "w3m -T text/html")
+
+(setq w3m-default-display-inline-images t)
+
+;; Source: https://etienne.depar.is/emacs.d/mu4e.html
+(setq mu4e-html2text-command "w3m -dump -I utf8 -O utf8 -T text/html -cols 72 -o display_link_number=true -o auto_image=true -o display_image=true -o ignore_null_img_alt=true")
+#+END_SRC
+
+Open unreadable file in browser.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'mu4e-view-actions
+  '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+#+END_SRC
+
+*** Personal Settings
+
+Maildirs that I use frequently; access them with 'j' ('jump').
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-maildir-shortcuts
+      '(("/Inbox" . ?i)
+	("/Archives/2019" . ?a)
+	("/Deleted" . ?d)
+	("/Sent" . ?s)))
+#+END_SRC
+
+Defines mu4e search bookmarks.
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-bookmarks
+  `( ,(make-mu4e-bookmark
+       :name  "Inbox unread messages"
+       :query "maildir:/Inbox AND flag:unread"
+       :key ?u)
+     ,(make-mu4e-bookmark
+       :name "Today's messages"
+       :query "date:today..now"
+       :key ?t)
+     ,(make-mu4e-bookmark
+       :name "Last 7 days"
+       :query "date:7d..now"
+       :key ?w)
+     ,(make-mu4e-bookmark
+       :name "Flagged in INBOX"
+       :query "maildir:\"/INBOX\" and flag:flagged"
+       :key ?f)
+     ,(make-mu4e-bookmark
+       :name  "Inbox messages with pdf attachment"
+       :query "mime:application/pdf and maildir:/Inbox"
+       :key ?a)))
+#+END_SRC
+
+Override the default directory for saving attachements.
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-attachment-dir "~/Downloads")
 #+END_SRC
 
 * Footnotes
