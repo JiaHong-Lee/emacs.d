@@ -2168,6 +2168,39 @@ Currently, I have installed Python Language Server [fn:21] and Rust Language Ser
 (add-hook 'rust-mode-hook 'eglot-ensure)
 #+END_SRC
 
+* Terraform
+
+Major mode for terraform configuration file.
+#+BEGIN_SRC emacs-lisp
+(require-package 'terraform-mode)
+#+END_SRC
+
+Company backend for terraform files.
+#+BEGIN_SRC emacs-lisp
+(require-package 'company-terraform)
+(company-terraform-init)
+#+END_SRC
+
+References:
+1. https://github.com/syohex/emacs-terraform-mode
+2. https://github.com/rafalcieslak/emacs-company-terraform
+
+** Archived                  :noexport:
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+
+*** Terraform-doc
+
+[Archived] Lookup docs from Terraform homepage.
+Reason: Replace by dash docs.
+#+BEGIN_SRC emacs-lisp
+(require-package 'terraform-doc)
+#+END_SRC
+
+References: 
+1. https://github.com/TxGVNN/terraform-doc
+
 * Writing Experience
 
 ** Writing in Chinese Pinyin
