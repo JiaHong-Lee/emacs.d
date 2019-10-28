@@ -1027,9 +1027,11 @@ Disable the downcase that company does to the variables.
 (setq company-dabbrev-downcase nil)
 #+END_SRC
 
-Display company autocomplete immediately.
+[Before] Display company autocomplete immediately.
+[Changes] Change to less immediate because it is too laggy?
 #+BEGIN_SRC emacs-lisp
-(setq company-idle-delay 0)
+;; (setq company-idle-delay 0)
+(setq company-idle-delay 0.5)
 #+END_SRC
 
 Use "C-n" or "C-p" to cycle through auto-complete candidates.
