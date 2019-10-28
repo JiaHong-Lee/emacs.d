@@ -6,19 +6,28 @@
 $1
 
 - Training Status:
-$2
+
+
+- Next Improvement Idea:
 
 - Training Environment:
-
+$2
 
 - Dataset:
 $3
+
+Augmentation:
+
+Preprocessing:
+
 - Hyperparameters:
 $4
 - Model Architecture:
 $5
 - Training Artifacts:
-$6
+Tensorboard logdir =
+Final Model Output =
+
 - Results:
 | loss | acc | f1score | precion | recall |
 |------+-----+---------+---------+--------|
@@ -31,4 +40,3 @@ $6
 | Normal_good |             |             |
 
 - Classification Report:
-$0
