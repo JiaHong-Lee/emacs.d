@@ -580,6 +580,19 @@ References:
 1. http://manuel-uberti.github.io//emacs/2019/07/06/memento-mori/
    Where I read about it.
 
+** Sync directory
+
+I used to using Dropbox for syncing. But after I realise that Dropbox limits Free User account to syncing three accounts, I decided to switch to Nextcloud. Here I define the directory for syncing.
+#+BEGIN_SRC emacs-lisp
+(defconst jh/sync-directory "/home/zacque/Dropbox/DropSyncFiles/")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun jh/file-in-sync-directory (file)
+  "Return full path to FILE in the sync-directory as defined by jh/sync-directory."
+  (concat jh/sync-directory file))
+#+END_SRC
+
 * Editing Utilities
 
 This is where I put codes that help with editing in general, no matter what the language be.
@@ -1213,7 +1226,7 @@ Load all the .txt files into org-agenda.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq org-agenda-files '("~/Dropbox/DropSyncFiles/focus.txt"))
+(setq org-agenda-files `(,(jh/file-in-sync-directory "focus.txt")))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangel no
@@ -1331,7 +1344,7 @@ Org sync with Google Calendar.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq org-gcal-file-alist '(("lee.jia.hong.95@gmail.com" . "~/Dropbox/DropSyncFiles/gcal.txt")))
+(setq org-gcal-file-alist `(("lee.jia.hong.95@gmail.com" . ,(jh/file-in-sync-directory "gcal.txt"))))
 #+END_SRC
 
 Sync semi-automatically.
@@ -1350,7 +1363,7 @@ References:
 
 Set the default destination for notes captured.
 #+BEGIN_SRC emacs-lisp
-(setq org-default-notes-file "~/Dropbox/DropSyncFiles/orgcapture.txt")
+(setq org-default-notes-file (jh/file-in-sync-directory "orgcapture.txt"))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1360,14 +1373,15 @@ Set the default destination for notes captured.
 Define org-capture-templates.
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
-      '(("t" "Org-capture for GTD")
+      `(("t" "Org-capture for GTD")
         ("to" "Todo" entry (file+headline "" "Tasks")
          "* TODO %?\n%t\n%i\n\n  " :prepend t)
         ("tt" "Task" entry (file+headline "" "Tasks")
          "* NOW %?\n%t\n%i\n\n " :prepend t :clock-in t :clock-keep t)
         ("i" "An Idea to Explore" entry (file+headline "" "Ideas")
          "* %?\n%t\n%i\n\n ")
-        ("j" "Journal" item (file+olp+datetree "~/Dropbox/DropSyncFiles/journal.txt") "(%<%R>) %?\n%i\n" :empty-lines 1)))
+        ("j" "Journal" item (file+olp+datetree ,(jh/file-in-sync-directory "journal.txt")) "(%<%R>) %?\n%i\n" :empty-lines 1)
+        ("e" "Engineering Journal" item (file+olp+datetree ,(jh/file-in-sync-directory "engineering_journal.txt")) "(%<%R>) %?\n%i\n" :empty-lines 1)))
 #+END_SRC
 
 References:
@@ -3416,10 +3430,10 @@ Open terminal in current file directory [fn:32].
 Note: default-directory is a buffer-local variable that changes with buffers.
 
 #+BEGIN_SRC emacs-lisp
-(defun jh/search-dropbox-files()
-  "Search from all files listed recursively in Dropbox dir."
+(defun jh/search-sync-files()
+  "Search from all files listed recursively in the sync dir."
   (interactive)
-  (counsel-file-jump nil "~/Dropbox/DropSyncFiles")) ;; using counsel-file-jump instead of find file
+  (counsel-file-jump nil jh/sync-directory)) ;; using counsel-file-jump instead of find file
 #+END_SRC
 
 Add a dispatch option to =counsel-file-jump= to jump to the directory.
@@ -3427,12 +3441,12 @@ Add a dispatch option to =counsel-file-jump= to jump to the directory.
 (ivy-set-actions 'counsel-file-jump '(("d" open-file-directory-from-path "directory")))
 #+END_SRC
 
-Directly search the contents of files in Dropbox.
+Directly search the contents of files in sync directory.
 #+BEGIN_SRC emacs-lisp
-(defun jh/search-dropbox-contents()
-  "Search for dropbox contents."
+(defun jh/search-sync-contents()
+  "Search for sync contents."
   (interactive)
-  (counsel-rg nil "~/Dropbox/DropSyncFiles" nil))
+  (counsel-rg nil jh/sync-directory nil))
 #+END_SRC
 
 ** KeyFreq
