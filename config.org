@@ -1348,8 +1348,8 @@ Org's "Getting Training Done".
 Bernt Hansen[fn:30] has a good article on GTD.
 #+BEGIN_SRC emacs-lisp
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-        (type "PROJECT(p)")
+      '((type "PROJECT(p)")
+        (sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
 	    (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
 
 (setq org-todo-keyword-faces
