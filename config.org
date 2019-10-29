@@ -2220,6 +2220,11 @@ Eglot is a Language Server Protocol(LSP) server client. It has default integrati
 (require-package 'eglot)
 #+END_SRC
 
+Automatically shutdown Eglot after the last managed buffer is killed. Checkout: github:joaotavora/eglot#305
+#+BEGIN_SRC emacs-lisp
+(setq eglot-autoshutdown t)
+#+END_SRC
+
 Currently, I have installed Python Language Server [fn:21] and Rust Language Server [fn:22]. Autorun =eglot= when visiting these buffers.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'python-mode-hook 'eglot-ensure)
