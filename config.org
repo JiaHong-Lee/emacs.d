@@ -1194,6 +1194,22 @@ Reduce the distance for better viewing at half-split windows.
 (setq org-tags-column -40)
 #+END_SRC
 
+** PEP Org-Link
+
+This section puts the codes about Python integration with Org-mode.
+
+Add a new org-link type for PEP.
+#+BEGIN_SRC emacs-lisp
+(org-add-link-type "pep" 'org-pep-open)
+
+(defun org-pep-open (number)
+  "Visit pep NUMBER on python.org"
+  (let* ((base-string "https://www.python.org/dev/peps/pep-%04d/")
+         (num (string-to-number number))
+         (final-url (format base-string num)))
+    (browse-url final-url)))
+#+END_SRC
+
 * Org Sidebar
 
 #+BEGIN_SRC emacs-lisp
@@ -1836,22 +1852,6 @@ This web-mode uses =evil-matchit= package to jump between closing and opening HT
 
 #+BEGIN_SRC emacs-lisp
 (require-package 'php-mode)
-#+END_SRC
-
-* PEP Org-Link
-
-This section puts the codes about Python integration with Org-mode.
-
-Add a new org-link type for PEP.
-#+BEGIN_SRC emacs-lisp
-(org-add-link-type "pep" 'org-pep-open)
-
-(defun org-pep-open (number)
-  "Visit pep NUMBER on python.org"
-  (let* ((base-string "https://www.python.org/dev/peps/pep-%04d/")
-         (num (string-to-number number))
-         (final-url (format base-string num)))
-    (browse-url final-url)))
 #+END_SRC
 
 * Enable Python-Mode
