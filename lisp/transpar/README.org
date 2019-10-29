@@ -1,0 +1,17 @@
+#+TITLE:  Transpar
+#+AUTHOR: Lee Jia Hong
+#+EMAIL:  jia_hong@live.com.my
+#+DATE:   [2019-10-20 Sun]
+#+TAGS:   emacs-lisp
+
+* Introduction
+
+Source: https://www.emacswiki.org/emacs/TransposeParagraphAsTable
+
+#+BEGIN_EXAMPLE
+a bbbb c       a    1 4
+1 2       -->  bbbb 2 5
+4 5 6          c    . 6
+#+END_EXAMPLE
+
+Note: Missing elements are replaced with ".".
