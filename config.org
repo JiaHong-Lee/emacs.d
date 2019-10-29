@@ -1299,6 +1299,48 @@ Customise Org-agenda TODO view.
 References:
 1. https://emacs.stackexchange.com/questions/5900/how-can-i-view-the-hierarchy-of-todo-keywords-in-org-agenda-mode
 
+** Setup Reminders
+
+#+BEGIN_SRC emacs-lisp
+(require 'appt)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq appt-message-warning-time 60)
+(setq appt-display-interval 3)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun jh/org-agenda-to-appt ()
+  "Erase all reminders and rebuilt reminders for today from the agenda."
+  (interactive)
+  (setq appt-time-msg-list nil)
+  (org-agenda-to-appt))
+#+END_SRC
+
+Build the reminder after Emacs started.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'after-init-hook 'jh/org-agenda-to-appt)
+#+END_SRC
+
+Rebuild the reminders everytime the agenda is display.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-agenda-finalize-hook 'jh/org-agenda-to-appt 'append)
+#+END_SRC
+
+Activate appointments to get notifications.
+#+BEGIN_SRC emacs-lisp
+(appt-activate t)
+#+END_SRC
+
+Reset the appointments if I leave Emacs running overnight.
+#+BEGIN_SRC emacs-lisp
+(run-at-time "24:01" nil 'jh/org-agenda-to-appt)
+#+END_SRC
+
+References:
+1. http://doc.norang.ca/org-mode.html#Reminders
+
 ** Org GTD
 
 Org's "Getting Training Done".
