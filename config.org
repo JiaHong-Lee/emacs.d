@@ -1326,6 +1326,13 @@ Enforce TODO dependencies. To do A before B, before C, ...
 (setq org-enforce-todo-dependencies t)
 #+END_SRC
 
+Customise priority to allow for four options: #A, #B, #C, #D. #C is the default priority. #D for unimportant tasks. #B for important tasks. #A for top one priority.
+#+BEGIN_SRC emacs-lisp
+(setq org-highest-priority 65)
+(setq org-lowest-priority 68)
+(setq org-default-priority 67)
+#+END_SRC
+
 References:
 1. https://orgmode.org/manual/Closing-items.html
    Org-log-done variable.
