@@ -1348,13 +1348,13 @@ Org's "Getting Training Done".
 Bernt Hansen[fn:30] has a good article on GTD.
 #+BEGIN_SRC emacs-lisp
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NOW(n)" "|" "DONE(d)")
-	    (type "PROJECT(p)")
+      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+        (type "PROJECT(p)")
 	    (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
 
 (setq org-todo-keyword-faces
       '(("TODO" :foreground "red" :weight bold)
-	    ("NOW" :foreground "blue" :weight bold)
+	    ("NEXT" :foreground "blue" :weight bold)
 	    ("DONE" :foreground "forest green" :weight bold)
 	    ("PROJECT" :foreground "DeepPink4" :weight bold)
 	    ("WAITING" :foreground "orange" :weight bold)
@@ -1400,7 +1400,7 @@ Besides Bernt Hansen, Lee Hinman[fn:31] has good config on org-clocking.
 (setq org-clock-out-remove-zero-time-clocks t) 
 
 ;; Set task to a special todo state while clocking it
-(setq org-clock-in-switch-to-state "NOW")
+(setq org-clock-in-switch-to-state "NEXT")
 
 ;; Insert clocking info into the drawer
 (setq org-clock-into-drawer t)
@@ -1474,7 +1474,7 @@ Define org-capture-templates.
         ("to" "Todo" entry (file+headline "" "Tasks")
          "* TODO %?\n%t\n%i\n\n  " :prepend t)
         ("tt" "Task" entry (file+headline "" "Tasks")
-         "* NOW %?\n%t\n%i\n\n " :prepend t :clock-in t :clock-keep t)
+         "* NEXT %?\n%t\n%i\n\n " :prepend t :clock-in t :clock-keep t)
         ("i" "An Idea to Explore" entry (file+headline "" "Ideas")
          "* %?\n%t\n%i\n\n ")
         ("j" "Journal" item (file+olp+datetree ,(jh/file-in-sync-directory "journal.txt")) "(%<%R>) %?\n%i\n" :empty-lines 1)
