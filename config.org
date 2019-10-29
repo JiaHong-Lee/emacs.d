@@ -1230,13 +1230,12 @@ GitHub issues and pull requests share the same numbering system. And "https://gi
   "Visit REPO at GitHub.com."
   (let* ((base-url "https://github.com/%s")
          (issue-url "/issues/%s")
-         (hash-pos (string-match-p "#" REPO))
-         (repo-name (substring REPO nil hash-pos))
-         (issue-number (substring REPO (+ hash-pos 1) nil))) ;; extract without '#'
-    (if hash-pos
-        (browse-url (concat (format base-url repo-name)
-                            (format issue-url issue-number)))
-      (browse-url (format base-url repo-name)))))
+         (hashpos (string-match-p "#" REPO)))
+    (if hashpos
+        (browse-url
+         (concat (format base-url (substring REPO nil hashpos))
+                 (format issue-url (substring REPO (+ hashpos 1) nil)))) ;; extract without '#'
+      (browse-url (format base-url REPO)))))
 #+END_SRC
 
 * Org Sidebar
