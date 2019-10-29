@@ -1355,7 +1355,7 @@ Bernt Hansen[fn:30] has a good article on GTD.
       '(("TODO" :foreground "red" :weight bold)
 	    ("NEXT" :foreground "blue" :weight bold)
 	    ("DONE" :foreground "forest green" :weight bold)
-	    ("WAITING" :foreground "orange" :weight bold)
+	    ("WAITING" :foreground "DeepPink4" :weight bold)
 	    ("HOLD" :foreground "magenta" :weight bold)
 	    ("CANCELLED" :foreground "forest green" :weight bold)))
 #+END_SRC
