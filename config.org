@@ -1259,6 +1259,11 @@ Override Org-mode subscript and superscripts default behaviours during export.
 (global-set-key (kbd "C-c a") 'org-agenda)
 #+END_SRC
 
+Show only today's view. Use the weekly view for weekly review.
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-span 'day)
+#+END_SRC
+
 Override the default to begin a week on Sunday. Source: https://stackoverflow.com/a/32426234
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-start-on-weekday 0)
