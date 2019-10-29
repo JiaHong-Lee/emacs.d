@@ -1838,11 +1838,11 @@ This web-mode uses =evil-matchit= package to jump between closing and opening HT
 (require-package 'php-mode)
 #+END_SRC
 
-* Python-Org
+* PEP Org-Link
 
 This section puts the codes about Python integration with Org-mode.
 
-Add a new hyperlink type for PEP.
+Add a new org-link type for PEP.
 #+BEGIN_SRC emacs-lisp
 (org-add-link-type "pep" 'org-pep-open)
 
