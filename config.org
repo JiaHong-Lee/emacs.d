@@ -1370,14 +1370,6 @@ Define org-capture-templates.
         ("j" "Journal" item (file+olp+datetree "~/Dropbox/DropSyncFiles/journal.txt") "(%<%R>) %?\n%i\n" :empty-lines 1)))
 #+END_SRC
 
-A handy function for convenience.
-#+BEGIN_SRC emacs-lisp
-(defun jh/find-org-capture()
-  "Edit org-capture file"
-  (interactive)
-  (find-file "~/Dropbox/DropSyncFiles/orgcapture.txt"))
-#+END_SRC
-
 References:
 1. https://orgmode.org/manual/Capture-templates.html
    Official docs. Taking it as a starting point.
