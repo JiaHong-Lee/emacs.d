@@ -1210,6 +1210,32 @@ Add a new org-link type for PEP.
     (browse-url final-url)))
 #+END_SRC
 
+** GitHub Org-Link
+
+This section defines the org-link type for GitHub repo and corresponding issues. Org-link format: 
+1. Repo
+   github:<owner>/<repo_name>.
+2. Issues
+   github:<owner>/<repo_name>#XXX, where XXX is the issue number.
+3. Pull requests
+   github:<owner>/<repo_name>#XXX, where XXX is the issue number.
+
+#+BEGIN_SRC emacs-lisp
+(org-add-link-type "github" 'org-github-open)
+
+(defun org-github-open (REPO)
+  "Visit REPO at GitHub.com."
+  (let* ((base-url "https://github.com/%s")
+         (issue-url "/issues/%s")
+         (hash-pos (string-match-p "#" REPO))
+         (repo-name (substring REPO nil hash-pos))
+         (issue-number (substring REPO (+ hash-pos 1) nil))) ;; extract without '#'
+    (if hash-pos
+        (browse-url (concat (format base-url repo-name)
+                            (format issue-url issue-number)))
+      (browse-url (format base-url repo-name)))))
+#+END_SRC
+
 * Org Sidebar
 
 #+BEGIN_SRC emacs-lisp
