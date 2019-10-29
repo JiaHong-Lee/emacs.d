@@ -1390,10 +1390,11 @@ References:
   "Return the list of files currently opened in emacs"
  ) 
 #+END_SRC
+
+Refile to all org buffers, included current buffer and org-agenda-files.
 #+BEGIN_SRC emacs-lisp
 (setq org-refile-targets
-      '((nil :maxlevel . 3)
-	(org-agenda-files :maxlevel . 3)))
+      '((org-buffer-list :maxlevel . 3)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
