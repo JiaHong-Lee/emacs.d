@@ -428,6 +428,8 @@ To prevent custom variable form cluttering the init.el file.
 (require-package 'all-the-icons)
 #+END_SRC
 
+Remember to run (all-the-icons-install-fonts) to install the Resource Fonts. Bear in mind, this will run =fc-cache -f -v= which can take some time to complete.
+
 References:
 1. github:domtronn/all-the-iocns.el
 
