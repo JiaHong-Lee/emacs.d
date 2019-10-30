@@ -1296,8 +1296,29 @@ Customise Org-agenda TODO view.
 	(search . " %i %-12:c")))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-custom-commands
+      '(("a" "Default Agenda View"
+         ((agenda "")
+          (todo "NEXT"
+                ((org-agenda-overriding-header "Next tasks: ")))))
+        ("n" "Agenda and all TODOs"
+         ((agenda #1="")
+          (alltodo #1#)))
+        ("w" "Weekly Review"
+         ((agenda "")))))
+#+END_SRC
+
+#+RESULTS:
+| a | Default Agenda View  | ((agenda ) (todo NEXT ((org-agenda-overriding-header Next tasks: )))) |
+| n | Agenda and all TODOs | ((agenda ) (alltodo ))                                                |
+| w | Weekly Review        | ((agenda ))                                                           |
+
 References:
 1. https://emacs.stackexchange.com/questions/5900/how-can-i-view-the-hierarchy-of-todo-keywords-in-org-agenda-mode
+2. http://www.cachestocaches.com/2016/9/my-workflow-org-agenda/
+   Emacs config: https://github.com/gjstein/emacs.d/blob/master/config/gs-org.el
+3. http://doc.norang.ca/org-mode.html#CustomAgendaViews
 
 ** Setup Reminders
 
