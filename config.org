@@ -114,6 +114,50 @@ Like VIM, make my Emacs files display tildes after EOF [fn:5].
 (set-fringe-bitmap-face 'tilde 'font-lock-function-name-face)
 #+END_SRC
 
+** Setup my Emacs.d Structure
+
+Configure my directory location.
+
+#+BEGIN_SRC emacs-lisp
+(defconst jh/emacs-directory (concat (getenv "HOME") "/.emacs.d/"))
+(defun jh/emacs-subdirectory (d) (expand-file-name d jh/emacs-directory))
+#+END_SRC
+
+Create directory if not already created. Got the code from [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#directory-structure][here]].
+
+#+BEGIN_SRC emacs-lisp
+(let* ((subdirs '("lisp" "backups" "themes"))
+       (fulldirs (mapcar (lambda (d) (jh/emacs-subdirectory d)) subdirs)))
+  (dolist (dir fulldirs)
+    (when (not (file-exists-p dir))
+      (message "Make directory: %s" dir)
+      (make-directory dir))))
+#+END_SRC
+
+*** Move the Custom Variables into a Dedicated File
+
+To prevent custom variable form cluttering the init.el file.
+#+BEGIN_SRC emacs-lisp
+(defconst custom-file "~/.emacs.d/custom.el")
+(unless (file-exists-p custom-file)
+  (shell-command (concat "touch " custom-file)))
+(setq custom-file custom-file)
+(load custom-file)
+#+END_SRC
+
+*** Define the Backup Directory
+  
+#+BEGIN_SRC emacs-lisp
+;; Sensible Backups
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups"))
+      backup-by-copying t       ; Don't delink hardlinks
+      version-control t         ; Use version numbers on backups
+      delete-old-versions t     ; Automatically delete excess backups
+      kept-new-versions 20      ; Number of newest versions to keep
+      kept-old-versions 5       ; Number of the old versions to keep
+      vc-make-backup-files t)   ; Make backups file even from a version controlled dir
+#+END_SRC
+
 ** Emacs Dashboard as Startup Screen
 
 Use dashboard package as my startup page.
@@ -179,51 +223,6 @@ Setup to have UTF-8 everywhere? To display Chinese fonts in TTY.
   (set-selection-coding-system (if (eq system-type 'windows-nt) 'utf-16-le 'utf-8))
   (prefer-coding-system 'utf-8))
 #+END_SRC
-
-** Setup my Emacs.d Structure
-  
-Configure my directory location.
-
-#+BEGIN_SRC emacs-lisp
-(defconst jh/emacs-directory (concat (getenv "HOME") "/.emacs.d/"))
-(defun jh/emacs-subdirectory (d) (expand-file-name d jh/emacs-directory))
-#+END_SRC
-
-Create directory if not already created. Got the code from [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#directory-structure][here]].
-
-#+BEGIN_SRC emacs-lisp
-(let* ((subdirs '("lisp" "backups" "themes"))
-       (fulldirs (mapcar (lambda (d) (jh/emacs-subdirectory d)) subdirs)))
-  (dolist (dir fulldirs)
-    (when (not (file-exists-p dir))
-      (message "Make directory: %s" dir)
-      (make-directory dir))))
-#+END_SRC
-
-*** Move the Custom Variables into a Dedicated File
-
-To prevent custom variable form cluttering the init.el file.
-#+BEGIN_SRC emacs-lisp
-(defconst custom-file "~/.emacs.d/custom.el")
-(unless (file-exists-p custom-file)
-  (shell-command (concat "touch " custom-file)))
-(setq custom-file custom-file)
-(load custom-file)
-#+END_SRC
-
-*** Define the Backup Directory
-  
-#+BEGIN_SRC emacs-lisp
-;; Sensible Backups
-(setq backup-directory-alist '(("." . "~/.emacs.d/backups"))
-      backup-by-copying t       ; Don't delink hardlinks
-      version-control t         ; Use version numbers on backups
-      delete-old-versions t     ; Automatically delete excess backups
-      kept-new-versions 20      ; Number of newest versions to keep
-      kept-old-versions 5       ; Number of the old versions to keep
-      vc-make-backup-files t)   ; Make backups file even from a version controlled dir
-#+END_SRC
-
 ** Better buffer name conflict resolution
 
 =uniquify= package provides a better way to resolve buffer name conflicts to the default way. Yet defer its loading since I won't often open files with identical names.
