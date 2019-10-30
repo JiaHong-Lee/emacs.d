@@ -422,6 +422,15 @@ To prevent custom variable form cluttering the init.el file.
       vc-make-backup-files t)   ; Make backups file even from a version controlled dir
 #+END_SRC
 
+** All-the-icons
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'all-the-icons)
+#+END_SRC
+
+References:
+1. github:domtronn/all-the-iocns.el
+
 ** Emacs Dashboard as Startup Screen
 
 Use dashboard package as my startup page.
@@ -461,7 +470,6 @@ Replace the ugly Emacs logo with Z(acque) logo.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'all-the-icons)
 (setq dashboard-set-file-icons nil)
 (setq dashboard-set-heading-icons nil)
 #+END_SRC
