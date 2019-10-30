@@ -1145,6 +1145,11 @@ Align all tables automatically upon opening the file. If not, I would have to C-
 (setq org-startup-align-all-tables t)
 #+END_SRC
 
+Open org-file with inline images shown automatically.
+#+BEGIN_SRC emacs-lisp
+(setq org-startup-with-inline-images t)
+#+END_SRC
+
 ** Personalisation
 
 Beautifying org-mode.
