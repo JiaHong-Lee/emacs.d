@@ -114,11 +114,46 @@ Like VIM, make my Emacs files display tildes after EOF [fn:5].
 (set-fringe-bitmap-face 'tilde 'font-lock-function-name-face)
 #+END_SRC
 
-Customise Emacs startup page. This is useful to kick start my day.
+** Emacs Dashboard as Startup Screen
+
+Use dashboard package as my startup page.
+#+BEGIN_SRC emacs-lisp
+(require 'dashboard)
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq initial-buffer-choice "~/focus.txt")
+(dashboard-setup-startup-hook)
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun jh/goto-dashboard-buffer ()
+  "Switch to *dashboard* buffer."
+  (get-buffer "*dashboard*"))
+
+(setq initial-buffer-choice 'jh/goto-dashboard-buffer)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq dashboard-startup-banner (jh/emacs-subdirectory "images/startup-logo/z_yellow_bold.gif"))
+#+END_SRC
+
+Use key bindings that makes sense to me.
+#+BEGIN_SRC emacs-lisp
+(define-key 'dashboard-mode-map (kbd "j") #'widget-forward)
+(define-key 'dashboard-mode-map (kbd "k") #'widget-backward)
+(define-key 'dashboard-mode-map (kbd "<tab>") #'dashboard-next-section)
+(define-key 'dashboard-mode-map (kbd "TAB") #'dashboard-next-section)
+(define-key 'dashboard-mode-map (kbd "<backtab>") #'dashboard-previous-section)
+(define-key 'dashboard-mode-map (kbd "S-TAB") #'dashboard-previous-section)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'evil
+  (evil-set-initial-state 'dashboard-mode 'emacs))
+#+END_SRC
+
+References:
+1. https://github.com/emacs-dashboard/emacs-dashboard
 
 ** UTF-8 Everywhere
 
