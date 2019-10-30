@@ -183,12 +183,12 @@ Use dashboard package as my startup page.
 
 Use key bindings that makes sense to me.
 #+BEGIN_SRC emacs-lisp
-(define-key 'dashboard-mode-map (kbd "j") #'widget-forward)
-(define-key 'dashboard-mode-map (kbd "k") #'widget-backward)
-(define-key 'dashboard-mode-map (kbd "<tab>") #'dashboard-next-section)
-(define-key 'dashboard-mode-map (kbd "TAB") #'dashboard-next-section)
-(define-key 'dashboard-mode-map (kbd "<backtab>") #'dashboard-previous-section)
-(define-key 'dashboard-mode-map (kbd "S-TAB") #'dashboard-previous-section)
+(define-key dashboard-mode-map (kbd "j") #'widget-forward)
+(define-key dashboard-mode-map (kbd "k") #'widget-backward)
+(define-key dashboard-mode-map (kbd "<tab>") #'dashboard-next-section)
+(define-key dashboard-mode-map (kbd "TAB") #'dashboard-next-section)
+(define-key dashboard-mode-map (kbd "<backtab>") #'dashboard-previous-section)
+(define-key dashboard-mode-map (kbd "S-TAB") #'dashboard-previous-section)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
