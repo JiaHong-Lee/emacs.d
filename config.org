@@ -1320,7 +1320,7 @@ References:
    Emacs config: https://github.com/gjstein/emacs.d/blob/master/config/gs-org.el
 3. http://doc.norang.ca/org-mode.html#CustomAgendaViews
 
-** Setup Reminders
+** Org and Appt
 
 #+BEGIN_SRC emacs-lisp
 (require 'appt)
@@ -1328,7 +1328,7 @@ References:
 
 #+BEGIN_SRC emacs-lisp
 (setq appt-message-warning-time 60)
-(setq appt-display-interval 3)
+(setq appt-display-interval 10)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
