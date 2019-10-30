@@ -1791,6 +1791,23 @@ Instead of replace the file content on every tangle, use this to append code to 
 (add-hook 'org-mode-hook #'org-babel-tangle-append)
 #+END_SRC
 
+** ob-async
+
+Run ob-babel asynchronously. I hope this could be the default behaviour?
+#+BEGIN_SRC emacs-lisp
+(require-package 'ob-async)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia"))
+#+END_SRC
+
+Note:
+1. The package does not support :session header-arg for now. See github:astahlman/ob-async#1.
+
+References:
+1. github:astahlman/ob-async
+
 ** Load all babel
 
 List the supported language for org-babel.
