@@ -3899,6 +3899,31 @@ Override the default directory for saving attachements.
 (setq mu4e-attachment-dir "~/Downloads")
 #+END_SRC
 
+** ob-ipython
+
+[Archived] 
+1. There is no instruction on start using it. How to start using it?
+2. The package is out of maintenance. Replaced by package emacs-jupyter.
+#+BEGIN_EXAMPLE
+Traceback (most recent call last):
+  File "/home/zacque/.emacs.d/elpa/ob-ipython-20180224.953/client.py", line 60, in <module>
+    c = create_client(args.conn_file)
+  File "/home/zacque/.emacs.d/elpa/ob-ipython-20180224.953/client.py", line 43, in create_client
+    cf = find_connection_file('emacs-' + name)
+  File "/home/zacque/.local/lib/python3.6/site-packages/jupyter_client/connect.py", line 218, in find_connection_file
+    raise IOError("Could not find %r in %r" % (filename, path))
+OSError: Could not find 'emacs-mtpltlib' in ['.', '/run/user/1000/jupyter']
+#+END_EXAMPLE
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'ob-ipython)
+#+END_SRC
+
+References:
+1. http://kitchingroup.cheme.cmu.edu/blog/2017/01/29/ob-ipython-and-inline-figures-in-org-mode/
+2. http://cachestocaches.com/2018/6/org-literate-programming/
+3. https://github.com/gregsexton/ob-ipython
+
 * Footnotes
 
 [fn:32] http://ergoemacs.org/emacs/emacs_shell_vs_term_vs_ansi-term_vs_eshell.html
