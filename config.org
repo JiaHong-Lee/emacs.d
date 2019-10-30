@@ -177,7 +177,7 @@ Use dashboard package as my startup page.
 (setq initial-buffer-choice 'jh/goto-dashboard-buffer)
 #+END_SRC
 
-Disable package loading init time.
+Disable package loading init time. I don't find it useful.
 #+BEGIN_SRC emacs-lisp
 (setq dashboard-set-init-info nil)
 #+END_SRC
