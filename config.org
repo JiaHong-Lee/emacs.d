@@ -1808,6 +1808,12 @@ Note:
 References:
 1. github:astahlman/ob-async
 
+** emacs-jupyter
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'jupyter)
+#+END_SRC
+
 ** Load all babel
 
 List the supported language for org-babel.
