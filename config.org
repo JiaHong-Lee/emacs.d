@@ -476,6 +476,10 @@ Replace the ugly Emacs logo with Z(acque) logo.
 (setq dashboard-set-heading-icons nil)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(setq dashboard-center-content t)
+#+END_SRC
+
 Use key bindings that makes sense to me.
 #+BEGIN_SRC emacs-lisp
 (define-key dashboard-mode-map (kbd "j") #'widget-forward)
