@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: jupyter-python-org-src-block
+# key: <jp
+# --
+
+#+BEGIN_SRC jupyter-python :session $1 :async ${2:yes} :file $3
+$0
+#+END_SRC
