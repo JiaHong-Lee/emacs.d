@@ -472,7 +472,7 @@ Replace the ugly Emacs logo with Z(acque) logo.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq dashboard-set-file-icons nil)
+(setq dashboard-set-file-icons t)
 (setq dashboard-set-heading-icons nil)
 #+END_SRC
 
