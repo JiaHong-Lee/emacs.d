@@ -1355,6 +1355,35 @@ Override Org-mode subscript and superscripts default behaviours during export.
 
 * Org GTD
 
+** Organise My Life Into Org Files
+
+Tasks are separated into logical groupings/projects. For large groupings/projects, separate org files are used to store the tasks. Subdirectories are used for collections of files for multiple projects that belong together.
+
+For non-work related tasks:
+
+| Filename | Description                                |
+|----------+--------------------------------------------|
+| todo.txt | Personal tasks and things to keep track of |
+
+For org capture notes and tasks:
+
+| Filename   | Description           |
+|------------+-----------------------|
+| refile.txt | Captured tasks bucket |
+
+For work-related org-files to keep business notes:
+
+| Filename                | Description                      |
+|-------------------------+----------------------------------|
+| bigdata.txt             | Big Data course notes            |
+| datamining.txt          | Data Mining course notes         |
+| bigdata_assignment1.txt | Assignment 1 for Big Data course |
+
+By separating tasks into files, I can add/drop org files according to my needs to keep only what is important visible in agenda views.
+
+References:
+1. http://doc.norang.ca/org-mode.html
+
 ** Org Agenda
 
 #+BEGIN_SRC emacs-lisp
