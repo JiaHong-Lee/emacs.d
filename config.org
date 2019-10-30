@@ -171,8 +171,11 @@ Use dashboard package as my startup page.
 
 #+BEGIN_SRC emacs-lisp
 (defun jh/goto-dashboard-buffer ()
-  "Switch to *dashboard* buffer."
-  (get-buffer "*dashboard*"))
+  "Switch to *dashboard* buffer. Create one if the buffer does not exist."
+  (interactive)
+  (get-buffer-create "*dashboard*")
+  (set-buffer "*dashboard*")
+  (dashboard-refresh-buffer))
 
 (setq initial-buffer-choice 'jh/goto-dashboard-buffer)
 #+END_SRC
