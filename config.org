@@ -480,6 +480,11 @@ Replace the ugly Emacs logo with Z(acque) logo.
 (setq dashboard-center-content t)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(setq dashboard-footer "\"Look, Simba. Everything the light touches is our Kingdom.\"")
+(setq dashboard-footer-icon "")
+#+END_SRC
+
 Use key bindings that makes sense to me.
 #+BEGIN_SRC emacs-lisp
 (define-key dashboard-mode-map (kbd "j") #'widget-forward)
