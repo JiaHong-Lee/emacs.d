@@ -6,7 +6,7 @@
 #+AUTHOR: Lee Jia Hong
 #+EMAIL:  jia_hong@live.com.my
 #+DATE:   `(let ((x (org-insert-time-stamp nil nil t))))`
-#+TAGS:   $2
+#+KEYWORDS:   $2
 
 * Introduction
 
