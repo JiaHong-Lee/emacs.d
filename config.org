@@ -1753,32 +1753,6 @@ sudo apt install freetds-bin unixodbc
 (require-package 'ggtags)
 #+END_SRC
 
-* Org Literate Programming
-
-List the supported language for org-babel.
-#+BEGIN_SRC emacs-lisp
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((R . t)
-   (ditaa . t)
-   (dot . t)
-   (emacs-lisp . t)
-   (gnuplot . t)
-   (haskell . nil)
-   (latex . t)
-   (ledger . t)
-   (ocaml . nil)
-   (octave . t)
-   (plantuml . t)
-   (python . t)
-   (ruby . t)
-   (screen . nil)
-   (shell . t)
-   (sql . nil)
-   (sqlite . t)
-   (scheme . t)
-   (C . t)))
-#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (setq org-confirm-babel-evaluate nil)
@@ -1814,6 +1788,34 @@ Instead of replace the file content on every tangle, use this to append code to 
   (cl-letf (((symbol-function 'delete-file) #'ignore))
     (org-babel-tangle '(4))))
 (add-hook 'org-mode-hook #'org-babel-tangle-append)
+#+END_SRC
+
+** Load all babel
+
+List the supported language for org-babel.
+#+BEGIN_SRC emacs-lisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((R . t)
+   (ditaa . t)
+   (dot . t)
+   (emacs-lisp . t)
+   (gnuplot . t)
+   (haskell . nil)
+   (latex . t)
+   (ledger . t)
+   (ocaml . nil)
+   (octave . t)
+   (plantuml . t)
+   (python . t)
+   (ruby . t)
+   (screen . nil)
+   (shell . t)
+   (sql . nil)
+   (sqlite . t)
+   (scheme . t)
+   (C . t)
+   (jupyter . t))) ;; jupyter should be the last
 #+END_SRC
 
 * Parentheses Fun
