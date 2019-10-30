@@ -74,6 +74,270 @@ The rest is in the config.org file.
 ;;; -*- lexical-binding: t; -*-
 #+END_SRC
 
+* GC Tweaks
+
+Emacs GC optimisation.
+
+[Disabled] Knowing when the GC is running. 
+[Reason] It's annoying to keep seeing the message popping up.
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq garbage-collection-messages t)
+#+END_SRC
+
+Set GC threshold to 1GB.
+#+BEGIN_SRC emacs-lisp
+(setq gc-cons-threshold #x40000000)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defmacro k-time (&rest body)
+  "Measure and return the time it takes evaluating BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (float-time (time-since time))))
+
+;; When idle for 15sec run the GC no matter what.
+(defvar k-gc-timer
+  (run-with-idle-timer 15 t (lambda () (garbage-collect))))
+#+END_SRC
+
+References:
+1. http://akrl.sdf.org/
+   Emacs garbage collection magic hack
+2. https://www.reddit.com/r/emacs/comments/cbyza2/emacs_slight_lag_allocate_more_ram_garbage/
+   Where I found out about the "magic hack".
+
+* Manage Packages and Sources
+** Add Package Source
+
+Add melpa as a package source.
+
+#+BEGIN_SRC emacs-lisp
+(require 'package)
+;; (package-initialize)
+
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+#+END_SRC
+
+Load .el if newer than corresponding .elc.
+#+BEGIN_SRC emacs-lisp
+(setq load-prefer-newer t)
+#+END_SRC
+
+Auto download package info asynchronously on Emacs startup.
+#+BEGIN_SRC emacs-lisp
+(package-refresh-contents t)
+#+END_SRC
+
+Add third-party library from the ./lisp directory. This is especially useful if I clone the library from Github and work on it. Since all .el files reside in one level deep in lisp directory, I will need to add all the subdirectory to the load path.
+#+BEGIN_SRC emacs-lisp
+;; A helper function
+;; Source: https://stackoverflow.com/a/17165074
+(defun my-directory-files (directory &optional full match nosort)
+  "Like `directory-files', but excluding \".\" and \"..\"."
+  (let* ((files (cons nil (directory-files directory full match nosort)))
+         (parent files)
+         (current (cdr files))
+         (exclude (list "." ".."))
+         (file nil))
+    (while (and current exclude)
+      (setq file (car current))
+      (if (not (member file exclude))
+          (setq parent current)
+        (setcdr parent (cdr current))
+        (setq exclude (delete file exclude)))
+      (setq current (cdr current)))
+    (cdr files)))
+#+END_SRC
+
+With the helper function, =(my-directory-files ~/.emacs.d/lisp)= should return a result containing all the directory in lisp as a list. With this, I will only need to loop through the list and add each subdirectory path to the =load-path=.
+
+#+BEGIN_SRC emacs-lisp
+(dolist (subdir (my-directory-files "~/.emacs.d/lisp"))
+  (add-to-list 'load-path (expand-file-name (concat "lisp/" subdir) user-emacs-directory)))
+#+END_SRC
+
+** ELPA Public Key
+
+#+BEGIN_SRC emacs-lisp
+;; Set GPG Directory for ELPA Public Key
+(setq package-gnupghome-dir "~/.gnupg")
+#+END_SRC
+
+** Require-package
+  
+A code orginally taken from Purcell, but now modified to suit my need.
+#+BEGIN_SRC emacs-lisp
+(defun require-package (package)
+  "Require a PACKAGE. Install PACKAGE if not already installed. PACKAGE will be required immediately after installation."
+  (if (package-installed-p package)
+      (require package)
+    (unless package-archive-contents
+      (package-refresh-contents))
+    (package-install package)
+    (require package)))
+#+END_SRC
+
+** External Program Dependencies
+
+As my Emacs is tightly integrated with my OS (Arch Linux/Ubuntu), there are libraries that will not work if the executable is not found.
+
+Check if an executable is installed.
+#+BEGIN_SRC emacs-lisp
+(defun check-executable-is-installed (exe &optional msg)
+  "Check if an executable is installed."
+  (unless (executable-find exe)
+    (message (concat "'" exe "' not found. " msg))))
+#+END_SRC
+
+[TODO] If the executable is not installed, install them at Emacs boot up.
+#+BEGIN_SRC emacs-lisp :tangle no
+
+#+END_SRC
+
+** list-packages
+
+Open list-packages in fullframe.
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'fullframe
+ (fullframe list-packages quit-window))
+#+END_SRC
+
+* Utility Third Library
+
+** Fullframe
+
+Display some windows into "full-screen" mode.
+#+BEGIN_SRC emacs-lisp
+(require-package 'fullframe)
+#+END_SRC
+
+** Page-Break_lines
+
+Display ugly ^L page breaks as tidy horizontal lines.
+#+BEGIN_SRC emacs-lisp
+(require-package 'page-break-lines)
+(global-page-break-lines-mode)
+
+(with-eval-after-load 'diminish ;; diminish library is loaded after this line
+  (diminish 'page-break-lines-mode))
+#+END_SRC
+
+** List-unicode-display
+
+Provides a command which searches for unicode characters by name, and displays a list of matching characters with their names in a buffer.
+#+BEGIN_SRC emacs-lisp
+(require-package 'list-unicode-display)
+#+END_SRC
+
+** Diminish
+
+A useful tool to hide/redefine mode indicator at the mode line.
+#+BEGIN_SRC emacs-lisp
+(require-package 'diminish)
+#+END_SRC
+
+** Wgrep
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'wgrep)
+#+END_SRC
+
+** Ripgrep
+
+rg is an Emacs interface to =ripgrep=. This package interoperates well with =wgrep=. Similar: =deadgrep=.
+#+BEGIN_SRC emacs-lisp
+(require-package 'rg)
+(with-eval-after-load 'evil
+  (evil-set-initial-state 'rg-mode 'emacs))
+#+END_SRC
+
+#+NAME: Ripgrep Package
+#+BEGIN_SRC emacs-lisp
+(require-package 'ripgrep) ;; for integration with projectile.
+#+END_SRC
+
+Use -i for case insensitive.
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'counsel
+  (setq counsel-rg-base-command "rg -i --no-heading --line-number --color never %s"))
+#+END_SRC
+
+References:
+1. https://oremacs.com/2018/03/05/grep-exclude/
+   For counsel-rg-base-command idea.
+2. https://github.com/dajva/rg.el
+
+** Undo-Tree
+
+Advanced undo and redo with =undo-tree=.
+#+BEGIN_SRC emacs-lisp
+(require-package 'undo-tree)
+(diminish 'undo-tree-mode)
+
+;; turn on everywhere
+(global-undo-tree-mode 1)
+#+END_SRC
+
+** Restart-Emacs
+A handy tool to restart emacs, especially when using EXWM.
+#+BEGIN_SRC emacs-lisp
+(require-package 'restart-emacs)
+#+END_SRC
+
+** Mode-Line-Bell
+
+A useful tool to alert from the mode-line.
+#+BEGIN_SRC emacs-lisp
+(require-package 'mode-line-bell)
+#+END_SRC
+
+** Hydra
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'hydra)
+#+END_SRC
+
+* Personal Info
+
+** Name and Email
+
+Add my personal info.
+#+BEGIN_SRC emacs-lisp
+(setq user-full-name    "Lee Jia Hong")
+(setq user-mail-address "jia_hong@live.com.my")
+#+END_SRC
+
+** Emacs-memento-mori
+
+A reminder of mortality. Deep dive into the reflection of life.
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'memento-mori)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq memento-mori-birth-date "1995-10-31")
+(memento-mori-mode)
+#+END_SRC
+
+References:
+1. http://manuel-uberti.github.io//emacs/2019/07/06/memento-mori/
+   Where I read about it.
+
+** Sync directory
+
+I used to using Dropbox for syncing. But after I realise that Dropbox limits Free User account to syncing three accounts, I decided to switch to Nextcloud. Here I define the directory for syncing.
+#+BEGIN_SRC emacs-lisp
+(defconst jh/sync-directory "/home/zacque/Dropbox/DropSyncFiles/")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun jh/file-in-sync-directory (file)
+  "Return full path to FILE in the sync-directory as defined by jh/sync-directory."
+  (concat jh/sync-directory file))
+#+END_SRC
+
 * Personalise & Aesthetic
 
 #+BEGIN_SRC emacs-lisp
@@ -382,270 +646,6 @@ Center align content for better reading experience. Set-face-attribute is needed
         (target-width (* .60 (window-width))))
     (set-fringe-style (round (- full-width target-width)))
     (set-face-attribute 'fringe nil :background nil)))
-#+END_SRC
-
-* GC Tweaks
-
-Emacs GC optimisation.
-
-[Disabled] Knowing when the GC is running. 
-[Reason] It's annoying to keep seeing the message popping up.
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq garbage-collection-messages t)
-#+END_SRC
-
-Set GC threshold to 1GB.
-#+BEGIN_SRC emacs-lisp
-(setq gc-cons-threshold #x40000000)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defmacro k-time (&rest body)
-  "Measure and return the time it takes evaluating BODY."
-  `(let ((time (current-time)))
-     ,@body
-     (float-time (time-since time))))
-
-;; When idle for 15sec run the GC no matter what.
-(defvar k-gc-timer
-  (run-with-idle-timer 15 t (lambda () (garbage-collect))))
-#+END_SRC
-
-References:
-1. http://akrl.sdf.org/
-   Emacs garbage collection magic hack
-2. https://www.reddit.com/r/emacs/comments/cbyza2/emacs_slight_lag_allocate_more_ram_garbage/
-   Where I found out about the "magic hack".
-
-* Manage Packages and Sources
-** Add Package Source
-
-Add melpa as a package source.
-
-#+BEGIN_SRC emacs-lisp
-(require 'package)
-;; (package-initialize)
-
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-#+END_SRC
-
-Load .el if newer than corresponding .elc.
-#+BEGIN_SRC emacs-lisp
-(setq load-prefer-newer t)
-#+END_SRC
-
-Auto download package info asynchronously on Emacs startup.
-#+BEGIN_SRC emacs-lisp
-(package-refresh-contents t)
-#+END_SRC
-
-Add third-party library from the ./lisp directory. This is especially useful if I clone the library from Github and work on it. Since all .el files reside in one level deep in lisp directory, I will need to add all the subdirectory to the load path.
-#+BEGIN_SRC emacs-lisp
-;; A helper function
-;; Source: https://stackoverflow.com/a/17165074
-(defun my-directory-files (directory &optional full match nosort)
-  "Like `directory-files', but excluding \".\" and \"..\"."
-  (let* ((files (cons nil (directory-files directory full match nosort)))
-         (parent files)
-         (current (cdr files))
-         (exclude (list "." ".."))
-         (file nil))
-    (while (and current exclude)
-      (setq file (car current))
-      (if (not (member file exclude))
-          (setq parent current)
-        (setcdr parent (cdr current))
-        (setq exclude (delete file exclude)))
-      (setq current (cdr current)))
-    (cdr files)))
-#+END_SRC
-
-With the helper function, =(my-directory-files ~/.emacs.d/lisp)= should return a result containing all the directory in lisp as a list. With this, I will only need to loop through the list and add each subdirectory path to the =load-path=.
-
-#+BEGIN_SRC emacs-lisp
-(dolist (subdir (my-directory-files "~/.emacs.d/lisp"))
-  (add-to-list 'load-path (expand-file-name (concat "lisp/" subdir) user-emacs-directory)))
-#+END_SRC
-
-** ELPA Public Key
-
-#+BEGIN_SRC emacs-lisp
-;; Set GPG Directory for ELPA Public Key
-(setq package-gnupghome-dir "~/.gnupg")
-#+END_SRC
-
-** Require-package
-  
-A code orginally taken from Purcell, but now modified to suit my need.
-#+BEGIN_SRC emacs-lisp
-(defun require-package (package)
-  "Require a PACKAGE. Install PACKAGE if not already installed. PACKAGE will be required immediately after installation."
-  (if (package-installed-p package)
-      (require package)
-    (unless package-archive-contents
-      (package-refresh-contents))
-    (package-install package)
-    (require package)))
-#+END_SRC
-
-** External Program Dependencies
-
-As my Emacs is tightly integrated with my OS (Arch Linux/Ubuntu), there are libraries that will not work if the executable is not found.
-
-Check if an executable is installed.
-#+BEGIN_SRC emacs-lisp
-(defun check-executable-is-installed (exe &optional msg)
-  "Check if an executable is installed."
-  (unless (executable-find exe)
-    (message (concat "'" exe "' not found. " msg))))
-#+END_SRC
-
-[TODO] If the executable is not installed, install them at Emacs boot up.
-#+BEGIN_SRC emacs-lisp :tangle no
-
-#+END_SRC
-
-** list-packages
-
-Open list-packages in fullframe.
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'fullframe
- (fullframe list-packages quit-window))
-#+END_SRC
-
-* Utility Third Library
-
-** Fullframe
-
-Display some windows into "full-screen" mode.
-#+BEGIN_SRC emacs-lisp
-(require-package 'fullframe)
-#+END_SRC
-
-** Page-Break_lines
-
-Display ugly ^L page breaks as tidy horizontal lines.
-#+BEGIN_SRC emacs-lisp
-(require-package 'page-break-lines)
-(global-page-break-lines-mode)
-
-(with-eval-after-load 'diminish ;; diminish library is loaded after this line
-  (diminish 'page-break-lines-mode))
-#+END_SRC
-
-** List-unicode-display
-
-Provides a command which searches for unicode characters by name, and displays a list of matching characters with their names in a buffer.
-#+BEGIN_SRC emacs-lisp
-(require-package 'list-unicode-display)
-#+END_SRC
-
-** Diminish
-
-A useful tool to hide/redefine mode indicator at the mode line.
-#+BEGIN_SRC emacs-lisp
-(require-package 'diminish)
-#+END_SRC
-
-** Wgrep
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'wgrep)
-#+END_SRC
-
-** Ripgrep
-
-rg is an Emacs interface to =ripgrep=. This package interoperates well with =wgrep=. Similar: =deadgrep=.
-#+BEGIN_SRC emacs-lisp
-(require-package 'rg)
-(with-eval-after-load 'evil
-  (evil-set-initial-state 'rg-mode 'emacs))
-#+END_SRC
-
-#+NAME: Ripgrep Package
-#+BEGIN_SRC emacs-lisp
-(require-package 'ripgrep) ;; for integration with projectile.
-#+END_SRC
-
-Use -i for case insensitive.
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'counsel
-  (setq counsel-rg-base-command "rg -i --no-heading --line-number --color never %s"))
-#+END_SRC
-
-References:
-1. https://oremacs.com/2018/03/05/grep-exclude/
-   For counsel-rg-base-command idea.
-2. https://github.com/dajva/rg.el
-
-** Undo-Tree
-
-Advanced undo and redo with =undo-tree=.
-#+BEGIN_SRC emacs-lisp
-(require-package 'undo-tree)
-(diminish 'undo-tree-mode)
-
-;; turn on everywhere
-(global-undo-tree-mode 1)
-#+END_SRC
-
-** Restart-Emacs
-A handy tool to restart emacs, especially when using EXWM.
-#+BEGIN_SRC emacs-lisp
-(require-package 'restart-emacs)
-#+END_SRC
-
-** Mode-Line-Bell
-
-A useful tool to alert from the mode-line.
-#+BEGIN_SRC emacs-lisp
-(require-package 'mode-line-bell)
-#+END_SRC
-
-** Hydra
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'hydra)
-#+END_SRC
-
-* Personal Info
-
-** Name and Email
-
-Add my personal info.
-#+BEGIN_SRC emacs-lisp
-(setq user-full-name    "Lee Jia Hong")
-(setq user-mail-address "jia_hong@live.com.my")
-#+END_SRC
-
-** Emacs-memento-mori
-
-A reminder of mortality. Deep dive into the reflection of life.
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'memento-mori)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq memento-mori-birth-date "1995-10-31")
-(memento-mori-mode)
-#+END_SRC
-
-References:
-1. http://manuel-uberti.github.io//emacs/2019/07/06/memento-mori/
-   Where I read about it.
-
-** Sync directory
-
-I used to using Dropbox for syncing. But after I realise that Dropbox limits Free User account to syncing three accounts, I decided to switch to Nextcloud. Here I define the directory for syncing.
-#+BEGIN_SRC emacs-lisp
-(defconst jh/sync-directory "/home/zacque/Dropbox/DropSyncFiles/")
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun jh/file-in-sync-directory (file)
-  "Return full path to FILE in the sync-directory as defined by jh/sync-directory."
-  (concat jh/sync-directory file))
 #+END_SRC
 
 * Editing Utilities
