@@ -485,6 +485,27 @@ Replace the ugly Emacs logo with Z(acque) logo.
 (setq dashboard-footer-icon "")
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(setq dashboard-set-navigator t)
+
+(setq dashboard-navigator-buttons
+      `(((,(all-the-icons-octicon "globe" :height 0.8 :v-adjust 0.1)
+          "Homepage" "Browse homepage"
+          (lambda (&rest _) (browse-url "https://ddg.gg")))
+
+         (,(all-the-icons-material "search")
+          "Search" "Search DuckDuckGo"
+          (lambda (&rest _) (counsel-search)))
+
+         (,(all-the-icons-faicon "play" :height 0.8 :v-adjust 0.1)
+          "YouTube" "Browse YouTube homepage"
+          (lambda (&rest _) (browse-url "https://youtube.com")))
+
+         (,(all-the-icons-faicon "rss" :v-adjust -0.1)
+          "Feed" "Browse RSS feeds"
+          (lambda (&rest _) (elfeed))))))
+#+END_SRC
+
 Use key bindings that makes sense to me.
 #+BEGIN_SRC emacs-lisp
 (define-key dashboard-mode-map (kbd "j") #'widget-forward)
