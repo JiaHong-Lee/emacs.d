@@ -180,6 +180,11 @@ Use dashboard package as my startup page.
 #+BEGIN_SRC emacs-lisp
 (setq dashboard-startup-banner (jh/emacs-subdirectory "images/startup-logo/z_yellow_bold.gif"))
 #+BEGIN_SRC emacs-lisp
+(setq dashboard-banner-logo-title
+      (concat "Happy hacking, " (upcase-initials user-login-name) " - Emacs ♥ you!"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 (require-package 'all-the-icons)
 (setq dashboard-set-file-icons nil)
 (setq dashboard-set-heading-icons nil)
