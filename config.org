@@ -921,7 +921,6 @@ Set some built-in modes to launch in emacs-state.
 (cl-loop for (mode . state) in
 	 '((image-mode . emacs)
 	   (eww-mode . emacs)
-	   (help-mode . emacs)
 	   (Info-mode . emacs)
 	   (calendar-mode . emacs)
 	   (process-menu-mode . emacs)
@@ -3402,6 +3401,22 @@ References:
 3. https://www.reddit.com/r/emacs/comments/8ml6na/tip_how_to_make_erc_fun_to_use/
    For future reference.
 4. http://emacslife.com/transcripts/2014-04-07%20Emacs%20NYC%20-%20IRC%20with%20ERC%20-%20Eric%20Collins.html
+
+* Help Mode
+
+#+BEGIN_SRC emacs-lisp
+(require 'help)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'evil
+  (evil-set-initial-state 'help-mode 'emacs))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(define-key help-mode-map (kbd "f") #'scroll-up-command)
+(define-key help-mode-map (kbd "b") #'scroll-down-command)
+#+END_SRC
 
 * Man Mode
 
