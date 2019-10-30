@@ -3403,6 +3403,22 @@ References:
    For future reference.
 4. http://emacslife.com/transcripts/2014-04-07%20Emacs%20NYC%20-%20IRC%20with%20ERC%20-%20Eric%20Collins.html
 
+* Man Mode
+
+#+BEGIN_SRC emacs-lisp
+(require 'man)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'evil
+  (evil-set-initial-state 'Man-mode 'emacs))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(define-key Man-mode-map (kbd "f") #'scroll-up-command)
+(define-key Man-mode-map (kbd "b") #'scroll-down-command)
+#+END_SRC
+
 * Dash Docsets in Emacs
 
 I want to browse dash docsets in Emacs. Now, I am using =counsel-dash=. Check out the homepage [[https://github.com/dash-docs-el/counsel-dash][here]].
