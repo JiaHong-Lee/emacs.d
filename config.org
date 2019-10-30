@@ -509,7 +509,9 @@ Replace the ugly Emacs logo with Z(acque) logo.
 Use key bindings that makes sense to me.
 #+BEGIN_SRC emacs-lisp
 (define-key dashboard-mode-map (kbd "j") #'widget-forward)
+(define-key dashboard-mode-map (kbd "n") #'widget-forward)
 (define-key dashboard-mode-map (kbd "k") #'widget-backward)
+(define-key dashboard-mode-map (kbd "p") #'widget-backward)
 (define-key dashboard-mode-map (kbd "<tab>") #'dashboard-next-section)
 (define-key dashboard-mode-map (kbd "TAB") #'dashboard-next-section)
 (define-key dashboard-mode-map (kbd "<backtab>") #'dashboard-previous-section)
