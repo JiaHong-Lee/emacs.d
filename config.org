@@ -177,7 +177,11 @@ Use dashboard package as my startup page.
 (setq initial-buffer-choice 'jh/goto-dashboard-buffer)
 #+END_SRC
 
+Disable package loading init time.
 #+BEGIN_SRC emacs-lisp
+(setq dashboard-set-init-info nil)
+#+END_SRC
+
 Replace the ugly Emacs logo with Z(acque) logo.
 #+BEGIN_SRC emacs-lisp
 (setq dashboard-startup-banner
