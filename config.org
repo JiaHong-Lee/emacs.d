@@ -178,7 +178,6 @@ Use dashboard package as my startup page.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq dashboard-startup-banner (jh/emacs-subdirectory "images/startup-logo/z_yellow_bold.gif"))
 Replace the ugly Emacs logo with Z(acque) logo.
 #+BEGIN_SRC emacs-lisp
 (setq dashboard-startup-banner
