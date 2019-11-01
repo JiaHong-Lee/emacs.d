@@ -1242,38 +1242,6 @@ Beautifying org-mode.
 (add-hook 'org-mode-hook 'org-bullets-mode)
 #+END_SRC
 
-** Evil for Org-mode
-
-Customising Evil mode for Org-mode. I'm overriding "z-a" to org-cycle because in some cases, especially where the cursor is at a list, z-a will collaspe the entire subtree instead of the list. This behaviour is unexpected.
-#+NAME: evil-org-mode
-#+BEGIN_SRC emacs-lisp
-(defun jh/org-goto-first-child ()
-  "Wrapper function for the original function."
-  (interactive)
-  (org-goto-first-child))
-
-(defun evil-org-mode()
-  "Integrating Evil into Org-mode."
-  (evil-define-key 'normal org-mode-map
-    "gh" 'outline-up-heading ;; or maybe "gu"?
-    "gj" 'outline-next-visible-heading
-    "gk" 'outline-previous-visible-heading
-    "gl" 'jh/org-goto-first-child
-    "za" 'org-cycle))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'org-mode-hook 'evil-org-mode)
-#+END_SRC
-
-References:
-1. https://github.com/edwtjo/evil-org-mode/blob/master/evil-org.el
-   The author defines an evil-org minor-mode. Bu it gives me an idea of simply defining a function and hook it to org-mode.
-2. https://github.com/KNX32542/syndicate
-   I didn't use this. But it might give a good customisation idea.
-3. https://github.com/GuiltyDolphin/org-evil
-   Or this. I didn't use this as well.
-
 ** Org-Tags
 
 Reduce the distance for better viewing at half-split windows.
@@ -1719,6 +1687,38 @@ To export an Org-file into HTML file, install package =htmlize= to export Org fi
 (require-package 'htmlize)
 (setq org-html-htmlize-output-type 'css)
 #+END_SRC
+
+* Org + Evil -- A Match Made in Heaven
+
+Customising Evil mode for Org-mode. I'm overriding "z-a" to org-cycle because in some cases, especially where the cursor is at a list, z-a will collaspe the entire subtree instead of the list. This behaviour is unexpected.
+#+NAME: evil-org-mode
+#+BEGIN_SRC emacs-lisp
+(defun jh/org-goto-first-child ()
+  "Wrapper function for the original function."
+  (interactive)
+  (org-goto-first-child))
+
+(defun evil-org-mode()
+  "Integrating Evil into Org-mode."
+  (evil-define-key 'normal org-mode-map
+    "gh" 'outline-up-heading ;; or maybe "gu"?
+    "gj" 'outline-next-visible-heading
+    "gk" 'outline-previous-visible-heading
+    "gl" 'jh/org-goto-first-child
+    "za" 'org-cycle))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook 'evil-org-mode)
+#+END_SRC
+
+References:
+1. https://github.com/edwtjo/evil-org-mode/blob/master/evil-org.el
+   The author defines an evil-org minor-mode. Bu it gives me an idea of simply defining a function and hook it to org-mode.
+2. https://github.com/KNX32542/syndicate
+   I didn't use this. But it might give a good customisation idea.
+3. https://github.com/GuiltyDolphin/org-evil
+   Or this. I didn't use this as well.
 
 * Emacs Research
 ** Ivy-bibtex
