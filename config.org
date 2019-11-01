@@ -2133,6 +2133,11 @@ Taken from Purcell. This package might prettier elisp expessions output.
 (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode)
 #+END_SRC
 
+Kill the debugger windows on exit.
+#+BEGIN_SRC emacs-lisp
+(setq debugger-bury-or-kill 'kill)
+#+END_SRC
+
 * Enable Geiser Mode
   
 The official website is here [fn:7]. 
