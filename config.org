@@ -1492,9 +1492,7 @@ Reset the appointments if I leave Emacs running overnight.
 References:
 1. http://doc.norang.ca/org-mode.html#Reminders
 
-** Org GTD
-
-Org's "Getting Training Done".
+** Org Tasks
 
 Bernt Hansen[fn:30] has a good article on GTD. The following diagram shows the possible state transitions for a tasks:
 [[file:images/org_task_states.png][Org TODO task states]]
