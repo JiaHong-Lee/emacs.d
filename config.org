@@ -3658,6 +3658,11 @@ Save my credential inside this self-defined file in .emacs.d dir.
 (evil-set-initial-state 'epa-key-list-mode 'emacs)
 #+END_SRC
 
+References:
+1. https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
+2. https://emacs.stackexchange.com/a/32554
+   epg-pinentry-mode
+
 * A Mode for Reading
 
 Use writeroom-mode. The package is written for a distraction free writing experience. It turns out that it is also good for reading.
@@ -4134,6 +4139,18 @@ References:
 1. http://kitchingroup.cheme.cmu.edu/blog/2017/01/29/ob-ipython-and-inline-figures-in-org-mode/
 2. http://cachestocaches.com/2018/6/org-literate-programming/
 3. https://github.com/gregsexton/ob-ipython
+
+** Vim-like End-of-File Trailing Tildes
+
+[Archived] I don't think I really find it to be useful.
+
+Like VIM, make my Emacs files display tildes after EOF [fn:5].
+#+BEGIN_SRC emacs-lisp
+(setq-default indicate-empty-lines t)
+(define-fringe-bitmap 'tilde [0 0 0 113 219 142 0 0] nil nil 'center)
+(setcdr (assq 'empty-line fringe-indicator-alist) 'tilde)
+(set-fringe-bitmap-face 'tilde 'font-lock-function-name-face)
+#+END_SRC
 
 * Footnotes
 
