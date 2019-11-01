@@ -3658,11 +3658,6 @@ Save my credential inside this self-defined file in .emacs.d dir.
 (evil-set-initial-state 'epa-key-list-mode 'emacs)
 #+END_SRC
 
-References:
-1. https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
-2. https://emacs.stackexchange.com/a/32554
-   epg-pinentry-mode
-
 * A Mode for Reading
 
 Use writeroom-mode. The package is written for a distraction free writing experience. It turns out that it is also good for reading.
