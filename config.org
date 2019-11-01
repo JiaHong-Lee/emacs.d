@@ -1520,6 +1520,11 @@ For record purposes:
 (setq org-log-done 'time)
 #+END_SRC
 
+Log state change notes and timestamps into drawer. Avoid cluttering my org entries.
+#+BEGIN_SRC emacs-lisp
+(setq org-log-into-drawer t)
+#+END_SRC
+
 Enforce TODO dependencies. To do A before B, before C, ... 
 #+BEGIN_SRC emacs-lisp
 (setq org-enforce-todo-dependencies t)
