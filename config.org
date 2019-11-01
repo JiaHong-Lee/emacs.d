@@ -369,15 +369,6 @@ Make sure C-v and M-v returns cursor to the same position.
 (setq scroll-preserve-screen-position 'always)
 #+END_SRC
 
-Like VIM, make my Emacs files display tildes after EOF [fn:5].
-
-#+BEGIN_SRC emacs-lisp
-(setq-default indicate-empty-lines t)
-(define-fringe-bitmap 'tilde [0 0 0 113 219 142 0 0] nil nil 'center)
-(setcdr (assq 'empty-line fringe-indicator-alist) 'tilde)
-(set-fringe-bitmap-face 'tilde 'font-lock-function-name-face)
-#+END_SRC
-
 ** Setup my Emacs.d Structure
 
 Configure my directory location.
