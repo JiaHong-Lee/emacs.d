@@ -1307,8 +1307,7 @@ This section defines the org-link type for GitHub repo and corresponding issues.
 3. Pull requests
    github:<owner>/<repo_name>#XXX, where XXX is the issue number.
 
-Note: 
-GitHub issues and pull requests share the same numbering system. And "https://github.com/abc/abc/issues/NNN" will auto-resolve to "https://github.com/abc/abc/pull/NNN" if the issue is a pull request.
+*NOTE:* GitHub issues and pull requests share the same numbering system. And "https://github.com/abc/abc/issues/NNN" will auto-resolve to "https://github.com/abc/abc/pull/NNN" if the issue is a pull request.
 
 #+BEGIN_SRC emacs-lisp
 (org-add-link-type "github" 'org-github-open)
