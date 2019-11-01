@@ -250,6 +250,8 @@ rg is an Emacs interface to =ripgrep=. This package interoperates well with =wgr
 #+NAME: Ripgrep Package
 #+BEGIN_SRC emacs-lisp
 (require-package 'ripgrep) ;; for integration with projectile.
+(with-eval-after-load 'evil
+  (evil-set-initial-state 'ripgrep-search-mode 'emacs))
 #+END_SRC
 
 Use -i for case insensitive.
