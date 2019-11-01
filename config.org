@@ -808,7 +808,7 @@ Issue:
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq ivy-use-virtual-buffers t)
+(setq ivy-use-virtual-buffers t) ;; includes recentf and bookmarks
 (setq enable-recursive-minibuffers t)
 (setq ivy-virtual-abbreviate 'fullpath)
 (setq ivy-count-format "")
