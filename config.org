@@ -324,13 +324,13 @@ References:
 
 I used to using Dropbox for syncing. But after I realise that Dropbox limits Free User account to syncing three accounts, I decided to switch to Nextcloud. Here I define the directory for syncing.
 #+BEGIN_SRC emacs-lisp
-(defconst jh/sync-directory "/home/zacque/Dropbox/DropSyncFiles/")
+(defconst jh/sync-directory "/home/zacque/Dropbox/DropSyncFiles")
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(defun jh/file-in-sync-directory (file)
-  "Return full path to FILE in the sync-directory as defined by jh/sync-directory."
-  (concat jh/sync-directory file))
+(defun jh/file-in-sync-directory (&rest SEQUENCES)
+  "Return full path to FILE in the sync-directory as defined by jh/sync-directory. Extra arguments are concatenated to the path. E.g. (jh/file-in-sync-directory SUB-DIR \"file.org\") returns path to jh/sync-directory+SUB-DIR+file.org."
+  (mapconcat 'identity (push jh/sync-directory SEQUENCES) "/"))
 #+END_SRC
 
 * Personalise & Aesthetic
@@ -1629,7 +1629,7 @@ References:
 
 Set the default destination for notes captured.
 #+BEGIN_SRC emacs-lisp
-(setq org-default-notes-file (jh/file-in-sync-directory "orgcapture.txt"))
+(setq org-default-notes-file (jh/file-in-sync-directory "org" "orgcapture.txt"))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
