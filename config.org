@@ -884,10 +884,10 @@ Settings for tracking recent files.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq-default
- recentf-max-menu-items 1000
- recentf-max-saved-items 1000
- recentf-exclude '("/tmp/" "/ssh:"))
+(with-eval-after-load 'recentf-mode
+  (setq-default recentf-max-menu-items 1000
+                recentf-max-saved-items nil     ;; save the entire list
+                recentf-exclude '("/tmp/" "/ssh:")))
 #+END_SRC
 
 * Enable Evil mode
