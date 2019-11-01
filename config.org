@@ -1405,7 +1405,11 @@ Load all the .txt files into org-agenda.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq org-agenda-files `(,(jh/file-in-sync-directory "focus.txt")))
+(setq org-agenda-files `(,jh/sync-directory))
+
+(dolist (dir '("big_data_analytics_course" "data_mining_course" "fyp_course"
+              "iot_course" "virtual_reality_course"))
+  (add-to-list 'org-agenda-files (jh/file-in-sync-directory dir)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangel no
