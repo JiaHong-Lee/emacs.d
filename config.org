@@ -1723,28 +1723,69 @@ Dependencies:
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(defun jh/outline-next-visible-heading ()
+(defun jh/outline-next-visible-heading (&optional count)
   "Essentially advise the outline-next-visible-heading function."
-  (interactive)
+  (interactive "p")
+  (outline-next-visible-heading 1)
   (org-tree-to-indirect-buffer)
-  (outline-next-visible-heading)
+  (org-display-outline-path))
+
+(defun jh/outline-previous-visible-heading (&optional count)
+  "Essentially advise the outline-previous-visible-heading function."
+  (interactive "p")
+  (outline-previous-visible-heading 1)
+  (org-tree-to-indirect-buffer)
   (org-display-outline-path))
 #+END_SRC
 
+#+RESULTS:
+: jh/outline-previous-visible-heading
+
+#+BEGIN_SRC emacs-lisp
+;; ISSUE: The org-insert-heading does not detect that the cursor is at the beginning of line.
+;; WORKAROUND: Force move the cursor to the beginning of line before inserting a new heading.
+(defun jh/org-insert-heading-into-insert-state (&optional count)
+  "Add a new sibling heading at the position of the current heading, and go into insert state."
+  (interactive "p")
+  (org-beginning-of-line) ;; force to the beginning of line.
+  (org-insert-heading)
+  (evil-insert-state))
+
+(defun jh/org-insert-heading-after-current-into-insert-state (&optional count)
+  "Add a new sibling heading and go into insert state."
+  (interactive "p")
+  (org-beginning-of-line) ;; force to the beginning of line.
+  (org-insert-heading-after-current)
+  (evil-insert-state))
+#+END_SRC
+
+#+RESULTS:
+: jh/org-insert-heading-after-current-into-insert-state
+
 Define all the keys for this "mode".
+For headings:
 #+BEGIN_SRC emacs-lisp
 (define-key evil-reading-state-map (kbd "i") #'evil-normal-state)
 (define-key evil-reading-state-map (kbd "h") #'outline-up-heading)
-(define-key evil-reading-state-map (kbd "j") #'outline-next-visible-heading)
-(define-key evil-reading-state-map (kbd "k") #'outline-previous-visible-heading)
+(define-key evil-reading-state-map (kbd "j") #'jh/outline-next-visible-heading)
+(define-key evil-reading-state-map (kbd "k") #'jh/outline-previous-visible-heading)
 (define-key evil-reading-state-map (kbd "l") #'jh/org-goto-first-child)
 (define-key evil-reading-state-map (kbd "?\t") #'org-cycle)
+;; (define-key evil-reading-state-map (kbd "") #')
+
+(define-key evil-reading-state-map (kbd "o") #'jh/org-insert-heading-after-current-into-insert-state)
+(define-key evil-reading-state-map (kbd "O") #'jh/org-insert-heading-into-insert-state)
+#+END_SRC
+
+#+RESULTS:
+: jh/org-insert-heading-into-insert-state
+
+For screen scrolling:
+#+BEGIN_SRC emacs-lisp
 (define-key evil-reading-state-map (kbd "f") #'evil-scroll-page-down)
 (define-key evil-reading-state-map (kbd "b") #'evil-scroll-page-up)
 (define-key evil-reading-state-map (kbd "<SPC>") #'evil-scroll-page-down)
 (define-key evil-reading-state-map (kbd "<S-SPC>") #'evil-scroll-page-up)
-;; (define-key evil-reading-state-map (kbd "") #')
-;; (define-key evil-reading-state-map (kbd "") #')
 #+END_SRC
 
 For blocks:
@@ -1781,6 +1822,8 @@ References:
    I didn't use this. But it might give a good customisation idea.
 3. https://github.com/GuiltyDolphin/org-evil
    Or this. I didn't use this as well.
+4. https://stackoverflow.com/a/4932922
+   Cursor color.
 
 * Emacs Research
 ** Ivy-bibtex
