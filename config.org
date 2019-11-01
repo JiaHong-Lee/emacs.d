@@ -1688,28 +1688,85 @@ To export an Org-file into HTML file, install package =htmlize= to export Org fi
 (setq org-html-htmlize-output-type 'css)
 #+END_SRC
 
-* Org + Evil -- A Match Made in Heaven
+* Evil's Reading-State for Org-mode
 
-Customising Evil mode for Org-mode. I'm overriding "z-a" to org-cycle because in some cases, especially where the cursor is at a list, z-a will collaspe the entire subtree instead of the list. This behaviour is unexpected.
-#+NAME: evil-org-mode
+Define an Evil's state for easy browsing, reading, and navigating in Org-mode. This serves as a higher level of abstraction over the NORMAL "mode" because like org-speed-key-commands, it offers quick keys to perform actions on the level of trees, subtrees, properties, tags, and org source blocks while the NORMAL "mode" navigates between lines. I think NORMAL "mode" is good for editing but what I want is a "mode" in Org-mode for reading. So I define an Evil state to achieve that.
+#+BEGIN_SRC emacs-lisp
+(evil-define-state reading
+  "A state for reading, easy browsing, and quick navigation."
+  :tag " <R> "
+  :message "-- READING --"
+  :suppress-keymap t
+  (cond
+   ((evil-reading-state-p)
+    (evil-echo "-- READING --"))
+   (t
+    (evil-echo "-- NORMAL --"))))
+#+END_SRC
+
+Dependencies:
+1. ivy
+2. evil
+3. 
+
 #+BEGIN_SRC emacs-lisp
 (defun jh/org-goto-first-child ()
   "Wrapper function for the original function."
   (interactive)
+  (org-show-children) ;; expand tree
   (org-goto-first-child))
-
-(defun evil-org-mode()
-  "Integrating Evil into Org-mode."
-  (evil-define-key 'normal org-mode-map
-    "gh" 'outline-up-heading ;; or maybe "gu"?
-    "gj" 'outline-next-visible-heading
-    "gk" 'outline-previous-visible-heading
-    "gl" 'jh/org-goto-first-child
-    "za" 'org-cycle))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'org-mode-hook 'evil-org-mode)
+(defun jh/outline-next-visible-heading ()
+  "Essentially advise the outline-next-visible-heading function."
+  (interactive)
+  (org-tree-to-indirect-buffer)
+  (outline-next-visible-heading)
+  (org-display-outline-path))
+#+END_SRC
+
+Define all the keys for this "mode".
+#+BEGIN_SRC emacs-lisp
+(define-key evil-reading-state-map (kbd "i") #'evil-normal-state)
+(define-key evil-reading-state-map (kbd "h") #'outline-up-heading)
+(define-key evil-reading-state-map (kbd "j") #'outline-next-visible-heading)
+(define-key evil-reading-state-map (kbd "k") #'outline-previous-visible-heading)
+(define-key evil-reading-state-map (kbd "l") #'jh/org-goto-first-child)
+(define-key evil-reading-state-map (kbd "?\t") #'org-cycle)
+(define-key evil-reading-state-map (kbd "f") #'evil-scroll-page-down)
+(define-key evil-reading-state-map (kbd "b") #'evil-scroll-page-up)
+(define-key evil-reading-state-map (kbd "<SPC>") #'evil-scroll-page-down)
+(define-key evil-reading-state-map (kbd "<S-SPC>") #'evil-scroll-page-up)
+;; (define-key evil-reading-state-map (kbd "") #')
+;; (define-key evil-reading-state-map (kbd "") #')
+#+END_SRC
+
+For blocks:
+#+BEGIN_SRC emacs-lisp
+(define-key evil-reading-state-map (kbd "s") #'org-next-block)
+(define-key evil-reading-state-map (kbd "r") #'org-previous-block)
+(define-key evil-reading-state-map (kbd "'") #'org-edit-special)
+#+END_SRC
+
+For searches/filter:
+#+BEGIN_SRC emacs-lisp
+(define-prefix-command 'evil-reading-search-map)
+(define-key evil-reading-search-map (kbd "//") #'counsel-org-goto)
+(define-key evil-reading-search-map (kbd "/r") #'evil-search-forward)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(define-key evil-reading-state-map (kbd "u") 'undo-tree-undo)
+(define-key evil-reading-state-map (kbd ":") #'evil-ex)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun jh/add-key-to-reading-state ()
+  "A private function to add key to reading state."
+  (evil-define-key 'normal org-mode-map (kbd "gr") #'evil-reading-state))
+
+(add-hook 'org-mode-hook 'jh/add-key-to-reading-state)
 #+END_SRC
 
 References:
