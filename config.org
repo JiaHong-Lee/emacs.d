@@ -133,27 +133,22 @@ Add third-party library from the ./lisp directory. This is especially useful if 
 #+BEGIN_SRC emacs-lisp
 ;; A helper function
 ;; Source: https://stackoverflow.com/a/17165074
-(defun my-directory-files (directory &optional full match nosort)
-  "Like `directory-files', but excluding \".\" and \"..\"."
-  (let* ((files (cons nil (directory-files directory full match nosort)))
-         (parent files)
-         (current (cdr files))
-         (exclude (list "." ".."))
-         (file nil))
-    (while (and current exclude)
-      (setq file (car current))
-      (if (not (member file exclude))
-          (setq parent current)
-        (setcdr parent (cdr current))
-        (setq exclude (delete file exclude)))
-      (setq current (cdr current)))
-    (cdr files)))
+(defun jh/directory-files (directory &optional full match nosort)
+  "Retrieve the list of files and sub-directory in the DIRECTORY. Does not recurse into sub-directories. Like `directory-files' or ls command, but excluding \".\" and \"..\"."
+  (let* ((files (directory-files directory full match nosort))
+         (result files))
+    (if full
+        (progn
+          (setq result (delete (concat directory "/.") result))
+          (setq result (delete (concat directory "/..") result))
+          result)
+      (delete "." (delete ".." result)))))
 #+END_SRC
 
-With the helper function, =(my-directory-files ~/.emacs.d/lisp)= should return a result containing all the directory in lisp as a list. With this, I will only need to loop through the list and add each subdirectory path to the =load-path=.
+With the helper function, =(jh/directory-files ~/.emacs.d/lisp)= should return a result containing all the directory in lisp as a list. With this, I will only need to loop through the list and add each subdirectory path to the =load-path=.
 
 #+BEGIN_SRC emacs-lisp
-(dolist (subdir (my-directory-files "~/.emacs.d/lisp"))
+(dolist (subdir (jh/directory-files "~/.emacs.d/lisp"))
   (add-to-list 'load-path (expand-file-name (concat "lisp/" subdir) user-emacs-directory)))
 #+END_SRC
 
