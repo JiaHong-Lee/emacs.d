@@ -1530,6 +1530,16 @@ References:
 2. [[info:org#TODO%20dependencies][info:org#TODO dependencies]]
 3. http://doc.norang.ca/org-mode.html#TasksAndStates
 
+** Archiving Subtrees
+
+Archiving can keep my main working files clutter-free. It keeps my files contributing to the agenda fairly current. It cleans up my project trees and removes the old tasks that are no longer interesting.
+
+Tasks to archive are listed automatically at the end of agenda. They can have any todo state.
+#+BEGIN_SRC emacs-lisp
+(setq org-archive-mark-done nil)
+(setq org-archive-location "%s_archive::* Archived Tasks")
+#+END_SRC
+
 ** Org Time Clocking
 
 #+BEGIN_SRC emacs-lisp
