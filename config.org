@@ -1339,6 +1339,13 @@ References:
 1. http://doc.norang.ca/org-mode.html
 
 ** Org Agenda
+** Projects and Tasks
+
+Any task with a subtask using a todo keyword is a project. Projects are 'stuck' if they do not have a subtask with a =NEXT= todo state. Projects can have subprojects and they can also be stuck.
+
+References:
+1. http://doc.norang.ca/org-mode.html
+
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c a") 'org-agenda)
