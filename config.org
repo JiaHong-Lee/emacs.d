@@ -3395,7 +3395,7 @@ Open elfeed in fullframe.
 
 Override default search filter to including the =focus= tag.
 #+BEGIN_SRC emacs-lisp
-(setq-default elfeed-search-filter "@6-months-ago +unread +focus")
+(setq-default elfeed-search-filter "@1-week-ago +unread +focus")
 #+END_SRC
 
 Sort from oldest to newest because I am not using RSS to catch the "latest" news. And I am expecting myself to go through all the feeds.
