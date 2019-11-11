@@ -2773,6 +2773,10 @@ Pinyin dictionary for =pyim= package.
 (pyim-basedict-enable)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(setq pyim-dicts `((:name "hugedict" :file ,(jh/emacs-subdirectory "pyim/dict/pyim-bigdict.pyim"))))
+#+END_SRC
+
 Use "pyim" as default input method. Then I can invoke =toggle-input-method= anywhere to type Chinese.
 #+BEGIN_SRC emacs-lisp
 (setq default-input-method "pyim")
