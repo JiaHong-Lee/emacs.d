@@ -2425,6 +2425,15 @@ Not quite sure the differences between these and the =reftex-default-bibliograph
 (require-package 'org-ref)
 #+END_SRC
 
+To open org pdf link with Emacs pdf tools. Reference: https://github.com/jkitchin/org-ref/issues/184#issuecomment-303553448
+#+BEGIN_SRC emacs-lisp
+(setq org-file-apps 
+      '((auto-mode . emacs)
+        ("\\.mm\\'" . default)
+        ("\\.x?html?\\'" . default)
+        ("\\.pdf\\'" . emacs)))
+#+END_SRC
+
 ** Arxiv
 
 Load the library to enable arxiv org-link support, e.g. arxiv:0801.1144.
