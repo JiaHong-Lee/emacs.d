@@ -2425,6 +2425,15 @@ Not quite sure the differences between these and the =reftex-default-bibliograph
 (require-package 'org-ref)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(defun jh/add-bib-to-org-ref ()
+  "Add the current .bib file to org-ref."
+  (interactive)
+  (unless (buffer-file-name)
+    (error "No file is being viewed."))
+  (add-to-list 'org-ref-default-bibliography (buffer-file-name)))
+#+END_SRC
+
 To open org pdf link with Emacs pdf tools. Reference: https://github.com/jkitchin/org-ref/issues/184#issuecomment-303553448
 #+BEGIN_SRC emacs-lisp
 (setq org-file-apps 
@@ -2434,6 +2443,17 @@ To open org pdf link with Emacs pdf tools. Reference: https://github.com/jkitchi
         ("\\.pdf\\'" . emacs)))
 #+END_SRC
 
+To compile LaTeX document with citations:
+#+BEGIN_SRC emacs-lisp
+(setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-latex-logfiles-extensions  '("lof" "lot" "tex" "aux" "idx" "log" "out" "toc" "nav" "snm" "vrb" "dvi" "fdb_latexmk" "blg" "brf" "fls" "entoc" "ps" "spl" "bbl" "pygtex" "pygstyle"))
+#+END_SRC
+
+References:
+1. https://nickgeorge.net/science/org_ref_setup/
 ** Arxiv
 
 Load the library to enable arxiv org-link support, e.g. arxiv:0801.1144.
