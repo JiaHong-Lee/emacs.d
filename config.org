@@ -295,12 +295,48 @@ A useful tool to alert from the mode-line.
 (require-package 'hydra)
 #+END_SRC
 
-** Password-Store
+* Keeping Secrets in Emacs with GnuPG and Auth Sources
+
+Emacs offers to save my passwords when I want to use TRAMP. However, I would like to save it in an encrypted file. Create the file =~/.authinfo.gpg= and give only the current user permission to read-write to it.
+#+BEGIN_SRC shell
+chmod 600 ~/.emacs.d/.authinfo.gpg
+#+END_SRC
+
+Set it to use =gpg= explicitly (it is the default). In some case, I might want to use =gpg2=.
+#+BEGIN_SRC emacs-lisp
+(setq epg-gpg-program "gpg2")
+#+END_SRC
+
+Save my credential inside this self-defined file in .emacs.d dir.
+#+BEGIN_SRC emacs-lisp
+(setq auth-sources '((:source "~/.emacs.d/.authinfo.gpg")))
+#+END_SRC
+
+gpg2 runs the pinentry app for password prompt. Use Emacs for the prompt. 
+#+BEGIN_SRC emacs-lisp
+(setq epg-pinentry-mode 'loopback)
+#+END_SRC
+
+Echo a lot of additional, helpful information to the *Messages* buffer.
+#+BEGIN_SRC emacs-lisp
+(setq auth-source-debug t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'evil
+  (evil-set-initial-state 'epa-key-mode 'emacs)
+  (evil-set-initial-state 'epa-key-list-mode 'emacs))
+#+END_SRC
 
 Managing secrets in Emacs. =password-store= exposes API that can be used to fetch secrets from my local .password-store.
 #+BEGIN_SRC emacs-lisp
 (require-package 'password-store)
 #+END_SRC
+
+References:
+1. https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
+2. https://emacs.stackexchange.com/a/32554
+   epg-pinentry-mode
 
 * Personal Info
 
@@ -3775,43 +3811,6 @@ Exit buffer after exit vterm. Reference: https://github.com/akermu/emacs-libvter
 (add-hook 'vterm-exit-functions (lambda (process)
 				  (kill-buffer)))
 #+END_SRC
-
-* Keeping Secrets in Emacs with GnuPG and Auth Sources
-
-Emacs offers to save my passwords when I want to use TRAMP. However, I would like to save it in an encrypted file. Create the file =~/.authinfo.gpg= and give only the current user permission to read-write to it.
-#+BEGIN_SRC shell
-chmod 600 ~/.emacs.d/.authinfo.gpg
-#+END_SRC
-
-Set it to use =gpg= explicitly (it is the default). In some case, I might want to use =gpg2=.
-#+BEGIN_SRC emacs-lisp
-(setq epg-gpg-program "gpg2")
-#+END_SRC
-
-Save my credential inside this self-defined file in .emacs.d dir.
-#+BEGIN_SRC emacs-lisp
-(setq auth-sources '((:source "~/.emacs.d/.authinfo.gpg")))
-#+END_SRC
-
-gpg2 runs the pinentry app for password prompt. Use Emacs for the prompt. 
-#+BEGIN_SRC emacs-lisp
-(setq epg-pinentry-mode 'loopback)
-#+END_SRC
-
-Echo a lot of additional, helpful information to the *Messages* buffer.
-#+BEGIN_SRC emacs-lisp
-(setq auth-source-debug t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(evil-set-initial-state 'epa-key-mode 'emacs)
-(evil-set-initial-state 'epa-key-list-mode 'emacs)
-#+END_SRC
-
-References:
-1. https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
-2. https://emacs.stackexchange.com/a/32554
-   epg-pinentry-mode
 
 * A Mode for Reading
 
