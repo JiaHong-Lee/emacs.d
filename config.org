@@ -1294,6 +1294,16 @@ Beautifying org-mode.
 (add-hook 'org-mode-hook 'org-bullets-mode)
 #+END_SRC
 
+Use Iosevka Font for Org-mode: https://shreyas.ragavan.co/post/951004ce-add0-4e7e-b6e2-2932e0dee429/
+#+BEGIN_SRC emacs-lisp
+(defun jh/toggle-org-mode-writing-font ()
+  "Sets a special font for Org-mode writing."
+  (interactive)
+  (buffer-face-set '(:family "IosevkaCC")))
+
+(add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-font)
+#+END_SRC
+
 ** Org-Tags
 
 Reduce the distance for better viewing at half-split windows.
