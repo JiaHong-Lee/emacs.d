@@ -928,10 +928,9 @@ Settings for tracking recent files.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'recentf-mode
-  (setq-default recentf-max-menu-items 1000
-                recentf-max-saved-items nil     ;; save the entire list
-                recentf-exclude '("/tmp/" "/ssh:")))
+(setq-default recentf-max-menu-items 1000
+              recentf-max-saved-items nil     ;; save the entire list
+              recentf-exclude '("/tmp/" "/ssh:"))
 #+END_SRC
 
 * Enable Evil mode
@@ -1469,17 +1468,6 @@ Customise Org-agenda TODO view.
          ((agenda "")))))
 #+END_SRC
 
-#+RESULTS:
-| a | Default Agenda View  | ((agenda ) (todo NEXT ((org-agenda-overriding-header Next tasks: )))) |
-| n | Agenda and all TODOs | ((agenda ) (alltodo ))                                                |
-| w | Weekly Review        | ((agenda ))                                                           |
-
-References:
-1. https://emacs.stackexchange.com/questions/5900/how-can-i-view-the-hierarchy-of-todo-keywords-in-org-agenda-mode
-2. http://www.cachestocaches.com/2016/9/my-workflow-org-agenda/
-   Emacs config: https://github.com/gjstein/emacs.d/blob/master/config/gs-org.el
-3. http://doc.norang.ca/org-mode.html#CustomAgendaViews
-
 ** Org and Appt
 
 #+BEGIN_SRC emacs-lisp
@@ -1821,9 +1809,6 @@ Dependencies:
   (org-display-outline-path))
 #+END_SRC
 
-#+RESULTS:
-: jh/outline-previous-visible-heading
-
 #+BEGIN_SRC emacs-lisp
 ;; ISSUE: The org-insert-heading does not detect that the cursor is at the beginning of line.
 ;; WORKAROUND: Force move the cursor to the beginning of line before inserting a new heading.
@@ -1842,9 +1827,6 @@ Dependencies:
   (evil-insert-state))
 #+END_SRC
 
-#+RESULTS:
-: jh/org-insert-heading-after-current-into-insert-state
-
 Define all the keys for this "mode".
 For headings:
 #+BEGIN_SRC emacs-lisp
@@ -1859,9 +1841,6 @@ For headings:
 (define-key evil-reading-state-map (kbd "o") #'jh/org-insert-heading-after-current-into-insert-state)
 (define-key evil-reading-state-map (kbd "O") #'jh/org-insert-heading-into-insert-state)
 #+END_SRC
-
-#+RESULTS:
-: jh/org-insert-heading-into-insert-state
 
 For screen scrolling:
 #+BEGIN_SRC emacs-lisp
