@@ -295,14 +295,21 @@ A useful tool to alert from the mode-line.
 (require-package 'hydra)
 #+END_SRC
 
+** Password-Store
+
+Managing secrets in Emacs. =password-store= exposes API that can be used to fetch secrets from my local .password-store.
+#+BEGIN_SRC emacs-lisp
+(require-package 'password-store)
+#+END_SRC
+
 * Personal Info
 
 ** Name and Email
 
 Add my personal info.
 #+BEGIN_SRC emacs-lisp
-(setq user-full-name    "Lee Jia Hong")
-(setq user-mail-address "jia_hong@live.com.my")
+(setq user-full-name (password-store-get-field "personal-info" "fullname"))
+(setq user-mail-address (password-store-get-field "personal-info" "personal-hotmail"))
 #+END_SRC
 
 ** Emacs-memento-mori
@@ -314,7 +321,7 @@ A reminder of mortality. Deep dive into the reflection of life.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq memento-mori-birth-date "1995-10-31")
+(setq memento-mori-birth-date (password-store-get-field "personal-info" "birthday"))
 (memento-mori-mode)
 #+END_SRC
 
@@ -1592,12 +1599,12 @@ Org sync with Google Calendar.
 
 #+BEGIN_SRC emacs-lisp
 (require 'org-gcal)
-(setq org-gcal-client-id "1029746895727-po1kdfai34alnqhto6jg0f6j6dnkgo5a.apps.googleusercontent.com"
-      org-gcal-client-secret "ihzo8_KchOof7O6I_lkQWy4z")
+(setq org-gcal-client-id (password-store-get-field "api/gcal-client" "client-id")
+      org-gcal-client-secret (password-store-get-field "api/gcal-client" "client-secret"))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq org-gcal-file-alist `(("lee.jia.hong.95@gmail.com" . ,(jh/file-in-sync-directory "gcal.txt"))))
+(setq org-gcal-file-alist `((,(password-store-get-field "personal-info" "personal-gmail") . ,(jh/file-in-sync-directory "org" "gcal.txt"))))
 #+END_SRC
 
 Sync semi-automatically.
