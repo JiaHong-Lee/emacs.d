@@ -3276,7 +3276,6 @@ To complete installation process, activate the package.
 #+BEGIN_SRC emacs-lisp
 (require-package 'pdf-tools)
 (pdf-tools-install)
-(fullframe pdf-view-mode kill-this-buffer)
 #+END_SRC
 
 =pdf-tools= performance tweaks [fn:16].
