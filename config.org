@@ -4303,6 +4303,59 @@ Like VIM, make my Emacs files display tildes after EOF [fn:5].
 (set-fringe-bitmap-face 'tilde 'font-lock-function-name-face)
 #+END_SRC
 
+** Org-Caldav
+
+Note: Package oauth2 is needed for sync to Google cal.
+#+BEGIN_SRC emacs-lisp
+(require-package 'org-caldav)
+(require-package 'oauth2)
+#+END_SRC
+
+Because Org-caldav uses iCalendar under the hood.
+#+BEGIN_SRC emacs-lisp
+(setq org-icalendar-timezone "+08")
+(setq org-icalendar-alarm-time "30")
+(setq org-icalendar-use-deadline '(event-if-not-todo todo-due))
+(setq org-icalendar-use-scheduled '(todo-start))
+(setq org-icalendar-include-sexps t)
+(setq org-icalendar-include-todo 'all)
+#+END_SRC
+
+Org will evaluate code block on export. This will disable it to speed up export to iCalendar format.
+#+SOURCE: https://emacs.stackexchange.com/a/50359
+#+BEGIN_SRC emacs-lisp
+(setq org-export-use-babel nil)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-export-select-tags '("export" "ical"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-icalendar-combined-agenda-file (jh/file-in-sync-directory "org" "org.ics"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-caldav-url 'google)
+(setq org-caldav-oauth2-client-id "**REMOVED**")
+(setq org-caldav-oauth2-client-secret "**REMOVED**")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-caldav-select-tags '("ical"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-caldav-sync-direction 'org->cal)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-caldav-calendars `((
+                              :calendar-id ,(password-store-get-field "personal-info" "personal-gmail")
+                              :files (,(jh/file-in-sync-directory "org" "personal.txt"))
+                              :inbox ,(jh/file-in-sync-directory "org" "google_caldav.org"))))
+#+END_SRC
+
 * Footnotes
 
 [fn:32] http://ergoemacs.org/emacs/emacs_shell_vs_term_vs_ansi-term_vs_eshell.html
