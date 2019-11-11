@@ -721,6 +721,13 @@ Center align content for better reading experience. Set-face-attribute is needed
     (set-face-attribute 'fringe nil :background nil)))
 #+END_SRC
 
+** Calendar Settings
+
+Use the format year/month/day.
+#+BEGIN_SRC emacs-lisp
+(setq calendar-date-style 'iso)
+#+END_SRC
+
 * Editing Utilities
 
 This is where I put codes that help with editing in general, no matter what the language be.
