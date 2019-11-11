@@ -2190,7 +2190,6 @@ Define an Evil's state for easy browsing, reading, and navigating in Org-mode. T
   :tag " <R> "
   :cursor hollow
   :message "-- READING --"
-  :suppress-keymap t
   (cond
    ((evil-reading-state-p)
     (set-cursor-color "gray")
@@ -2218,14 +2217,14 @@ Dependencies:
   "Essentially advise the outline-next-visible-heading function."
   (interactive "p")
   (outline-next-visible-heading 1)
-  (org-tree-to-indirect-buffer)
+  ;; (org-tree-to-indirect-buffer)
   (org-display-outline-path))
 
 (defun jh/outline-previous-visible-heading (&optional count)
   "Essentially advise the outline-previous-visible-heading function."
   (interactive "p")
   (outline-previous-visible-heading 1)
-  (org-tree-to-indirect-buffer)
+  ;; (org-tree-to-indirect-buffer)
   (org-display-outline-path))
 #+END_SRC
 
@@ -2280,9 +2279,13 @@ For blocks:
 For searches/filter:
 #+BEGIN_SRC emacs-lisp
 (define-prefix-command 'evil-reading-search-map)
-(define-key evil-reading-search-map (kbd "//") #'counsel-org-goto)
-(define-key evil-reading-search-map (kbd "/r") #'evil-search-forward)
+(define-key evil-reading-state-map (kbd "/") #'evil-reading-search-map)
+(define-key evil-reading-search-map (kbd "/") #'counsel-org-goto)
+(define-key evil-reading-search-map (kbd "r") #'evil-search-forward)
 #+END_SRC
+
+#+RESULTS:
+: evil-search-forward
 
 #+BEGIN_SRC emacs-lisp
 (define-key evil-reading-state-map (kbd "u") 'undo-tree-undo)
