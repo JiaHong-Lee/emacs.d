@@ -276,6 +276,11 @@ Advanced undo and redo with =undo-tree=.
 (global-undo-tree-mode 1)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'evil
+  (evil-set-initial-state 'undo-tree-visualizer-mode 'emacs))
+#+END_SRC
+
 ** Restart-Emacs
 A handy tool to restart emacs, especially when using EXWM.
 #+BEGIN_SRC emacs-lisp
