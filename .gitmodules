@@ -4,3 +4,6 @@
 [submodule "lisp/counsel-firefox-bookmarks"]
 	path = lisp/counsel-firefox-bookmarks
 	url = https://github.com/tangxinfa/counsel-firefox-bookmarks
+[submodule "evil-visual-mark-mode"]
+	path = lisp/evil-visual-mark-mode
+	url = https://github.com/roman/evil-visual-mark-mode

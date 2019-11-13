@@ -1007,6 +1007,17 @@ Redefine =evil-ex-commands= to close buffers instead of the frame (Emacs windows
 (evil-ex-define-cmd "wq" 'jh/evil-save-and-close-buffer)
 #+END_SRC
 
+** Evil Visual Mark
+
+Display Evil marks in the buffer.
+#+BEGIN_SRC emacs-lisp
+(require 'evil-visual-mark-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'evil-mode-hook 'evil-visual-mark-mode)
+#+END_SRC
+
 ** Evil Search
 
 Make evil-search similar to Vim's search. 
