@@ -955,6 +955,11 @@ Override the default 'j' and 'k' key movements.
 (define-key evil-motion-state-map [remap evil-previous-line] 'evil-previous-visual-line)
 #+END_SRC 
 
+"C-o" is evil-jump-backward. Therefore I set "C-S-o" to jump forward.
+#+BEGIN_SRC emacs-lisp
+(define-key evil-motion-state-map (kbd "C-S-o") 'evil-jump-forward)
+#+END_SRC
+
 Together with the global-subword-mode, evil can detect camelcase word such as CamelCase. =dw= should only delete the word 'Camel'.
 
 #+BEGIN_SRC emacs-lisp
