@@ -2413,6 +2413,11 @@ References:
 (setq org-ref-completion-library 'org-ref-ivy-cite)
 #+END_SRC
 
+This matches the APA citation style that I usually use.
+#+BEGIN_SRC emacs-lisp
+(setq org-ref-default-citation-link "Citep")
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 (setq reftex-default-bibliography
       '("~/Documents/bibliography/references.bib"
