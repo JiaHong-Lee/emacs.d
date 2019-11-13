@@ -828,24 +828,6 @@ Found this package from Purcell's config.
 (diminish 'aggressive-indent-mode)
 #+END_SRC
 
-** Dump Jump
-
-"Jump to definition" package.
-Issue:
-1. Do not work well with evil-jump-back. 
-#+BEGIN_SRC emacs-lisp
-(require-package 'dumb-jump)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq dumb-jump-selector 'ivy)
-(setq dumb-jump-force-searcher 'rg)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq dumb-jump-rg-search-args "--no-heading --color never --pcre2")
-#+END_SRC
-
 * Enable Ivy Mode
 
 #+BEGIN_SRC emacs-lisp
@@ -1047,10 +1029,20 @@ References:
 1. https://github.com/syohex/emacs-anzu
 2. https://stackoverflow.com/a/42371439
 
-** Evil Dumb-Jump
+** Evil Smart-Jump
+
+Use this package to go to definitions by leveraging a series of methods.
+#+BEGIN_SRC emacs-lisp
+(require-package 'smart-jump)
+#+END_SRC
+
+Use the ready made =smart-jumps=.
+#+BEGIN_SRC emacs-lisp
+(smart-jump-setup-default-registers)
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(evil-define-key 'normal 'global (kbd "g d") 'dumb-jump-go)
+(evil-define-key 'normal 'global [remap evil-goto-definition] 'smart-jump-go)
 #+END_SRC
 
 ** Evil-Sentence
@@ -2941,10 +2933,6 @@ These are packages that work well with Elpy:
    #+END_SRC
 
 Error: elpy-use-ipython is deprecated; see https://elpy.readthedocs.io/en/latest/ide.html#interpreter-setup
-
-#+BEGIN_SRC emacs-lisp
-(evil-define-key 'normal python-mode-map [remap evil-goto-definition] 'elpy-goto-definition)
-#+END_SRC
 
 ** Jupyter
 
