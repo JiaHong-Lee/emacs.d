@@ -2910,7 +2910,9 @@ pip install jedi flake8
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'python-mode-hook '(lambda () (elpy-enable)))
+(defun jh/--enable-elpy ()
+  (elpy-enable))
+(add-hook 'python-mode-hook #'jh/--enable-elpy)
 #+END_SRC
 
 These are packages that work well with Elpy:
