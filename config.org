@@ -2569,6 +2569,11 @@ Instead of replace the file content on every tangle, use this to append code to 
 (add-hook 'org-mode-hook #'org-babel-tangle-append)
 #+END_SRC
 
+Auto-display generated image after each execution. This is especially useful for ob-jupyter, ob-ditaa, Graphviz and PlantUML. Source: https://github.com/dzop/emacs-jupyter/issues/178
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+#+END_SRC
+
 ** ob-async
 
 Run ob-babel asynchronously. I hope this could be the default behaviour?
