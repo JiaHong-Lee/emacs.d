@@ -3266,12 +3266,21 @@ Use "pyim" as default input method. Then I can invoke =toggle-input-method= anyw
 
 Flyspell-mode is a built-in package with Emacs.
 #+BEGIN_SRC emacs-lisp
+(require 'flyspell)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 (add-hook 'org-mode-hook #'flyspell-mode)
 #+END_SRC
 
 I prefer British spelling to US spelling.
 #+BEGIN_SRC emacs-lisp
 (setq ispell-dictionary "british-ise")
+#+END_SRC
+
+Remove the default "M-TAB" binding to flyspell-auto-correct-word. Currently, I am using it for pcomplete.
+#+BEGIN_SRC emacs-lisp
+(define-key flyspell-mode-map (kbd "C-M-i") nil)
 #+END_SRC
 
 ** Whitespace Alignment
