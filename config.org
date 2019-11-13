@@ -3096,6 +3096,15 @@ References:
       (url-copy-file url org-plantuml-jar-path))))
 #+END_SRC
 
+** Ditaa
+
+#+BEGIN_SRC emacs-lisp
+(setq org-ditaa-jar-path (jh/emacs-subdirectory "ditaa.jar"))
+#+END_SRC
+
+#+RESULTS:
+: /home/zacque/.emacs.d/ditaa.jar
+
 * Docker -- Containers
 
 Surprisingly, there are Emacs packages that offer a nice integration with Docker to help manage containers. 
