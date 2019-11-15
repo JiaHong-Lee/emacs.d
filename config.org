@@ -1334,8 +1334,7 @@ Use Org-mode for writing journals.
     (if (eq pfx 1)
         (setq cal-date (calendar-current-date))
       (setq cal-date (read)))
-    (org-map-entries (lambda () (when (string-match-p "journal" (org-get-tags-string))
-                             (setq m1 (point-marker)))))
+    (org-map-entries (lambda () (setq m1 (point-marker))) "+journal")
     (goto-char m1)
     (org-datetree-find-date-create cal-date 'subtree-at-point)))
 #+END_SRC
