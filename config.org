@@ -633,16 +633,17 @@ Reference: https://github.com/hick/emacs-chinese
 ** Emacs Theme
 
 #+BEGIN_SRC emacs-lisp
+(dolist (subdir (jh/get-all-subdirs (concat jh/emacs-directory "themes") 1))
+  (add-to-list 'custom-theme-load-path subdir))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle no
 (load-theme 'leuven t)
 #+END_SRC
 
 Dark mode.
-#+BEGIN_SRC emacs-lisp :tangle no
-(load-theme 'manoj-dark t)
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'custom-theme-load-path (expand-file-name (concat jh/emacs-directory "themes")))
+(load-theme 'dracula t)
 #+END_SRC
 
 Beautiful Emacs themes:
