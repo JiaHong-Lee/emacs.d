@@ -2914,6 +2914,10 @@ pip install jedi flake8
 (add-hook 'python-mode-hook #'jh/--enable-elpy)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(define-key elpy-mode-map [remap elpy-shell-kill-all] nil)
+#+END_SRC
+
 These are packages that work well with Elpy:
 1. flycheck (as the Flymake alternative)
    #+BEGIN_SRC emacs-lisp
