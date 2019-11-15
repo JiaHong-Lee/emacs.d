@@ -130,25 +130,11 @@ Auto download package info asynchronously on Emacs startup.
 #+END_SRC
 
 Add third-party library from the ./lisp directory. This is especially useful if I clone the library from Github and work on it. Since all .el files reside in one level deep in lisp directory, I will need to add all the subdirectory to the load path.
-#+BEGIN_SRC emacs-lisp
-;; A helper function
-;; Source: https://stackoverflow.com/a/17165074
-(defun jh/directory-files (directory &optional full match nosort)
-  "Retrieve the list of files and sub-directory in the DIRECTORY. Does not recurse into sub-directories. Like `directory-files' or ls command, but excluding \".\" and \"..\"."
-  (let* ((files (directory-files directory full match nosort))
-         (result files))
-    (if full
-        (progn
-          (setq result (delete (concat directory "/.") result))
-          (setq result (delete (concat directory "/..") result))
-          result)
-      (delete "." (delete ".." result)))))
-#+END_SRC
 
-With the helper function, =(jh/directory-files ~/.emacs.d/lisp)= should return a result containing all the directory in lisp as a list. With this, I will only need to loop through the list and add each subdirectory path to the =load-path=.
+With the helper function, =(jh/get-dir-files-and-subdirs ~/.emacs.d/lisp)= should return a result containing all the directory in lisp as a list. With this, I will only need to loop through the list and add each subdirectory path to the =load-path=.
 
 #+BEGIN_SRC emacs-lisp
-(dolist (subdir (jh/directory-files "~/.emacs.d/lisp"))
+(dolist (subdir (jh/get-dir-files-and-subdirs "~/.emacs.d/lisp"))
   (add-to-list 'load-path (expand-file-name (concat "lisp/" subdir) user-emacs-directory)))
 #+END_SRC
 
@@ -298,6 +284,40 @@ A useful tool to alert from the mode-line.
 
 #+BEGIN_SRC emacs-lisp
 (require-package 'hydra)
+#+END_SRC
+
+* Zacque's Utility Function
+
+Here are utility functions that I wrote. I'm putting it here to load it at the beginning.
+
+#+BEGIN_SRC emacs-lisp
+(defun jh/get-all-subdirs (PATH DEPTH)
+  "Get all subdirectories under the directory PATH."
+  (delete PATH 
+          (split-string (shell-command-to-string (concat "find " PATH " -type d" " -maxdepth " (number-to-string DEPTH))) "\n" t)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun jh/get-dir-and-subdirs (PATH DEPTH)
+  "Get all subdirectories under the directory PATH."
+  (split-string
+   (shell-command-to-string
+    (concat "find " PATH " -type d" " -maxdepth " (number-to-string DEPTH))) "\n" t))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; A helper function
+;; Source: https://stackoverflow.com/a/17165074
+(defun jh/get-dir-files-and-subdirs (directory &optional full match nosort)
+  "Retrieve the list of files and sub-directory in the DIRECTORY. Does not recurse into sub-directories. Like `directory-files' or ls command, but excluding \".\" and \"..\"."
+  (let* ((files (directory-files directory full match nosort))
+         (result files))
+    (if full
+        (progn
+          (setq result (delete (concat directory "/.") result))
+          (setq result (delete (concat directory "/..") result))
+          result)
+      (delete "." (delete ".." result)))))
 #+END_SRC
 
 * Keeping Secrets in Emacs with GnuPG and Auth Sources
@@ -1546,18 +1566,8 @@ Load all the .txt files into org-agenda.
 
 Assign "org" as my project directory, so that every project in the directory will be automatically added to org-agenda. This frees me from minute configuring every time I change my project working on.
 #+BEGIN_SRC emacs-lisp
-(defun jh/get-all-subdirs (path depth)
-  "Get all subdirectories under the directory PATH"
-  (split-string (shell-command-to-string (concat "find " path " -type d" " -maxdepth " depth)) "\n" t))
-#+END_SRC
-
-#+RESULTS:
-: jh/get-all-subdirs
-
-#+BEGIN_SRC emacs-lisp
 ;; Need a function to return all the subdirectories + the directory itself 
-;; (setq org-agenda-files (jh/directory-files (jh/file-in-sync-directory "org") t "\\`[^.#].*\\(org\\|txt\\)\\'" nil))
-(setq org-agenda-files (jh/get-all-subdirs (jh/file-in-sync-directory "org") "1"))
+(setq org-agenda-files (jh/get-dir-and-subdirs (jh/file-in-sync-directory "org") 1))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangle no
