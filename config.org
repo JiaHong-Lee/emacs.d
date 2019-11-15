@@ -3235,6 +3235,26 @@ Currently, I have installed Python Language Server [fn:21] and Rust Language Ser
 (add-hook 'rust-mode-hook 'eglot-ensure)
 #+END_SRC
 
+* Restclient for Testing API
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'restclient)
+(require-package 'ob-restclient)
+#+END_SRC
+
+Load org-babel for restclient. 
+#+BEGIN_SRC emacs-lisp
+(org-babel-do-load-languages 'org-babel-load-languages '((restclient . t)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'company-restclient)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'company-backends 'company-restclient)
+#+END_SRC
+
 * Terraform
 
 Major mode for terraform configuration file.
