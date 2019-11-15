@@ -1326,17 +1326,16 @@ Use Iosevka Font for Org-mode: https://shreyas.ragavan.co/post/951004ce-add0-4e7
 
 Use Org-mode for writing journals.
 TODO: Auto insert new datetree under heading with unique tag journal.
-TODO: Call with prefix C-u to input optional DATE.
 #+BEGIN_SRC emacs-lisp
-(defun jh/find-or-create-today-datetree ()
-  "Find or create today datetree entry in the current buffer."
-  (interactive)
-  (let ((cal-date (calendar-current-date)))
+(defun jh/find-or-create-today-datetree (pfx)
+  "Find or create today datetree entry in the current buffer. Call with prefix C-u to input DATE int the format (M D Y)."
+  (interactive "p")
+  (let ((cal-date))
+    (if (eq pfx 1)
+        (setq cal-date (calendar-current-date))
+      (setq cal-date (read)))
     (org-datetree-find-date-create cal-date 'subtree-at-point)))
 #+END_SRC
-
-#+RESULTS:
-: jh/find-or-create-today-datetree
 
 ** Org-Tags
 
