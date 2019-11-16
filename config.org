@@ -4190,7 +4190,7 @@ References:
 
 I want to browse dash docsets in Emacs. Now, I am using =counsel-dash=. Check out the homepage [[https://github.com/dash-docs-el/counsel-dash][here]].
 #+BEGIN_SRC emacs-lisp
-(require-package 'counsel-dash)
+(require 'counsel-dash)
 
 (setq dash-docs-docsets-path "/home/zacque/.emacs.d/docsets") ;; use absolute path
 (setq dash-docs-common-docsets '("opencv" "keras" "python3" "java" "numpy" "ansible" "pytorch" "terraform" "matplotlib"))
