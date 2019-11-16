@@ -7,3 +7,6 @@
 [submodule "evil-visual-mark-mode"]
 	path = lisp/evil-visual-mark-mode
 	url = https://github.com/roman/evil-visual-mark-mode
+[submodule "emacs-leuven-theme"]
+	path = themes/emacs-leuven-theme
+	url = https://github.com/fniessen/emacs-leuven-theme
