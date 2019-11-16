@@ -4067,6 +4067,7 @@ Read pocket from Emacs [fn:28].
 (defalias 'pocket-reader-toggle-read-unread 'pocket-reader-toggle-archived)
 (define-key pocket-reader-mode-map (kbd "r") #'pocket-reader-toggle-read-unread)
 (define-key pocket-reader-mode-map (kbd "g") #'pocket-reader-refresh)
+(define-key pocket-reader-mode-map (kbd "y") #'pocket-reader-copy-url)
 #+END_SRC
 
 The only functionalities that I care:
