@@ -1261,7 +1261,7 @@ References:
 
 * Org-Mode
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defface org-block-begin-line
   '((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
   "Face used for the line delimiting the begin of source blocks.")
