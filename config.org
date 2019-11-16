@@ -1261,44 +1261,14 @@ References:
 
 * Org-Mode
 
-#+BEGIN_SRC emacs-lisp :tangle no
-(defface org-block-begin-line
-  '((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
-  "Face used for the line delimiting the begin of source blocks.")
-
-(defface org-block-background
-  '((t (:background "#FFFFEA")))
-  "Face used for the source block background.")
-
-(defface org-block-end-line
-  '((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
-  "Face used for the line delimiting the end of source blocks.")
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
 (require 'org)
-#+END_SRC
-
-To fontify the whole heading lines of an org-src-block.
-#+BEGIN_SRC emacs-lisp
-(setq org-fontify-whole-heading-line t)
 #+END_SRC
 
 Open txt file in org-mode.
 #+BEGIN_SRC emacs-lisp
 ;; Associate txt file with org-mode
 (add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
-#+END_SRC
-
-Open an org file with hard indentation by default.
-#+BEGIN_SRC emacs-lisp
-(setq org-startup-indented t)
-#+END_SRC
-
-=(diminish 'org-indent-mode)= does not work directly. The call to it must occur after org-indent.el has ben loaded. Reference: https://emacs.stackexchange.com/questions/22531/diminish-org-indent-mode
-#+BEGIN_SRC emacs-lisp
-(require 'org-indent)
-(diminish 'org-indent-mode)
 #+END_SRC
 
 Prevent deleting hidden texts. https://emacs.stackexchange.com/a/2091
@@ -1313,6 +1283,32 @@ Use =org-cliplink= to fetch a page title and format it into an org-link.
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c l") 'org-store-link)
+#+END_SRC
+
+** Personalisation & Beautification
+
+Beautifying org-mode.
+
+=org-bullets= replaces org default '*' with UTF-8 bullets, which is customisable.
+#+BEGIN_SRC emacs-lisp
+(require-package 'org-bullets)
+(add-hook 'org-mode-hook 'org-bullets-mode)
+#+END_SRC
+
+=(diminish 'org-indent-mode)= does not work directly. The call to it must occur after org-indent.el has ben loaded. Reference: https://emacs.stackexchange.com/questions/22531/diminish-org-indent-mode
+#+BEGIN_SRC emacs-lisp
+(require 'org-indent)
+(diminish 'org-indent-mode)
+#+END_SRC
+
+To fontify the whole heading lines of an org-src-block.
+#+BEGIN_SRC emacs-lisp
+(setq org-fontify-whole-heading-line t)
+#+END_SRC
+
+Open an org file with hard indentation by default.
+#+BEGIN_SRC emacs-lisp
+(setq org-startup-indented t)
 #+END_SRC
 
 Override Org-mode subscript and superscripts default behaviours for display. Mixing LaTeX with plain text.
@@ -1330,25 +1326,40 @@ Open org-file with inline images shown automatically.
 (setq org-startup-with-inline-images t)
 #+END_SRC
 
-** Personalisation
-
-Beautifying org-mode.
-
-=org-bullets= replaces org default '*' with UTF-8 bullets, which is customisable.
+Do not use org-bullets to make it looks cleaner.
 #+BEGIN_SRC emacs-lisp
-(require-package 'org-bullets)
-(add-hook 'org-mode-hook 'org-bullets-mode)
+(setq org-bullets-bullet-list '(" "))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-ellipsis "...")
 #+END_SRC
 
 Use Iosevka Font for Org-mode: https://shreyas.ragavan.co/post/951004ce-add0-4e7e-b6e2-2932e0dee429/
 #+BEGIN_SRC emacs-lisp
-(defun jh/toggle-org-mode-writing-font ()
-  "Sets a special font for Org-mode writing."
+(defun jh/toggle-org-mode-writing-configuration ()
+  "Sets a special font for Org-mode writing and more."
   (interactive)
-  (buffer-face-set '(:family "IosevkaCC")))
+  (buffer-face-set '(:family "IosevkaCC"))
+  (setq header-line-format " ")
+  (setq line-spacing 0.1)
+  (setq left-margin-width 2)
+  (setq right-margin-width 2)
+  (set-window-buffer nil (current-buffer)))
 
-(add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-font)
+(add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-configuration)
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-pretty-entities t)
+(setq org-hide-emphasis-markers t)
+(setq org-fontify-done-headline t)
+(setq org-fontify-quote-and-verse-blocks t)
+#+END_SRC
+
+References:
+1. http://blog.lujun9972.win/emacs-document/blog/2018/10/22/ricing-up-org-mode/index.html
+   Org mode ricing.
 
 ** Org Journal
 
@@ -2085,9 +2096,6 @@ Besides Bernt Hansen, Lee Hinman[fn:31] has good config on org-clocking.
 
 ;; Stop clocking when the task is marked DONE
 (setq org-clock-out-when-done t)
-
-;; Use UTF8 characters for clocktable
-(setq org-pretty-entities t)
 #+END_SRC
 
 Open prompt to resolve clock if I idle more than 120 minutes.
