@@ -1335,6 +1335,11 @@ Do not use org-bullets to make it looks cleaner.
 (setq org-ellipsis "...")
 #+END_SRC
 
+Do not hide the markup symbol such as /, ~, and so on.
+#+BEGIN_SRC emacs-lisp
+(setq org-hide-emphasis-markers nil)
+#+END_SRC
+
 Use Iosevka Font for Org-mode: https://shreyas.ragavan.co/post/951004ce-add0-4e7e-b6e2-2932e0dee429/
 #+BEGIN_SRC emacs-lisp
 (defun jh/toggle-org-mode-writing-configuration ()
@@ -1352,7 +1357,6 @@ Use Iosevka Font for Org-mode: https://shreyas.ragavan.co/post/951004ce-add0-4e7
 
 #+BEGIN_SRC emacs-lisp
 (setq org-pretty-entities t)
-(setq org-hide-emphasis-markers t)
 (setq org-fontify-done-headline t)
 (setq org-fontify-quote-and-verse-blocks t)
 #+END_SRC
