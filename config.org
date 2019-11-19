@@ -2253,11 +2253,9 @@ Define an Evil's state for easy browsing, reading, and navigating in Org-mode. T
   :message "-- READING --"
   (cond
    ((evil-reading-state-p)
-    (set-cursor-color "gray")
     (evil-echo "-- READING --"))
    (t
-    (evil-echo "-- NORMAL --")
-    (set-cursor-color "#0FB300")))) ;; original theme color for cursor
+    (evil-echo "-- NORMAL --")))) ;; original theme color for cursor
 #+END_SRC
 
 Dependencies:
