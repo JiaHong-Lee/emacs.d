@@ -1095,7 +1095,7 @@ Use evil-matchit to jump between HTML tags using '%'.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(global-evil-matchit-mode t)
+(add-hook 'evil-mode-hook 'evil-matchit-mode)
 #+END_SRC
 
 ** Evil-Surround
@@ -1107,7 +1107,7 @@ Use evil-surround to deal with surrounding quotes or tags.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(global-evil-surround-mode t)
+(add-hook 'evil-mode-hook 'evil-surround-mode)
 #+END_SRC
 
 Problem: evil-surround-change inserts unwanted spaces. E.g. it changes (this-form) to [ this-form ]. This code solves that. Reference: https://github.com/emacs-evil/evil-surround/issues/86#issuecomment-258552759
@@ -1273,7 +1273,9 @@ Number the candidates to use M-1, M-2 to select completions.
 Display function/variable documentation on selected candidates.
 #+BEGIN_SRC emacs-lisp
 (require-package 'company-quickhelp)
-(add-hook 'after-init-hook 'company-quickhelp-mode)
+
+(with-eval-after-load 'company
+  (add-hook 'company-mode-hook 'company-quickhelp-mode))
 #+END_SRC
 
 References:
@@ -2775,10 +2777,14 @@ Activate this mode (globally?) to highlight matching parenthsis.
 
 Reference: https://emacs.stackexchange.com/q/28857 and https://stackoverflow.com/q/27142996
 #+BEGIN_SRC emacs-lisp
-;; Purcell .emacs.d
-(when (fboundp 'electric-pair-mode)
-  (add-hook 'after-init-hook 'electric-pair-mode)
-  (setq electric-pair-preserve-balance nil))
+(require 'elec-pair)
+(setq electric-pair-preserve-balance nil)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(dolist (hook (prog-mode-hook text-mode-hook))
+  (add-hook hook 'show-paren-mode)
+  (add-hook hook 'electric-pair-mode))
 #+END_SRC
 
 ** Rainbow-Delimiters
@@ -4656,18 +4662,6 @@ Directly search the contents of files in sync directory.
   (counsel-rg nil jh/sync-directory nil))
 #+END_SRC
 
-** KeyFreq
-
-#+BEGIN_SRC emacs-lisp
-(require 'keyfreq)
-(keyfreq-mode 1)
-(keyfreq-autosave-mode 1)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq keyfreq-file (jh/emacs-subdirectory "emacs.keyfreq"))
-#+END_SRC
-
 ** Counsel-firefox-bookmarks
 
 A handy tool for me to search firefox bookmarks from within Emacs.
@@ -5068,6 +5062,18 @@ Flycheck was once a superior alternative to Flymake. Since Emacs version 26.1, i
 #+BEGIN_SRC emacs-lisp
 (require-package 'flycheck)
 (global-flycheck-mode)
+#+END_SRC
+
+** KeyFreq
+
+#+BEGIN_SRC emacs-lisp
+(require 'keyfreq)
+(keyfreq-mode 1)
+(keyfreq-autosave-mode 1)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq keyfreq-file (jh/emacs-subdirectory "emacs.keyfreq"))
 #+END_SRC
 
 * Footnotes
