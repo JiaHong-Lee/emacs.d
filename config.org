@@ -1210,12 +1210,15 @@ Echo error under cursor in minibuffer.
 
 * Company Mode
   
-Company-mode is a modular in-buffer completion framework for Emacs. Company stands for "complete anything". 
+Company-mode is a framework to "complete anything". 
 #+BEGIN_SRC emacs-lisp
 (require-package 'company)
-(add-hook 'after-init-hook 'global-company-mode)
-
 (diminish 'company-mode " Ⓒ")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(dolist (hook '(text-mode-hook prog-mode-hook))
+  (add-hook hook 'company-mode))
 #+END_SRC
 
 Use <TAB> to indent to popup company completion. By default, indent-for-tab + tab-alwasy-indent 'complete with popup default completion-at-point popup for me. This should override the default behaviour.
