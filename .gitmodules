@@ -13,3 +13,6 @@
 [submodule "lisp/pip-requirements.el"]
 	path = lisp/pip-requirements.el
 	url = https://github.com/Wilfred/pip-requirements.el
+[submodule "lisp/flymake-cursor"]
+	path = lisp/flymake-cursor
+	url = ./lisp/flymake-cursor/

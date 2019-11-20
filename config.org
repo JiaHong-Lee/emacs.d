@@ -1193,6 +1193,15 @@ Flymake is a built-in library to Emacs. It is rewritten in Emacs version 26.1.
 (require-package 'flymake-quickdef)
 #+END_SRC
 
+** Flymake Cursor Error
+
+Echo error under cursor in minibuffer.
+#+BEGIN_SRC emacs-lisp
+(require 'flymake-cursor)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'flymake-mode-hook 'flymake-cursor-mode)
 #+END_SRC
 
 * Company Mode
