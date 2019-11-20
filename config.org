@@ -2782,7 +2782,7 @@ Reference: https://emacs.stackexchange.com/q/28857 and https://stackoverflow.com
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(dolist (hook (prog-mode-hook text-mode-hook))
+(dolist (hook '(prog-mode-hook text-mode-hook))
   (add-hook hook 'show-paren-mode)
   (add-hook hook 'electric-pair-mode))
 #+END_SRC
