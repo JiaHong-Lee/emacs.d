@@ -1265,6 +1265,11 @@ Use "C-n" or "C-p" to cycle through auto-complete candidates.
 (define-key company-active-map (kbd "<backtab>") 'reverse-company-complete-common-or-cycle)
 #+END_SRC
 
+Number the candidates to use M-1, M-2 to select completions.
+#+BEGIN_SRC emacs-lisp
+(setq company-show-numbers t)
+#+END_SRC
+
 Display function/variable documentation on selected candidates.
 #+BEGIN_SRC emacs-lisp
 (require-package 'company-quickhelp)
