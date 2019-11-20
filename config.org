@@ -1583,7 +1583,7 @@ Load all the .txt files into org-agenda.
 Assign "org" as my project directory, so that every project in the directory will be automatically added to org-agenda. This frees me from minute configuring every time I change my project working on.
 #+BEGIN_SRC emacs-lisp
 ;; Need a function to return all the subdirectories + the directory itself 
-(setq org-agenda-files (jh/get-dir-and-subdirs (jh/file-in-sync-directory "org") 1))
+(setq org-agenda-files (jh/get-dir-and-subdirs (jh/file-in-sync-directory "org") 2))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangle no
