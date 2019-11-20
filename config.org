@@ -3973,6 +3973,17 @@ Start =elfeed= in =evil-emacs-mode=.
 (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)
 #+END_SRC
 
+Auto enable writeroom mode to centralise contents when I read Elfeed articles.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'elfeed-show-mode 'writeroom-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(define-key elfeed-show-mode-map (kbd "f") 'scroll-up-command)
+(define-key elfeed-show-mode-map (kbd "b") 'scroll-down-command)
+(define-key elfeed-show-mode-map (kbd "o") 'elfeed-show-visit)
+#+END_SRC
+
 [Disable] Play video directly from the URL of a feed [fn:12]. (With a little modification to play "unlimited" resolution by default.
 #+BEGIN_SRC emacs-lisp :tangle no
 (defun elfeed-play-with-mpv ()
