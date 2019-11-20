@@ -2944,7 +2944,32 @@ In Ubuntu, set org-babel to run =python3= by default.
 (add-hook 'python-mode-hook 'python-setup-flymake-bandit-backend)
 #+END_SRC
 
+*** Flymake Python Pylint
 
+#+BEGIN_SRC emacs-lisp
+(flymake-quickdef-backend flymake-python-pylint
+  :pre-let ((pylint-exec (executable-find "pylint")))
+  :pre-check (unless pylint-exec (error "Cannot find pylint executable."))
+  :write-type 'file
+  :proc-form (list pylint-exec "--msg-template" "diag:{line} {msg_id}: {msg} ({symbol})" fmqd-temp-file)
+  :search-regexp "^diag:\\([[:digit:]]+\\) \\([[:alpha:]][[:digit:]]+\\): \\(.*\\)$"
+  :prep-diagnostic
+  (let* ((lnum (string-to-number (match-string 1)))
+         (code (match-string 2))
+         (text (match-string 3))
+         (pos (flymake-diag-region fmqd-source lnum))
+         (beg (car pos))
+         (end (cdr pos))
+         (type :note)
+         (msg (format "%s (%s)" text code)))
+    (list fmqd-source beg end type msg)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun python-setup-flymake-pylint-backend ()
+  (add-hook 'flymake-diagnostic-functions 'flymake-python-pylint nil t))
+
+(add-hook 'python-mode-hook 'python-setup-flymake-pylint-backend)
 #+END_SRC
 
 ** Highlight Indentation
