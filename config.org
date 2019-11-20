@@ -2906,6 +2906,42 @@ In Ubuntu, set org-babel to run =python3= by default.
 (setq org-babel-python-command "python3")
 #+END_SRC
 
+** Flymake Python
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'python-mode-hook 'flymake-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(flymake-quickdef-backend flymake-check-bandit
+  :pre-let ((bandit-exec (executable-find "bandit")))
+  :pre-check (unless bandit-exec (error "Cannot find bandit executable"))
+  :write-type 'file
+  :proc-form (list bandit-exec "--format" "custom" "--msg-template" "diag:{line} {severity} {test_id}: {msg}" fmqd-temp-file)
+  :search-regexp "^diag:\\([[:digit:]]+\\) \\(HIGH\\|LOW\\|MEDIUM\\|UNDEFINED\\) \\([[:alpha:]][[:digit:]]+\\): \\(.*\\)$"
+  :prep-diagnostic
+  (let* ((lnum (string-to-number (match-string 1)))
+         (severity (match-string 2))
+         (code (match-string 3))
+         (text (match-string 4))
+         (pos (flymake-diag-region fmqd-source lnum))
+         (beg (car pos))
+         (end (cdr pos))
+         (type (cond
+                ((string= severity "HIGH") :error)
+                ((string= severity "MEDIUM") :warning)
+                (t :note)))
+         (msg (format "%s (%s)" text code)))
+    (list fmqd-source beg end type msg)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun python-setup-flymake-backend ()
+  (add-hook 'flymake-diagnostic-functions 'flymake-check-bandit nil t))
+
+(add-hook 'python-mode-hook 'python-setup-flymake-backend)
+#+END_SRC
+
 ** Highlight Indentation
 
 Enable highlight indentation globally.
@@ -2930,6 +2966,9 @@ References:
 1. https://github.com/Wilfred/pip-requirements.el
 
 ** Elpy
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 
 Elpy turns Emacs into a Python IDE. Getting ideas from these sources [fn:9].
 #+BEGIN_SRC emacs-lisp
