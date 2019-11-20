@@ -1182,12 +1182,17 @@ For Lispy modes, see [[evil-lisp-args][evil-lisp-args]].
 
 =evil-escape= is useful to define a customised key sequence to escape from insert state and everything else in Emacs, such as using =fd= to go into normal state.
 
-* Flycheck Mode
+* Flymake Mode
 
-Flycheck was once a superior alternative to Flymake. Since Emacs version 26.1, it introduces a new re-written Flymake. So the difference is now not so big. Feel free to check out the discussion here [fn:20].
+Flymake is a built-in library to Emacs. It is rewritten in Emacs version 26.1.
 #+BEGIN_SRC emacs-lisp
-(require-package 'flycheck)
-(global-flycheck-mode)
+(require 'flymake)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'flymake-quickdef)
+#+END_SRC
+
 #+END_SRC
 
 * Company Mode
@@ -4938,6 +4943,14 @@ Org will evaluate code block on export. This will disable it to speed up export 
                               :calendar-id ,(password-store-get-field "personal-info" "personal-gmail")
                               :files (,(jh/file-in-sync-directory "org" "personal.txt"))
                               :inbox ,(jh/file-in-sync-directory "org" "google_caldav.org"))))
+#+END_SRC
+
+** Flycheck Mode
+
+Flycheck was once a superior alternative to Flymake. Since Emacs version 26.1, it introduces a new re-written Flymake. So the difference is now not so big. Feel free to check out the discussion here [fn:20].
+#+BEGIN_SRC emacs-lisp
+(require-package 'flycheck)
+(global-flycheck-mode)
 #+END_SRC
 
 * Footnotes
