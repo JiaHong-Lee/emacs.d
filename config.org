@@ -2911,12 +2911,7 @@ Enable highlight indentation globally.
 It supports =*.pip= and =requirements*.txt= files. It provides syntax highlighting, togglable comments, and auto-completion of package names from PyPI.
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'pip-requirements)
-#+END_SRC
-
-[Workaround] Not sure why the mode does not auto-detect "requirements.txt" file.
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("requirements.txt" . pip-requirements-mode))
+(require 'pip-requirements)
 #+END_SRC
 
 References:
