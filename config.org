@@ -3362,6 +3362,17 @@ Automatically shutdown Eglot after the last managed buffer is killed. Checkout: 
 (setq eglot-autoshutdown t)
 #+END_SRC
 
+Flymake-diagnostics-function
+github:joaotavora/eglot#268
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'eglot-stay-out-of 'flymake)
+
+(defun jh/--enable-eglot-flymake-backend ()
+  (add-hook 'flymake-diagnostic-functions 'eglot-flymake-backend nil t))
+
+(add-hook 'eglot--managed-mode-hook 'jh/--enable-eglot-flymake-backend)
+#+END_SRC
+
 * Restclient for Testing API
 
 #+BEGIN_SRC emacs-lisp
