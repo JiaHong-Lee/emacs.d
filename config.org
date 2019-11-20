@@ -3020,6 +3020,17 @@ Error: elpy-use-ipython is deprecated; see https://elpy.readthedocs.io/en/latest
 
 To use Emacs with Jupyter, check out =emacs-jupyter=, =ob-ipython=, and =ein=.
 
+** Eglot
+
+Current I have Python Language Server installed. Autorun =eglot= when visiting Python buffers.
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'eglot
+  (add-hook 'python-mode-hook 'eglot-ensure))
+#+END_SRC
+
+References:
+1. https://github.com/palantir/python-language-server
+
 * Enable YAML Mode
 
 This is useful to edit =docker-compose.yml= file.
@@ -3097,6 +3108,17 @@ cargo install cargo-script
 #+BEGIN_SRC emacs-lisp
 (require-package 'ob-rust)
 #+END_SRC
+
+** Elpy
+
+I have Rust Language Server installed.
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'eglot
+  (add-hook 'rust-mode-hook 'eglot-ensure))
+#+END_SRC
+
+References:
+1. https://github.com/rust-lang/rls
 
 * Enable Groovy Mode for Gradle
 
@@ -3308,12 +3330,6 @@ Eglot is a Language Server Protocol(LSP) server client. It has default integrati
 Automatically shutdown Eglot after the last managed buffer is killed. Checkout: github:joaotavora/eglot#305
 #+BEGIN_SRC emacs-lisp
 (setq eglot-autoshutdown t)
-#+END_SRC
-
-Currently, I have installed Python Language Server [fn:21] and Rust Language Server [fn:22]. Autorun =eglot= when visiting these buffers.
-#+BEGIN_SRC emacs-lisp
-(add-hook 'python-mode-hook 'eglot-ensure)
-(add-hook 'rust-mode-hook 'eglot-ensure)
 #+END_SRC
 
 * Restclient for Testing API
@@ -5017,9 +5033,6 @@ Flycheck was once a superior alternative to Flymake. Since Emacs version 26.1, i
 
 [fn:26] https://emacs.stackexchange.com/a/38241
 
-[fn:22] https://github.com/rust-lang/rls
-
-[fn:21] https://github.com/palantir/python-language-server
 
 [fn:20] https://github.com/flycheck/flycheck/pull/1412
 
