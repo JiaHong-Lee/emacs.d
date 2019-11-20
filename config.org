@@ -4227,75 +4227,6 @@ A more intuitive function to simply ask user for URL input and then add it to Po
       (message "Added: %s" url))))
 #+END_SRC
 
-* ERC -- IRC Client
-
-#+BEGIN_SRC emacs-lisp
-(require 'erc)
-(diminish 'erc-mode " ε")
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq erc-server-coding-system '(utf-8 . utf-8))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq erc-autojoin-channels-alist '(("freenode.net" "#python" "#erc" "#emacs" "#org-mode" "##rust" "#startups" "#android-dev" "#linux" "#scheme" "#lisp" "#guile" "#vim")))
-#+END_SRC
-
-Hide the JOIN, PART, QUIT messages that clutter my chats.
-#+BEGIN_SRC emacs-lisp
-(setq erc-hide-list '("JOIN" "PART" "QUIT"))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq erc-kill-buffer-on-part t)
-(setq erc-kill-queries-on-quit t)
-(setq erc-kill-server-buffer-on-quit t)
-#+END_SRC
-
-Align nickname?
-#+BEGIN_SRC emacs-lisp
-(require 'erc-fill)
-(setq erc-fill-function 'erc-fill-static)
-(setq erc-fill-static-center 19)
-#+END_SRC
-
-Enable logging in ERC.
-#+BEGIN_SRC emacs-lisp
-;; Logging
-;; Useful for reading back the previous records.
-(require 'erc-log)
-(add-to-list 'erc-modules 'log)
-(erc-update-modules)
-
-(setq erc-log-channels-directory "~/.irc/logs")
-
-(if (not (file-exists-p erc-log-channels-directory))
-    (mkdir erc-log-channels-directory t))
-
-(setq erc-save-buffer-on-part t)
-;; (defadvice save-buffers-kill-emacs (before save-logs (arg) activate)
-;;   (save-some-buffers t (lambda () (when (eq major-mode 'erc-mode) t))))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'erc-hl-nicks)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'erc-image)
-(add-to-list 'erc-modules 'image)
-(erc-update-modules)
-#+END_SRC
-
-References:
-1. http://wiki.xkcd.com/irc/Hide_join_part_messages
-2. https://github.com/bbatsov/emacs-dev-kit/blob/master/erc-config.el
-   A good config for ERC.
-3. https://www.reddit.com/r/emacs/comments/8ml6na/tip_how_to_make_erc_fun_to_use/
-   For future reference.
-4. http://emacslife.com/transcripts/2014-04-07%20Emacs%20NYC%20-%20IRC%20with%20ERC%20-%20Eric%20Collins.html
-
 * Help Mode
 
 #+BEGIN_SRC emacs-lisp
@@ -5075,6 +5006,75 @@ Flycheck was once a superior alternative to Flymake. Since Emacs version 26.1, i
 #+BEGIN_SRC emacs-lisp
 (setq keyfreq-file (jh/emacs-subdirectory "emacs.keyfreq"))
 #+END_SRC
+
+** ERC -- IRC Client
+
+#+BEGIN_SRC emacs-lisp
+(require 'erc)
+(diminish 'erc-mode " ε")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq erc-server-coding-system '(utf-8 . utf-8))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq erc-autojoin-channels-alist '(("freenode.net" "#python" "#erc" "#emacs" "#org-mode" "##rust" "#startups" "#android-dev" "#linux" "#scheme" "#lisp" "#guile" "#vim")))
+#+END_SRC
+
+Hide the JOIN, PART, QUIT messages that clutter my chats.
+#+BEGIN_SRC emacs-lisp
+(setq erc-hide-list '("JOIN" "PART" "QUIT"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq erc-kill-buffer-on-part t)
+(setq erc-kill-queries-on-quit t)
+(setq erc-kill-server-buffer-on-quit t)
+#+END_SRC
+
+Align nickname?
+#+BEGIN_SRC emacs-lisp
+(require 'erc-fill)
+(setq erc-fill-function 'erc-fill-static)
+(setq erc-fill-static-center 19)
+#+END_SRC
+
+Enable logging in ERC.
+#+BEGIN_SRC emacs-lisp
+;; Logging
+;; Useful for reading back the previous records.
+(require 'erc-log)
+(add-to-list 'erc-modules 'log)
+(erc-update-modules)
+
+(setq erc-log-channels-directory "~/.irc/logs")
+
+(if (not (file-exists-p erc-log-channels-directory))
+    (mkdir erc-log-channels-directory t))
+
+(setq erc-save-buffer-on-part t)
+;; (defadvice save-buffers-kill-emacs (before save-logs (arg) activate)
+;;   (save-some-buffers t (lambda () (when (eq major-mode 'erc-mode) t))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'erc-hl-nicks)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'erc-image)
+(add-to-list 'erc-modules 'image)
+(erc-update-modules)
+#+END_SRC
+
+References:
+1. http://wiki.xkcd.com/irc/Hide_join_part_messages
+2. https://github.com/bbatsov/emacs-dev-kit/blob/master/erc-config.el
+   A good config for ERC.
+3. https://www.reddit.com/r/emacs/comments/8ml6na/tip_how_to_make_erc_fun_to_use/
+   For future reference.
+4. http://emacslife.com/transcripts/2014-04-07%20Emacs%20NYC%20-%20IRC%20with%20ERC%20-%20Eric%20Collins.html
 
 * Footnotes
 
