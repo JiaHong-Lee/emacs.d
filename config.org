@@ -2912,8 +2912,10 @@ In Ubuntu, set org-babel to run =python3= by default.
 (add-hook 'python-mode-hook 'flymake-mode)
 #+END_SRC
 
+*** Flymake Python Bandit
+
 #+BEGIN_SRC emacs-lisp
-(flymake-quickdef-backend flymake-check-bandit
+(flymake-quickdef-backend flymake-python-bandit
   :pre-let ((bandit-exec (executable-find "bandit")))
   :pre-check (unless bandit-exec (error "Cannot find bandit executable"))
   :write-type 'file
@@ -2936,10 +2938,13 @@ In Ubuntu, set org-babel to run =python3= by default.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(defun python-setup-flymake-backend ()
-  (add-hook 'flymake-diagnostic-functions 'flymake-check-bandit nil t))
+(defun python-setup-flymake-bandit-backend ()
+  (add-hook 'flymake-diagnostic-functions 'flymake-python-bandit nil t))
 
-(add-hook 'python-mode-hook 'python-setup-flymake-backend)
+(add-hook 'python-mode-hook 'python-setup-flymake-bandit-backend)
+#+END_SRC
+
+
 #+END_SRC
 
 ** Highlight Indentation
