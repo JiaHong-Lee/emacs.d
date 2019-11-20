@@ -4377,6 +4377,16 @@ Exit buffer after exit vterm. Reference: https://github.com/akermu/emacs-libvter
 				  (kill-buffer)))
 #+END_SRC
 
+* Ledger
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'ledger-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
+#+END_SRC
+
 * A Mode for Reading
 
 Use writeroom-mode. The package is written for a distraction free writing experience. It turns out that it is also good for reading.
