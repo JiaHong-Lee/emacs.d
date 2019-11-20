@@ -1190,6 +1190,10 @@ Flymake is a built-in library to Emacs. It is rewritten in Emacs version 26.1.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
+(evil-set-initial-state 'flymake-diagnostics-buffer-mode 'emacs)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 (require-package 'flymake-quickdef)
 #+END_SRC
 
