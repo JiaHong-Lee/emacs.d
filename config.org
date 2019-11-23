@@ -2890,6 +2890,30 @@ Configure org-tangle to export scheme file to end with .scm. By default, it ends
 (add-to-list 'org-babel-tangle-lang-exts '("scheme" . "scm"))
 #+END_SRC
 
+* Enable Slime Mode for Common Lisp
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'slime)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq inferior-lisp-program "/usr/bin/sbcl")
+(setq slime-contribs '(slime-fancy))
+#+END_SRC
+
+
+References:
+1. https://github.com/slime/slime
+
+** Org-babel for Common Lisp
+
+Start slime first (=M-x slime=) then org-babel src code can be executed.
+#+BEGIN_SRC emacs-lisp
+(org-babel-do-load-languages 'org-babel-load-languages '((lisp .t)))
+#+END_SRC
+
+References:
+1. https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-lisp.html
 * Enable Web-Mode
 
 #+BEGIN_SRC emacs-lisp
