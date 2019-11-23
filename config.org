@@ -4455,10 +4455,22 @@ Fullfill the prerequisite. Clone the git repo. Build. And done.
 (require 'vterm)
 #+END_SRC
 
+Customise VTerm font face to make it looks more like a typical terminal emulator.
+#+BEGIN_SRC emacs-lisp
+(defun jh/--customise-vterm-display ()
+  "Sets a special font for Org-mode writing and more."
+  ;; (buffer-face-set '(:family "Hack" :height 103))
+  (buffer-face-set '(:family "Hack"))
+  (setq header-line-format " "))
+
+(add-hook 'vterm-mode-hook #'jh/--customise-vterm-display)
+#+END_SRC
+
 To make the line wrapping in VTerm works normally. Reference: https://superuser.com/a/988843
 #+BEGIN_SRC emacs-lisp
-(add-hook 'vterm-mode-hook
-	  (lambda () (setq truncate-lines t)))
+(defun jh/--truncate-lines ()
+  (setq truncate-lines t))
+(add-hook 'vterm-mode-hook #'jh/--truncate-lines)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
