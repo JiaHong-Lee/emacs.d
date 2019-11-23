@@ -1623,7 +1623,7 @@ I don't need an indicator of tasks blocked.
 
 Start showing the deadline in Org-Agenda for task going to due in 90 days.
 #+BEGIN_SRC emacs-lisp
-(setq org-deadline-warning-days 0)
+(setq org-deadline-warning-days 14)
 #+END_SRC
 
 Customise Org-agenda TODO view.
