@@ -1273,9 +1273,7 @@ Number the candidates to use M-1, M-2 to select completions.
 Display function/variable documentation on selected candidates.
 #+BEGIN_SRC emacs-lisp
 (require-package 'company-quickhelp)
-
-(with-eval-after-load 'company
-  (add-hook 'company-mode-hook 'company-quickhelp-mode))
+(add-hook 'company-mode-hook 'company-quickhelp-mode)
 #+END_SRC
 
 References:
