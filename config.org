@@ -2669,6 +2669,27 @@ Auto-display generated image after each execution. This is especially useful for
 (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
 #+END_SRC
 
+** org-babel-timestamp
+
+[Failed] Advising no working.
+#+BEGIN_SRC emacs-lisp :tangle no
+(defun jh/org-babel-insert-timestamp ()
+  (let* ((code-block-info (org-babel-get-src-block-info))
+         (code-block-params (nth 2 code-block-info))
+         (code-block-name (nth 4 code-block-info))
+         (timestampp (cdr (assoc :timestamp code-block-params))))
+    (when (equal timestampp "t")
+      (save-excursion
+        (replace-regexp "#\\+RESULTS:" (concat "#+RESULTS"
+                                               (format-time-string "[%F %r]")
+                                               ":"))))))
+
+(advice-add 'org-babel-execute-src-block :after #'jh/org-babel-insert-timestamp)
+#+END_SRC
+
+References:
+1. https://emacs.stackexchange.com/a/35904
+
 ** ob-async
 
 Run ob-babel asynchronously. I hope this could be the default behaviour?
