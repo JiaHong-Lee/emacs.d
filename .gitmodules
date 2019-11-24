@@ -16,3 +16,6 @@
 [submodule "lisp/flymake-cursor"]
 	path = lisp/flymake-cursor
 	url = ./lisp/flymake-cursor/
+[submodule "lisp/help-plus"]
+	path = lisp/help-plus
+	url = ./lisp/help-plus/

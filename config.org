@@ -4286,6 +4286,12 @@ A more intuitive function to simply ask user for URL input and then add it to Po
 (define-key help-mode-map (kbd "b") #'scroll-down-command)
 #+END_SRC
 
+** Help-fns+
+A mode for =describe-keymap=.
+#+BEGIN_SRC emacs-lisp
+(require 'help-fns+)
+#+END_SRC
+
 * Man Mode
 
 #+BEGIN_SRC emacs-lisp
