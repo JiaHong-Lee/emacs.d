@@ -1314,6 +1314,53 @@ Use =org-cliplink= to fetch a page title and format it into an org-link.
 ** Personalisation & Beautification
 
 Beautifying org-mode.
+#+URL: https://emacs.stackexchange.com/a/22126
+#+BEGIN_SRC emacs-lisp
+(defface org-level-9 ;; originally copied from org-level-8
+  (org-compatible-face nil ;; not inheriting from outline-9 because that does not exist
+    '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
+      (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon"))
+      (((class color) (min-colors 8)) (:foreground "green"))))
+  "Face used for level 9 headlines."
+  :group 'org-faces)
+(defface org-level-10
+  (org-compatible-face nil
+    '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
+      (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon"))
+      (((class color) (min-colors 8)) (:foreground "green"))))
+  "Face used for level 10 headlines."
+  :group 'org-faces)
+(defface org-level-11
+  (org-compatible-face nil
+    '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
+      (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon"))
+      (((class color) (min-colors 8)) (:foreground "green"))))
+  "Face used for level 11 headlines."
+  :group 'org-faces)
+(defface org-level-12
+  (org-compatible-face nil
+    '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
+      (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon"))
+      (((class color) (min-colors 8)) (:foreground "green"))))
+  "Face used for level 12 headlines."
+  :group 'org-faces)
+(defface org-level-13
+  (org-compatible-face nil
+    '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
+      (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon"))
+      (((class color) (min-colors 8)) (:foreground "green"))))
+  "Face used for level 13 headlines."
+  :group 'org-faces)
+(defface org-level-14
+  (org-compatible-face nil
+    '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
+      (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon"))
+      (((class color) (min-colors 8)) (:foreground "green"))))
+  "Face used for level 14 headlines."
+  :group 'org-faces)
+(setq org-level-faces (append org-level-faces (list 'org-level-9 'org-level-10 'org-level-11 'org-level-12 'org-level-13 'org-level-14)))
+(setq org-n-level-faces (length org-level-faces))
+#+END_SRC
 
 =org-bullets= replaces org default '*' with UTF-8 bullets, which is customisable.
 #+BEGIN_SRC emacs-lisp
