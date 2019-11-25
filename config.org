@@ -2321,6 +2321,7 @@ Define an Evil's state for easy browsing, reading, and navigating in Org-mode. T
   "A state for reading, easy browsing, and quick navigation."
   :tag " <R> "
   :cursor hollow
+  :suppress-keymap t
   :message "-- READING --"
   (cond
    ((evil-reading-state-p)
