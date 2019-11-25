@@ -2410,12 +2410,9 @@ For searches/filter:
 #+BEGIN_SRC emacs-lisp
 (define-prefix-command 'evil-reading-search-map)
 (define-key evil-reading-state-map (kbd "/") #'evil-reading-search-map)
-(define-key evil-reading-search-map (kbd "/") #'counsel-org-goto)
-(define-key evil-reading-search-map (kbd "r") #'evil-search-forward)
+(define-key evil-reading-state-map (kbd "/ /") #'counsel-org-goto)
+(define-key evil-reading-state-map (kbd "/ r") #'evil-search-forward)
 #+END_SRC
-
-#+RESULTS:
-: evil-search-forward
 
 #+BEGIN_SRC emacs-lisp
 (define-key evil-reading-state-map (kbd "u") 'undo-tree-undo)
