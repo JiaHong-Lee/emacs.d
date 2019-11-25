@@ -4080,15 +4080,14 @@ Remap key in pdf-view-mode more vim-like.
 ;; RE-MAP KEYS IN PDF-VIEW MODE FOR MORE INTUITIVE CONTROL
 ;; Souce: https://stackoverflow.com/a/14230685
 ;;        https://www.whitman.edu/mathematics/emacs_doc/emacs_447.html
-(add-hook 'pdf-view-mode-hook
-	  (lambda ()
-	    (define-key pdf-view-mode-map (kbd "j") #'pdf-view-next-line-or-next-page)
-	    (define-key pdf-view-mode-map (kbd "k") #'pdf-view-previous-line-or-previous-page)
-	    (define-key pdf-view-mode-map (kbd "h") #'image-backward-hscroll)
-	    (define-key pdf-view-mode-map (kbd "l") #'image-forward-hscroll)
-	    (define-key pdf-view-mode-map (kbd "C-f") #'pdf-view-scroll-up-or-next-page)
-	    (define-key pdf-view-mode-map (kbd "C-b") #'pdf-view-scroll-down-or-previous-page)
-	    (define-key pdf-view-mode-map [remap quit-window] #'kill-this-buffer)))
+(defun jh/--define-pdf-key ()
+  (define-key pdf-view-mode-map (kbd "j") #'pdf-view-next-line-or-next-page)
+  (define-key pdf-view-mode-map (kbd "k") #'pdf-view-previous-line-or-previous-page)
+  (define-key pdf-view-mode-map (kbd "h") #'image-backward-hscroll)
+  (define-key pdf-view-mode-map (kbd "l") #'image-forward-hscroll)
+  (define-key pdf-view-mode-map (kbd "C-f") #'pdf-view-scroll-up-or-next-page)
+  (define-key pdf-view-mode-map (kbd "C-b") #'pdf-view-scroll-down-or-previous-page))
+(add-hook 'pdf-view-mode-hook 'jh/--define-pdf-key)
 #+END_SRC
 
 To rotate a page 90 degree, use =pdftk= and apply the function [fn:8].
