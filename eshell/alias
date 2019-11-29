@@ -1,4 +1,5 @@
 alias up eshell-up $1
+alias ff find-file $1
 alias def sdcv --color $*
 alias egrep egrep --color=auto $*
 alias emc emacsclient $*
