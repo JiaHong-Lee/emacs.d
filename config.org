@@ -4447,6 +4447,11 @@ Use ~/.bash_history for eshell.
 (setq eshell-hist-ignoredups t)
 #+END_SRC
 
+To kill *top* buffer on exiting the process.
+#+BEGIN_SRC emacs-lisp
+(setq eshell-destroy-buffer-when-process-dies t)
+#+END_SRC
+
 [Not Working] Caching sudo password in eshell. This is useful so that eshell does not prompt for password for every sudo command [fn:15].
 #+BEGIN_SRC emacs-lisp
 (setq eshell-prefer-lisp-functions t)
