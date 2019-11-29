@@ -4447,18 +4447,6 @@ Use ~/.bash_history for eshell.
 (setq password-cache-expiry 600)
 #+END_SRC
 
-Open a new =shell= from the current buffer-directory. [fn:4]
-#+BEGIN_SRC emacs-lisp
-(defun jh/shell-here ()
-  "Opens up a new shell in the directory associated with the current buffer's file."
-  (interactive)
-  (let* ((parent (if (buffer-file-name)
-                     (file-name-directory (buffer-file-name))
-                   default-directory))
-         (name (car (last (split-string parent "/" t)))))
-    (shell (concat "*shell: " name "*"))))
-#+END_SRC
-
 Progress bar for apt in shell. Source: https://oremacs.com/2019/03/24/shell-apt/
 #+BEGIN_SRC emacs-lisp
 (advice-add
@@ -5388,8 +5376,6 @@ Map <RET> to a key to show all options. By default, pressing <RET> does nothing,
 [fn:6] https://github.com/politza/pdf-tools
 
 [fn:5] https://www.reddit.com/r/emacs/comments/2kdztw/emacs_in_evil_mode_show_tildes_for_blank_lines/
-
-[fn:4] https://www.reddit.com/r/emacs/comments/1zkj2d/advanced_usage_of_eshell/
 
 [fn:3]  https://web.archive.org/web/20141020081338/http://truongtx.me:80/2013/04/25/dired-as-default-file-manager-5-customize-ls-command/
 
