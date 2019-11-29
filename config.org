@@ -3387,54 +3387,6 @@ References:
 #+RESULTS:
 : /home/zacque/.emacs.d/ditaa.jar
 
-* Docker -- Containers
-
-Surprisingly, there are Emacs packages that offer a nice integration with Docker to help manage containers. 
-
-=docker= package offers a Magit-like hydra menu to handle images and containers from Emacs. =dockerfile-mode= offers syntax highlighting when editing Dockerfiles. =docker-tramp= allows me to connect via TRAMP to the insides of a container and do whatever I need there.
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'docker)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq docker-command "/usr/bin/docker")
-#+END_SRC
-
-Make =evil= works well with =docker= mode.
-#+BEGIN_SRC emacs-lisp
-(evil-set-initial-state 'docker-container-mode 'emacs)
-(evil-set-initial-state 'docker-network-mode 'emacs)
-(evil-set-initial-state 'docker-image-mode 'emacs)
-#+END_SRC
-
-Since I didn't add my user to the Docker group, I will need to run every docker command with =sudo=. Setting this flag will make it work. [fn:17]
-#+BEGIN_SRC emacs-lisp
-(setq docker-run-as-root nil)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'dockerfile-mode)
-(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'docker-compose-mode)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(fullframe docker-images tablist-quit)
-(fullframe docker-machines tablist-quit)
-(fullframe docker-volumes tablist-quit)
-(fullframe docker-networks tablist-quit)
-(fullframe docker-containers tablist-quit)
-#+END_SRC
-
-Map <RET> to a key to show all options. By default, pressing <RET> does nothing, which is unintuitive to me.
-#+BEGIN_SRC emacs-lisp
-(define-key docker-container-mode-map (kbd "RET") 'docker-container-help-popup)
-#+END_SRC
-
 * Magit -- Git Client
 
 ** Magit 
@@ -5178,6 +5130,52 @@ https://github.com/manateelazycat/aweshell
 Trying it out <2019-06-06 Thu>.
 #+BEGIN_SRC emacs-lisp
 (require 'aweshell)
+#+END_SRC
+
+** Docker/Podman -- Containers
+Surprisingly, there are Emacs packages that offer a nice integration with Docker to help manage containers. 
+
+=docker= package offers a Magit-like hydra menu to handle images and containers from Emacs. =dockerfile-mode= offers syntax highlighting when editing Dockerfiles. =docker-tramp= allows me to connect via TRAMP to the insides of a container and do whatever I need there.
+#+BEGIN_SRC emacs-lisp
+(require-package 'docker)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq docker-command "/usr/bin/podman")
+#+END_SRC
+
+Make =evil= works well with =docker= mode.
+#+BEGIN_SRC emacs-lisp
+(evil-set-initial-state 'docker-container-mode 'emacs)
+(evil-set-initial-state 'docker-network-mode 'emacs)
+(evil-set-initial-state 'docker-image-mode 'emacs)
+#+END_SRC
+
+Since I didn't add my user to the Docker group, I will need to run every docker command with =sudo=. Setting this flag will make it work. [fn:17]
+#+BEGIN_SRC emacs-lisp
+(setq docker-run-as-root nil)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'dockerfile-mode)
+(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'docker-compose-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(fullframe docker-images tablist-quit)
+(fullframe docker-machines tablist-quit)
+(fullframe docker-volumes tablist-quit)
+(fullframe docker-networks tablist-quit)
+(fullframe docker-containers tablist-quit)
+#+END_SRC
+
+Map <RET> to a key to show all options. By default, pressing <RET> does nothing, which is unintuitive to me.
+#+BEGIN_SRC emacs-lisp
+(define-key docker-container-mode-map (kbd "RET") 'docker-container-help-popup)
 #+END_SRC
 
 * Footnotes
