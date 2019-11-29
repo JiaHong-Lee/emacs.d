@@ -3159,7 +3159,7 @@ jupyter kernel --kernel=python3
 #+RESULTS:
 : jupyter
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (org-babel-do-load-languages 'org-babel-load-languages '((jupyter .t)))
 #+END_SRC
 
