@@ -4520,8 +4520,20 @@ C-r to search previous history using ivy/counsel.
 (define-key eshell-mode-map (kbd "C-r") #'counsel-esh-history)
 #+END_SRC
 
+Use C-d to exit Eshell.
+#+BEGIN_SRC emacs-lisp
+(defun jh/eshell-quit-or-delete-char (arg)
+  (interactive "p")
+  (if (and (eolp)
+           (looking-back eshell-prompt-regexp))
+      (eshell-life-is-too-much) ; Why not? (eshell/exit)
+    (delete-forward-char arg)))
+(define-key eshell-mode-map (kbd "C-d") 'jh/eshell-quit-or-delete-char)
+#+END_SRC
+
 References:
 1. https://github.com/peterwvj/emacs.d/blob/master/lisp/eshell-config-pvj.el
+2. https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org
 *** Personalisation & Beautification
 This will make =ls= output colourful.
 #+BEGIN_SRC emacs-lisp
