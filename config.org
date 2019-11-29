@@ -4535,6 +4535,8 @@ References:
 1. https://github.com/peterwvj/emacs.d/blob/master/lisp/eshell-config-pvj.el
 2. https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org
 *** Personalisation & Beautification
+Dependencies: xterm-color.
+
 This will make =ls= output colourful.
 #+BEGIN_SRC emacs-lisp
 (setenv "TERM" "xterm-256color")
