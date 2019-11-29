@@ -537,7 +537,7 @@ Replace the ugly Emacs logo with Z(acque) logo.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq dashboard-footer "\"Look, Simba. Everything the light touches is our Kingdom.\"")
+(setq dashboard-footer "\"不怕慢，只怕站。精诚所至，金石为开。\"                 ")
 (setq dashboard-footer-icon "")
 #+END_SRC
 
