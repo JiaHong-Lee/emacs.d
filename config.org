@@ -4492,6 +4492,24 @@ C-r to search previous history using ivy/counsel.
 #+END_SRC
 
 *** Personalisation & Beautification
+This will make =ls= output colourful.
+#+BEGIN_SRC emacs-lisp
+(setenv "TERM" "xterm-256color")
+#+END_SRC
+
+Not sure what this does.
+#+BEGIN_SRC emacs-lisp
+(defun jh/--eshell-enable-xterm-preserve-properties ()
+  (setq xterm-color-preserve-properties t))
+
+(add-hook 'eshell-mode-hook 'jh/--eshell-enable-xterm-preserve-properties)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+(setq eshell-output-filter-functions (delete 'eshell-handle-ansi-color eshell-output-filter-functions))
+#+END_SRC
+
 Remove the default "Welcome to the Emacs shell\n\n" message on Eshell startup.
 #+BEGIN_SRC emacs-lisp
 (setq eshell-banner-message "")
@@ -4511,6 +4529,9 @@ Customise Eshell font face to make it looks like a typical terminal emulator.
 
 (add-hook 'eshell-mode-hook #'jh/--customise-eshell-display)
 #+END_SRC
+
+References:
+1. https://github.com/peterwvj/emacs.d/blob/master/lisp/eshell-config-pvj.el
 *** Subcommand Completions
 Eshell uses pcomplete package for programmable completion. Completions are defined as functions named =pcomplete/COMMAND=, where COMMAND is the name of the command for which this function provides completions.
 
