@@ -4490,14 +4490,6 @@ Display progress in the mode line instead."
     "%" "%%"
     (ansi-color-apply progress))))
 #+END_SRC
-*** Aweshell
-https://github.com/manateelazycat/aweshell
-
-Trying it out <2019-06-06 Thu>.
-#+BEGIN_SRC emacs-lisp
-(require 'aweshell)
-#+END_SRC
-
 ** Libvterm/VTerm
 
 *** Pre-requisite
@@ -5178,6 +5170,15 @@ References:
 3. https://www.reddit.com/r/emacs/comments/8ml6na/tip_how_to_make_erc_fun_to_use/
    For future reference.
 4. http://emacslife.com/transcripts/2014-04-07%20Emacs%20NYC%20-%20IRC%20with%20ERC%20-%20Eric%20Collins.html
+
+** Aweshell
+Archived: It heavily slows down my eshell.
+https://github.com/manateelazycat/aweshell
+
+Trying it out <2019-06-06 Thu>.
+#+BEGIN_SRC emacs-lisp
+(require 'aweshell)
+#+END_SRC
 
 * Footnotes
 
