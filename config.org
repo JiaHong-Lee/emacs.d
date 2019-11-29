@@ -4455,6 +4455,23 @@ Display progress in the mode line instead."
     "%" "%%"
     (ansi-color-apply progress))))
 #+END_SRC
+*** Personalisation & Beautification
+Remove the default "Welcome to the Emacs shell\n\n" message on Eshell startup.
+#+BEGIN_SRC emacs-lisp
+(setq eshell-banner-message "")
+#+END_SRC
+
+Customise Eshell font face to make it looks like a typical terminal emulator.
+#+BEGIN_SRC emacs-lisp
+(defun jh/--customise-eshell-display ()
+  "Sets a special font for Org-mode writing and more."
+  (buffer-face-set '(:family "Hack" :height 103))
+  ;; (buffer-face-set '(:family "Hack"))
+  (setq header-line-format " "))
+
+(add-hook 'eshell-mode-hook #'jh/--customise-eshell-display)
+#+END_SRC
+
 ** Libvterm/VTerm
 
 *** Pre-requisite
