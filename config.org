@@ -4398,7 +4398,7 @@ Use ~/.bash_history for eshell.
 #+END_SRC
 
 [Not Working] Caching sudo password in eshell. This is useful so that eshell does not prompt for password for every sudo command [fn:15].
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (setq eshell-prefer-lisp-functions t)
 (setq eshell-prefer-lisp-variables t)
 (setq password-cache t)
