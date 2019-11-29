@@ -4439,6 +4439,14 @@ Use ~/.bash_history for eshell.
 (setq eshell-scroll-to-bottom-on-input t)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(setq eshell-cmpl-ignore-case t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq eshell-hist-ignoredups t)
+#+END_SRC
+
 [Not Working] Caching sudo password in eshell. This is useful so that eshell does not prompt for password for every sudo command [fn:15].
 #+BEGIN_SRC emacs-lisp
 (setq eshell-prefer-lisp-functions t)
@@ -4491,6 +4499,8 @@ C-r to search previous history using ivy/counsel.
 (define-key eshell-mode-map (kbd "C-r") #'counsel-esh-history)
 #+END_SRC
 
+References:
+1. https://github.com/peterwvj/emacs.d/blob/master/lisp/eshell-config-pvj.el
 *** Personalisation & Beautification
 This will make =ls= output colourful.
 #+BEGIN_SRC emacs-lisp
