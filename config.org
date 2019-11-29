@@ -849,6 +849,10 @@ Found this package from Purcell's config.
 (diminish 'aggressive-indent-mode)
 #+END_SRC
 
+** Browse Kill Ring
+#+BEGIN_SRC emacs-lisp
+(require-package 'browse-kill-ring)
+#+END_SRC
 * Enable Ivy Mode
 
 #+BEGIN_SRC emacs-lisp
