@@ -4391,8 +4391,9 @@ Use ~/.bash_history for eshell.
 (setq eshell-history-file-name nil) ;; use HISTFILE value
 #+END_SRC
 
+*Note:* Eshell does not support unbounded history length.
 #+BEGIN_SRC emacs-lisp
-(setq eshell-history-size 5000)
+(setq eshell-history-size 9999999)
 (setq eshell-save-history-on-exit t)
 #+END_SRC
 
