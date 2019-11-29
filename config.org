@@ -922,8 +922,31 @@ Use Ivy with Historian-mode [fn:14]. Historian-mode stores the results of comple
 #+END_SRC
 
 ** Counsel-Search
-
 Counsel-search comes with =counsel= library. 
+
+I want it to behave more like browser's omnibar/address bar by customising the original =counsel-search-action=.
+#+BEGIN_SRC emacs-lisp
+(defun jh/counsel-search-action (x)
+  "Browse URL if x is an URL. If not, consult search engine on x."
+  (if (string-prefix-p "http" x)
+      (browse-url x)
+    (browse-url
+     (concat
+      (nth 2 (assoc counsel-search-engine counsel-search-engines-alist))
+      x))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun jh/counsel-search ()
+  "Ivy interface for dynamically querying a search engine."
+  (interactive)
+  (require 'request)
+  (require 'json)
+  (ivy-read "search: " #'counsel-search-function
+            :action #'jh/counsel-search-action
+            :dynamic-collection t
+            :caller 'counsel-search))
+#+END_SRC
 
 Add a custom ddg search engine to use familiar ddg search result page.
 #+BEGIN_SRC emacs-lisp
