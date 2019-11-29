@@ -3557,6 +3557,21 @@ Managing system services through Emacs.
 (fullframe daemons quit-window)
 #+END_SRC
 
+* ProcEd
+A tool for accessin ghte UNIX ps list.
+#+BEGIN_SRC emacs-lisp
+(require 'proced)
+#+END_SRC
+
+Use it like =top= tool.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'proced-mode-hook 'proced-toggle-auto-update)
+(setq proced-auto-update-interval 5)
+#+END_SRC
+
+References:
+1. https://www.emacswiki.org/emacs/ProcEd
+
 * Emacs Buffers
 
 ** ibuffer
