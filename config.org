@@ -4539,7 +4539,10 @@ Dependencies: xterm-color.
 
 This will make =ls= output colourful.
 #+BEGIN_SRC emacs-lisp
-(setenv "TERM" "xterm-256color")
+(defun jh/--eshell-set-term ()
+  (setenv "TERM" "xterm-256color"))
+
+(add-hook 'eshell-mode-hook 'jh/--eshell-set-term)
 #+END_SRC
 
 Not sure what this does.
