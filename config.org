@@ -3794,7 +3794,7 @@ The number of workspace should not be less than the number of monitors.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(exwm-input-set-key (kbd "s-t") 'vterm)
+(exwm-input-set-key (kbd "s-t") 'eshell)
 #+END_SRC
 
 ** Run Linux Apps from Emacs
