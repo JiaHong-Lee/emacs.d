@@ -4452,6 +4452,22 @@ To kill *top* buffer on exiting the process.
 (setq eshell-destroy-buffer-when-process-dies t)
 #+END_SRC
 
+Make the Eshell prompt behaves more like Bash.
+#+URL: https://www.emacswiki.org/emacs/EshellPrompt#toc6
+#+BEGIN_SRC emacs-lisp
+(defun jh/--eshell-prompt ()
+  (let* ((home (getenv "HOME"))
+         (login-info (concat (user-login-name) "@" (system-name) ":"))
+         (pwd (replace-regexp-in-string "/home/zacque" "~" (eshell/pwd))))
+    (concat
+     (propertize login-info 'face `(:foreground "green"))
+     (propertize pwd 'face `(:foreground "gold"))
+     (if (= (user-uid) 0) "# " "$ "))))
+
+(setq eshell-prompt-function 'jh/--eshell-prompt)
+(setq eshell-prompt-regexp "^[^#$\n]*[#$] ")
+#+END_SRC
+
 [Not Working] Caching sudo password in eshell. This is useful so that eshell does not prompt for password for every sudo command [fn:15].
 #+BEGIN_SRC emacs-lisp
 (setq eshell-prefer-lisp-functions t)
