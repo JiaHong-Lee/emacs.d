@@ -2640,6 +2640,12 @@ It depends on the =osql= and =isql= program. This can be installed on Ubuntu.
 sudo apt install freetds-bin unixodbc
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((sql . t)))
+#+END_SRC
+
 * Enable Yasnippet Templating
 
 =Yasnippet= is a templating tool to save boilerplate typing, such as a file header. It is very powerful and the template can even be defined dynamically.
@@ -2817,7 +2823,6 @@ List the supported language for org-babel.
    (ruby . t)
    (screen . nil)
    (shell . t)
-   (sql . nil)
    (sqlite . t)
    (scheme . t)
    (C . t)
