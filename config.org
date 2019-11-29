@@ -4385,6 +4385,13 @@ This avoids some inputs from going to a newline before reaching the end.
 #+END_SRC
 
 ** Eshell as my Terminal
+Eshell is a shell, not a terminal emulator. It plays well with CLI, but not TUI. However, since Emacs has UI, some commands might have a replacement in Emacs. E.g. top -> proced, alsomixer -> volume.
+
+Start Eshell in Emacs state.
+#+BEGIN_SRC emacs-lisp
+(evil-set-initial-state 'eshell-mode 'emacs)
+#+END_SRC
+
 Use ~/.bash_history for eshell.
 #+BEGIN_SRC emacs-lisp
 (setenv "HISTFILE" "/home/zacque/.bash_history")
@@ -4395,6 +4402,14 @@ Use ~/.bash_history for eshell.
 #+BEGIN_SRC emacs-lisp
 (setq eshell-history-size 9999999)
 (setq eshell-save-history-on-exit t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq eshell-buffer-maximum-lines 4096)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq eshell-scroll-to-bottom-on-input t)
 #+END_SRC
 
 [Not Working] Caching sudo password in eshell. This is useful so that eshell does not prompt for password for every sudo command [fn:15].
@@ -4455,10 +4470,20 @@ Display progress in the mode line instead."
     "%" "%%"
     (ansi-color-apply progress))))
 #+END_SRC
+
+C-r to search previous history using ivy/counsel.
+#+BEGIN_SRC emacs-lisp
+(define-key eshell-mode-map (kbd "C-r") #'counsel-esh-history)
+#+END_SRC
+
 *** Personalisation & Beautification
 Remove the default "Welcome to the Emacs shell\n\n" message on Eshell startup.
 #+BEGIN_SRC emacs-lisp
 (setq eshell-banner-message "")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq eshell-highlight-prompt t)
 #+END_SRC
 
 Customise Eshell font face to make it looks like a typical terminal emulator.
