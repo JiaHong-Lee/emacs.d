@@ -4385,6 +4385,11 @@ This avoids some inputs from going to a newline before reaching the end.
 #+END_SRC
 
 ** Eshell as my Terminal
+Use ~/.bash_history for eshell.
+#+BEGIN_SRC emacs-lisp
+(setenv "HISTFILE" "/home/zacque/.bash_history")
+(setq eshell-history-file-name nil) ;; use HISTFILE value
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (setq eshell-history-size 5000)
