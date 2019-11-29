@@ -2802,6 +2802,15 @@ jupyter kernel --kernel=python3
 (require-package 'jupyter)
 #+END_SRC
 
+#+RESULTS:
+: jupyter
+
+#+BEGIN_SRC emacs-lisp
+(org-babel-do-load-languages 'org-babel-load-languages '((jupyter .t)))
+#+END_SRC
+
+#+RESULTS:
+
 ** Load all babel
 
 List the supported language for org-babel.
@@ -2825,8 +2834,7 @@ List the supported language for org-babel.
    (shell . t)
    (sqlite . t)
    (scheme . t)
-   (C . t)
-   (jupyter . t))) ;; jupyter should be the last
+   (C . t)))
 #+END_SRC
 
 * Parentheses Fun
