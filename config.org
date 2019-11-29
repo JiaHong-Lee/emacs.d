@@ -2754,63 +2754,6 @@ Note:
 References:
 1. github:astahlman/ob-async
 
-** emacs-jupyter
-
-*** System Setup
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-
-Prerequisite:
-#+BEGIN_SRC shell :dir /sudo::
-apt-get install -y python3-ipykernel
-#+END_SRC
-
-#+BEGIN_SRC shell :dir /sudo::
-pip3 install ipykernel
-#+END_SRC
-
-#+BEGIN_SRC shell :dir /sudo::
-python3 -m ipykternel.kernelspec
-#+END_SRC
-
-#+RESULTS:
-: Installed kernelspec python3 in /usr/local/share/jupyter/kernels/python3
-
-Edit kernel.json file to using python3.
-#+BEGIN_SRC shell
-jupyter kernelspec list
-#+END_SRC
-
-Refresh Emacs Jupyter config if necessary.
-#+BEGIN_SRC emacs-lisp
-(jupyter-available-kernelspecs t)
-#+END_SRC
-
-*** Connect to remote kernel
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-
-#+BEGIN_SRC shell
-jupyter kernel --kernel=python3
-#+END_SRC
-
-*** Emacs Setup
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'jupyter)
-#+END_SRC
-
-#+RESULTS:
-: jupyter
-
-#+BEGIN_SRC emacs-lisp
-(org-babel-do-load-languages 'org-babel-load-languages '((jupyter .t)))
-#+END_SRC
-
-#+RESULTS:
-
 ** Load all babel
 
 List the supported language for org-babel.
@@ -3163,9 +3106,60 @@ These are packages that work well with Elpy:
 
 Error: elpy-use-ipython is deprecated; see https://elpy.readthedocs.io/en/latest/ide.html#interpreter-setup
 
-** Jupyter
+** emacs-jupyter
+*** System Setup
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+Prerequisite:
+#+BEGIN_SRC shell :dir /sudo::
+apt-get install -y python3-ipykernel
+#+END_SRC
 
-To use Emacs with Jupyter, check out =emacs-jupyter=, =ob-ipython=, and =ein=.
+#+BEGIN_SRC shell :dir /sudo::
+pip3 install ipykernel
+#+END_SRC
+
+#+BEGIN_SRC shell :dir /sudo::
+python3 -m ipykternel.kernelspec
+#+END_SRC
+
+#+RESULTS:
+: Installed kernelspec python3 in /usr/local/share/jupyter/kernels/python3
+
+Edit kernel.json file to using python3.
+#+BEGIN_SRC shell
+jupyter kernelspec list
+#+END_SRC
+
+Refresh Emacs Jupyter config if necessary.
+#+BEGIN_SRC emacs-lisp
+(jupyter-available-kernelspecs t)
+#+END_SRC
+
+*** Connect to remote kernel
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+
+#+BEGIN_SRC shell
+jupyter kernel --kernel=python3
+#+END_SRC
+
+*** Emacs Setup
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'jupyter)
+#+END_SRC
+
+#+RESULTS:
+: jupyter
+
+#+BEGIN_SRC emacs-lisp
+(org-babel-do-load-languages 'org-babel-load-languages '((jupyter .t)))
+#+END_SRC
+
+#+RESULTS:
 
 ** Eglot
 
