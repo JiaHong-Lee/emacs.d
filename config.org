@@ -4525,6 +4525,7 @@ C-r to search previous history using ivy/counsel.
 #+END_SRC
 
 Use C-d to exit Eshell.
+TODO: Only delete char if it's at the input line; otherwise, send C-d.
 #+BEGIN_SRC emacs-lisp
 (defun jh/eshell-quit-or-delete-char (arg)
   (interactive "p")
