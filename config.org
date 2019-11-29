@@ -3829,7 +3829,8 @@ The number of workspace should not be less than the number of monitors.
 (exwm-randr-enable)
 #+END_SRC
 
-** Run Command Apps from EXWM
+** EXWM Key Bindings
+Note: EXWM or X11 related key are defined with Super perfix key.
 
 #+BEGIN_SRC emacs-lisp
 ;; USE EXWM KEY TO RUN COMMANDS
@@ -3841,26 +3842,11 @@ The number of workspace should not be less than the number of monitors.
 			 (start-process "exwm-shortcut" nil "sh" "-c" ,command))))
 #+END_SRC
 
-[Obsolete] I used to open terminal using the combination <START>-t. Now, I seek to work with eshell.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(exwm-command-shortcut (kbd "s-t") "xfce4-terminal")
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
-(exwm-input-set-key (kbd "s-t") 'eshell)
-#+END_SRC
-
-** Run Linux Apps from Emacs
-
-#+BEGIN_SRC emacs-lisp
-;; Shortcut Key
 (exwm-input-set-key (kbd "s-SPC") 'counsel-linux-app)
+(exwm-input-set-key (kbd "s-t") 'eshell)
+(exwm-input-set-key (kbd "s-s") 'jh/counsel-search)
 #+END_SRC
-
-** Simulate Keys to X11
-
-Note: EXWM or X11 related key are defined with Super perfix key.
 
 #+BEGIN_SRC emacs-lisp
 (exwm-input-set-key (kbd "s-i") 'exwm-input-toggle-keyboard)
