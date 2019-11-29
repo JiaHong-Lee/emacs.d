@@ -4413,6 +4413,10 @@ This avoids some inputs from going to a newline before reaching the end.
 
 ** Eshell as my Terminal
 Eshell is a shell, not a terminal emulator. It plays well with CLI, but not TUI. However, since Emacs has UI, some commands might have a replacement in Emacs. E.g. top -> proced, alsomixer -> volume.
+#+BEGIN_SRC emacs-lisp
+(require 'eshell)
+(require 'esh-mode)
+#+END_SRC
 
 Start Eshell in Emacs state.
 #+BEGIN_SRC emacs-lisp
@@ -4664,7 +4668,21 @@ References:
 #+BEGIN_SRC emacs-lisp
 (require-package 'eshell-z)
 #+END_SRC
+*** Eshell-Did-You-Mean
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+Not working!
+#+BEGIN_SRC emacs-lisp
+(require-package 'eshell-did-you-mean)
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(eshell-did-you-mean-setup)
+#+END_SRC
+
+References:
+1. https://github.com/xuchunyang/eshell-did-you-mean
 ** Libvterm/VTerm
 
 *** Pre-requisite
