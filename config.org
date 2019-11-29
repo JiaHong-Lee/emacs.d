@@ -3572,6 +3572,18 @@ Use it like =top= tool.
 References:
 1. https://www.emacswiki.org/emacs/ProcEd
 
+* Alert
+#+BEGIN_SRC emacs-lisp
+(require-package 'alert)
+#+END_SRC
+
+Pop up desktop notification on Linux.
+#+BEGIN_SRC emacs-lisp
+(setq alert-default-style 'libnotify)
+#+END_SRC
+
+References:
+1. https://github.com/jwiegley/alert
 * Emacs Buffers
 
 ** ibuffer
