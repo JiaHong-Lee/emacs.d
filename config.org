@@ -551,7 +551,7 @@ Replace the ugly Emacs logo with Z(acque) logo.
 
          (,(all-the-icons-material "search")
           "Search" "Search DuckDuckGo"
-          (lambda (&rest _) (counsel-search)))
+          (lambda (&rest _) (jh/counsel-search)))
 
          (,(all-the-icons-faicon "play" :height 0.8 :v-adjust 0.1)
           "YouTube" "Browse YouTube homepage"
