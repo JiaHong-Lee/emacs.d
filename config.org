@@ -4487,10 +4487,11 @@ Make the Eshell prompt behaves more like Bash.
 
 [Not Working] Caching sudo password in eshell. This is useful so that eshell does not prompt for password for every sudo command [fn:15].
 #+BEGIN_SRC emacs-lisp
+(require 'em-tramp)
 (setq eshell-prefer-lisp-functions t)
 (setq eshell-prefer-lisp-variables t)
 (setq password-cache t)
-(setq password-cache-expiry 600)
+(setq password-cache-expiry 600) ;; seconds
 #+END_SRC
 
 Progress bar for apt in shell. Source: https://oremacs.com/2019/03/24/shell-apt/

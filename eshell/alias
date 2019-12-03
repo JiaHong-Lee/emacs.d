@@ -1,13 +1,14 @@
-alias up eshell-up $1
-alias ff find-file $1
-alias def sdcv --color $*
-alias egrep egrep --color=auto $*
-alias emc emacsclient $*
-alias fgrep fgrep --color=auto $*
-alias grep grep --color=auto $*
-alias l ls -CF $*
-alias la ls -A $*
-alias ll ls -alF $*
-alias ls ls --color=auto $*
-alias rm rm -i $*
+alias sudo eshell/sudo $*
 alias terminal gnome-terminal $*
+alias rm rm -i $*
+alias ls ls --color=auto $*
+alias ll ls -alF $*
+alias la ls -A $*
+alias l ls -CF $*
+alias grep grep --color=auto $*
+alias fgrep fgrep --color=auto $*
+alias emc emacsclient $*
+alias egrep egrep --color=auto $*
+alias def sdcv --color $*
+alias ff find-file $1
+alias up eshell-up $1
