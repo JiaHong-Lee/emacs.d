@@ -19,3 +19,6 @@
 [submodule "lisp/help-plus"]
 	path = lisp/help-plus
 	url = ./lisp/help-plus/
+[submodule "lisp/counsel-dash"]
+	path = lisp/counsel-dash
+	url = https://github.com/dash-docs-el/counsel-dash
