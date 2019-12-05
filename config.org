@@ -113,8 +113,8 @@ Here are utility functions that I wrote. I'm putting it here to load it at the b
 
 #+BEGIN_SRC emacs-lisp
 (defun jh/get-all-subdirs (PATH DEPTH)
-  "Get all subdirectories under the directory PATH."
-  (delete PATH 
+  "Get all subdirectories under the directory PATH. Does not include the directory itself in the result."
+  (delete (expand-file-name PATH)
           (split-string (shell-command-to-string (concat "find " PATH " -type d" " -maxdepth " (number-to-string DEPTH))) "\n" t)))
 #+END_SRC
 
