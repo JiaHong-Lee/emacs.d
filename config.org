@@ -2478,34 +2478,16 @@ Pressing <enter> triggers the "default action". This is the default behaviour --
 
 Specify the path to all .bib files.
 #+BEGIN_SRC emacs-lisp
-(defun get-all-bib-files ()
-  "Get all my bib files under the directory recursively"
-  (directory-files-recursively "/home/zacque/Documents/Artificial_Intelligence/academic_papers" "bib"))
-
-(setq bibtex-completion-bibliography
-      '("~/Documents/bibliography/references.bib"
-	"~/Documents/Artificial_Intelligence/references.bib"))
-
-(setq bibtex-completion-bibliography
-      (append bibtex-completion-bibliography (get-all-bib-files)))
+(setq bibtex-completion-bibliography (directory-files-recursively "~/Documents/papers" "\.bib$"))
 #+END_SRC
 
 Specify the directories to search for PDFs.
 #+BEGIN_SRC emacs-lisp
-(defun get-all-subdirs ()
-  "Get all subdirectories under the directory"
-  (split-string (shell-command-to-string
-    "find ~/Documents/Artificial_Intelligence/academic_papers/ -type d") "\n" t))
-
-(setq bibtex-completion-library-path
-      '("~/Documents/bibliography" "~/Documents/bibliography/pdfs/" "~/Documents/Artificial_Intelligence"))
-
-(setq bibtex-completion-library-path
-      (append bibtex-completion-library-path (get-all-subdirs)))
+(setq bibtex-completion-library-path (jh/get-all-subdirs "~/Documents/papers" 5))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq bibtex-completion-notes-path "/home/zacque/Documents/Artificial_Intelligence/academic_papers/notes.org")
+(setq bibtex-completion-notes-path "~/Documents/papers/notes.txt")
 #+END_SRC
 
 References:
@@ -2567,16 +2549,14 @@ This matches the APA citation style that I usually use.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq reftex-default-bibliography
-      '("~/Documents/bibliography/references.bib"
-        "~/Documents/Artificial_Intelligence/references.bib"))
+(setq reftex-default-bibliography bibtex-completion-bibliography)
 #+END_SRC
 
 Not quite sure the differences between these and the =reftex-default-bibliography= variable.
 #+BEGIN_SRC emacs-lisp
 (setq org-ref-bibliography-notes "~/Documents/bibliography/notes.txt"
       org-ref-default-bibliography reftex-default-bibliography
-      org-ref-pdf-directory "~/Documents/bibliography/pdfs/")
+      org-ref-pdf-directory "~/Documents/papers/pdfs/")
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -2610,15 +2590,12 @@ To compile LaTeX document with citations:
 (setq org-latex-logfiles-extensions  '("lof" "lot" "tex" "aux" "idx" "log" "out" "toc" "nav" "snm" "vrb" "dvi" "fdb_latexmk" "blg" "brf" "fls" "entoc" "ps" "spl" "bbl" "pygtex" "pygstyle"))
 #+END_SRC
 
-#+Source: https://tex.stackexchange.com/a/372988
+#+URL: https://tex.stackexchange.com/a/372988
 #+BEGIN_SRC emacs-lisp
 (setq tex-run-command "pdftex")
 (setq tex-bibtex-command "biber")
 (setq latex-run-command "pdflatex")
 #+END_SRC
-
-#+RESULTS: https://tex.stackexchange.com/a/372988
-: pdflatex
 
 References:
 1. https://nickgeorge.net/science/org_ref_setup/
