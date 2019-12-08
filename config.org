@@ -2198,6 +2198,9 @@ Use =org-mru-clock= package to clock into recent org-mode tasks. By default, org
 #+END_SRC
 
 ** Org-Gcal
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 
 Org sync with Google Calendar. 
 #+BEGIN_SRC emacs-lisp
