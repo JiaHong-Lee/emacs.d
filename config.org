@@ -662,16 +662,6 @@ Override the default font in Emacs to using Overpass Mono developed by Redhat [f
 (add-to-list 'default-frame-alist '(font . "Overpass Mono"))
 #+END_SRC
 
-I feel like wanting a different font for coding. Reference: https://www.emacswiki.org/emacs/FacesPerBuffer.
-#+BEGIN_SRC emacs-lisp
-(defun jh/toggle-coding-face-mode ()
-  "Sets a fixed width (monospace) font in current buffer"
-  (interactive)
-  (buffer-face-set '(:family "IBM Plex Mono")))
-
-(add-hook 'prog-mode-hook 'jh/toggle-coding-face-mode)
-#+END_SRC
-
 I feel like wanting another font for reading. 
 #+BEGIN_SRC emacs-lisp
 (defun jh/toggle-reading-face-mode ()
@@ -698,11 +688,6 @@ Display relative line numbers. Reference: https://www.reddit.com/r/emacs/comment
         display-line-numbers-current-absolute t
         display-line-numbers-width 4
         display-line-numbers-widen t))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'text-mode-hook #'jh/display-visual-line-numbers)
-(add-hook 'prog-mode-hook #'jh/display-visual-line-numbers)
 #+END_SRC
 
 Prettify line-number faces. Reference: https://www.reddit.com/r/emacs/comments/6noyxa/customizing_the_new_native_line_numbers_in_emacs
@@ -733,13 +718,6 @@ Taken from Purcell.
               (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
 #+END_SRC
 
-** Prettify Symbol
-
-Combine two characters into one composed character. Taken from Purcell. 
-#+BEGIN_SRC emacs-lisp
-(add-hook 'after-init-hook 'global-prettify-symbols-mode)
-#+END_SRC
-
 ** 80% Width
 
 Center align content for better reading experience. Set-face-attribute is needed to remove the grey background colour.
@@ -758,6 +736,32 @@ Center align content for better reading experience. Set-face-attribute is needed
 Use the format year/month/day.
 #+BEGIN_SRC emacs-lisp
 (setq calendar-date-style 'iso)
+#+END_SRC
+
+* Text-mode Personalisation
+** Display Relative Line Numbers
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook #'jh/display-visual-line-numbers)
+#+END_SRC
+* Prog-mode Personalisation
+** Prettify Symbol
+Combine two characters into one composed character. Taken from Purcell.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook #'prettify-symbols-mode)
+#+END_SRC
+** Display Relative Line Numbers
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook #'jh/display-visual-line-numbers)
+#+END_SRC
+** Default Font
+I feel like wanting a different font for coding. Reference: https://www.emacswiki.org/emacs/FacesPerBuffer.
+#+BEGIN_SRC emacs-lisp
+(defun jh/toggle-coding-face-mode ()
+  "Sets a fixed width (monospace) font in current buffer"
+  (interactive)
+  (buffer-face-set '(:family "IBM Plex Mono")))
+
+(add-hook 'prog-mode-hook 'jh/toggle-coding-face-mode)
 #+END_SRC
 
 * Editing Utilities
