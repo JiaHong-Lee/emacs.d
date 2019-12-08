@@ -5411,6 +5411,27 @@ Map <RET> to a key to show all options. By default, pressing <RET> does nothing,
 (define-key docker-container-mode-map (kbd "RET") 'docker-container-help-popup)
 #+END_SRC
 
+** Org-sticky-header
+#+BEGIN_SRC emacs-lisp
+(require-package 'org-sticky-header)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook 'org-sticky-header-mode)
+#+END_SRC
+
+** Org-make-toc
+#+BEGIN_SRC emacs-lisp
+(require-package 'org-make-toc)
+#+END_SRC
+
+#+RESULTS:
+: org-make-toc
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook #'org-make-toc-mode)
+#+END_SRC
+
 * Footnotes
 
 [fn:32] http://ergoemacs.org/emacs/emacs_shell_vs_term_vs_ansi-term_vs_eshell.html
