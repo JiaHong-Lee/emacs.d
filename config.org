@@ -3777,10 +3777,34 @@ The number of workspace should not be less than the number of monitors.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'exwm-randr-screen-change-hook
-          (lambda ()
-            (start-process-shell-command
-             "xrandr" nil "xrandr --output eDP-1-1 --primary --output HDMI-1-2 --rotate left --right-of eDP-1-1 --auto")))
+(defun jh/--exwm-second-screen-vertical-at-right ()
+  "Place a monitor display next to my laptop monitor. The external monitor is configured as vertical and placed to the right."
+  (start-process-shell-command
+   "xrandr" nil "xrandr --output eDP-1-1 --primary --output HDMI-1-2 --rotate left --right-of eDP-1-1 --auto"))
+
+(defun jh/--exwm-second-screen-vertical-at-left ()
+  "Place a monitor display next to my laptop monitor. The external monitor is configured as vertical and placed to the right."
+  (start-process-shell-command
+   "xrandr" nil "xrandr --output eDP-1-1 --primary --output HDMI-1-2 --rotate left --left-of eDP-1-1 --auto"))
+
+(defun jh/exwm-second-vertical-screen-place-at-left ()
+  "Configure the second screen to place at left to my laptop monitor."
+  (interactive)
+  (remove-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-right)
+  (add-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-left)
+  (jh/--exwm-second-screen-vertical-at-left))
+
+(defun jh/exwm-second-vertical-screen-place-at-right ()
+  "Configure the second screen to place at left to my laptop monitor."
+  (interactive)
+  (remove-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-left)
+  (add-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-right)
+  (jh/--exwm-second-screen-vertical-at-right))
+#+END_SRC
+
+Place to the right by default.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-left)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
