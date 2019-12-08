@@ -22,3 +22,6 @@
 [submodule "lisp/counsel-dash"]
 	path = lisp/counsel-dash
 	url = https://github.com/dash-docs-el/counsel-dash
+[submodule "lisp/framemove"]
+	path = lisp/framemove
+	url = ./lisp/framemove/

@@ -3638,7 +3638,16 @@ Group buffers by vc root directory.
 #+END_SRC
 
 * Emacs Windows
+** WindMove & FrameMove
+#+BEGIN_SRC emacs-lisp
+(require 'windmove)
+#+END_SRC
 
+Use FrameMove to extend WindMove's ability to move across Emacs frames.
+#+BEGIN_SRC emacs-lisp
+(require 'framemove)
+(setq framemove-hook-into-windmove t)
+#+END_SRC
 ** ace-window
 
 Quick switching between buffer windows.
