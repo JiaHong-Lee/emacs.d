@@ -1339,7 +1339,6 @@ Use =org-cliplink= to fetch a page title and format it into an org-link.
 #+END_SRC
 
 ** Personalisation & Beautification
-
 Beautifying org-mode.
 #+URL: https://emacs.stackexchange.com/a/22126
 #+BEGIN_SRC emacs-lisp
@@ -1389,55 +1388,15 @@ Beautifying org-mode.
 (setq org-n-level-faces (length org-level-faces))
 #+END_SRC
 
-=org-bullets= replaces org default '*' with UTF-8 bullets, which is customisable.
-#+BEGIN_SRC emacs-lisp
-(require-package 'org-bullets)
-(add-hook 'org-mode-hook 'org-bullets-mode)
-#+END_SRC
-
 =(diminish 'org-indent-mode)= does not work directly. The call to it must occur after org-indent.el has ben loaded. Reference: https://emacs.stackexchange.com/questions/22531/diminish-org-indent-mode
 #+BEGIN_SRC emacs-lisp
 (require 'org-indent)
 (diminish 'org-indent-mode)
 #+END_SRC
 
-To fontify the whole heading lines of an org-src-block.
-#+BEGIN_SRC emacs-lisp
-(setq org-fontify-whole-heading-line t)
-#+END_SRC
-
 Open an org file with hard indentation by default.
 #+BEGIN_SRC emacs-lisp
 (setq org-startup-indented t)
-#+END_SRC
-
-Override Org-mode subscript and superscripts default behaviours for display. Mixing LaTeX with plain text.
-#+BEGIN_SRC emacs-lisp
-(setq org-use-sub-superscripts "{}")
-#+END_SRC
-
-Align all tables automatically upon opening the file. If not, I would have to C-c C-c to hide them.
-#+BEGIN_SRC emacs-lisp
-(setq org-startup-align-all-tables t)
-#+END_SRC
-
-Open org-file with inline images shown automatically.
-#+BEGIN_SRC emacs-lisp
-(setq org-startup-with-inline-images t)
-#+END_SRC
-
-Do not use org-bullets to make it looks cleaner.
-#+BEGIN_SRC emacs-lisp
-(setq org-bullets-bullet-list '(" "))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq org-ellipsis "...")
-#+END_SRC
-
-Do not hide the markup symbol such as /, ~, and so on.
-#+BEGIN_SRC emacs-lisp
-(setq org-hide-emphasis-markers nil)
 #+END_SRC
 
 Use Iosevka Font for Org-mode: https://shreyas.ragavan.co/post/951004ce-add0-4e7e-b6e2-2932e0dee429/
@@ -1455,10 +1414,14 @@ Use Iosevka Font for Org-mode: https://shreyas.ragavan.co/post/951004ce-add0-4e7
 (add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-configuration)
 #+END_SRC
 
+Override Org-mode subscript and superscripts default behaviours for display. Mixing LaTeX with plain text.
 #+BEGIN_SRC emacs-lisp
-(setq org-pretty-entities t)
-(setq org-fontify-done-headline t)
-(setq org-fontify-quote-and-verse-blocks t)
+(setq org-use-sub-superscripts "{}")
+#+END_SRC
+
+Do not hide the markup symbol such as /, ~, and so on.
+#+BEGIN_SRC emacs-lisp
+(setq org-hide-emphasis-markers nil)
 #+END_SRC
 
 References:
@@ -1531,6 +1494,14 @@ This section defines the org-link type for GitHub repo and corresponding issues.
       (browse-url (format base-url REPO)))))
 #+END_SRC
 
+** Org Spelling Checker
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'flyspell
+  (add-hook 'org-mode-hook #'flyspell-mode))
+#+END_SRC
 * Org Sidebar
 
 #+BEGIN_SRC emacs-lisp
@@ -3523,10 +3494,6 @@ Use "pyim" as default input method. Then I can invoke =toggle-input-method= anyw
 Flyspell-mode is a built-in package with Emacs.
 #+BEGIN_SRC emacs-lisp
 (require 'flyspell)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'org-mode-hook #'flyspell-mode)
 #+END_SRC
 
 I prefer British spelling to US spelling.
