@@ -1344,6 +1344,8 @@ Use =org-cliplink= to fetch a page title and format it into an org-link.
 
 ** Personalisation & Beautification
 Beautifying org-mode.
+
+Define new org-heading levels to prevent it from repeating from org-level-1 fontface because org-level-1 fontface is special and is a bit larger.
 #+URL: https://emacs.stackexchange.com/a/22126
 #+BEGIN_SRC emacs-lisp
 (defface org-level-9 ;; originally copied from org-level-8
