@@ -1394,6 +1394,11 @@ Define new org-heading levels to prevent it from repeating from org-level-1 font
 (setq org-n-level-faces (length org-level-faces))
 #+END_SRC
 
+Open an org file by showing all children.
+#+BEGIN_SRC emacs-lisp
+(setq org-startup-folded 'content)
+#+END_SRC
+
 =(diminish 'org-indent-mode)= does not work directly. The call to it must occur after org-indent.el has ben loaded. Reference: https://emacs.stackexchange.com/questions/22531/diminish-org-indent-mode
 #+BEGIN_SRC emacs-lisp
 (require 'org-indent)
