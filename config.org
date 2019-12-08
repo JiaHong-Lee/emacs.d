@@ -2857,7 +2857,7 @@ An in-built Elisp library.
 Taken from Purcell. This package might prettier elisp expessions output.
 #+BEGIN_SRC emacs-lisp
 (require-package 'ipretty)
-(add-hook 'after-init-hook 'ipretty-mode)
+(add-hook 'emacs-lisp-mode-hook 'ipretty-mode)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
