@@ -3138,13 +3138,13 @@ jupyter kernel --kernel=python3
 *** Emacs Setup
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'jupyter)
+(require 'jupyter)
 #+END_SRC
 
 #+RESULTS:
 : jupyter
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (org-babel-do-load-languages 'org-babel-load-languages '((jupyter .t)))
 #+END_SRC
 
