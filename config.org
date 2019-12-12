@@ -3699,203 +3699,6 @@ References:
 2. https://oremacs.com/2015/01/29/more-hydra-goodness/
    Combining ace-window and windmove with hydra.
 
-* EXWM -- Use Emacs as a Window Manager
-
-** Basic Setup
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'exwm)
-(require 'exwm-config)
-#+END_SRC
-
-Show all EXWM buffers in all workspaces.
-#+BEGIN_SRC emacs-lisp
-(setq exwm-workspace-show-all-buffers t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq exwm-layout-show-all-buffers t)
-#+END_SRC
-
-Able to resize non-floating buffer with mouse.
-#+BEGIN_SRC emacs-lisp
-(window-divider-mode)
-#+END_SRC
-
-** Utils
-
-#+BEGIN_SRC emacs-lisp
-(defun switch-to-last-buffer ()
-  "Switch to last open buffer in current window."
-  (interactive)
-  (switch-to-buffer (other-buffer (current-buffer) 1)))
-
-(exwm-input-set-key (kbd "s-<tab>") #'switch-to-last-buffer)
-#+END_SRC
-
-** Auto-Generate an Appropriate Name to Each EXWM Buffer
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'exwm-update-class-hook
-          (lambda ()
-            (unless (or (string-prefix-p "sun-awt-X11-" exwm-instance-name)
-                        (string= "gimp" exwm-instance-name))
-              (exwm-workspace-rename-buffer exwm-class-name))))
-(add-hook 'exwm-update-title-hook
-          (lambda ()
-            (when (or (not exwm-instance-name)
-                      (string-prefix-p "sun-awt-X11-" exwm-instance-name)
-                      (string= "gimp" exwm-instance-name))
-              (exwm-workspace-rename-buffer exwm-title))))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'exwm-update-title-hook (lambda () (exwm-workspace-rename-buffer exwm-title)))
-#+END_SRC
-
-Note: This function keeps giving out-of-range errors with pop-up windows.
-#+BEGIN_SRC emacs-lisp :tangle no
-;; SOURCE: https://github.com/ch11ng/exwm/issues/365#issuecomment-368338923
-(defun exwm-rename-buffer ()
-  "Rename buffers to X window titles."
-  (interactive)
-  (exwm-workspace-rename-buffer
-   (concat exwm-class-name ": "
-	   (if (<= (length exwm-title) 16) exwm-title
-	     (concat (substring exwm-title 0 20) "...")))))
-(add-hook 'exwm-update-class-hook 'exwm-rename-buffer)
-(add-hook 'exwm-update-title-hook 'exwm-rename-buffer)
-#+END_SRC
-
-References:
-1. https://github.com/ch11ng/exwm/wiki/Configuration-Example
-
-** RandR (Multi-screen)
-
-#+BEGIN_SRC emacs-lisp
-(require 'exwm-randr)
-#+END_SRC
-
-The number of workspace should not be less than the number of monitors.
-#+BEGIN_SRC emacs-lisp
-(setq exwm-workspace-number 2)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq exwm-randr-workspace-output-plist '(1 "eDP-1-1" 0 "HDMI-1-2"))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun jh/--exwm-second-screen-vertical-at-right ()
-  "Place a monitor display next to my laptop monitor. The external monitor is configured as vertical and placed to the right."
-  (start-process-shell-command
-   "xrandr" nil "xrandr --output eDP-1-1 --primary --output HDMI-1-2 --rotate left --right-of eDP-1-1 --auto"))
-
-(defun jh/--exwm-second-screen-vertical-at-left ()
-  "Place a monitor display next to my laptop monitor. The external monitor is configured as vertical and placed to the right."
-  (start-process-shell-command
-   "xrandr" nil "xrandr --output eDP-1-1 --primary --output HDMI-1-2 --rotate left --left-of eDP-1-1 --auto"))
-
-(defun jh/exwm-second-vertical-screen-place-at-left ()
-  "Configure the second screen to place at left to my laptop monitor."
-  (interactive)
-  (remove-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-right)
-  (add-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-left)
-  (jh/--exwm-second-screen-vertical-at-left))
-
-(defun jh/exwm-second-vertical-screen-place-at-right ()
-  "Configure the second screen to place at left to my laptop monitor."
-  (interactive)
-  (remove-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-left)
-  (add-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-right)
-  (jh/--exwm-second-screen-vertical-at-right))
-#+END_SRC
-
-Place to the right by default.
-#+BEGIN_SRC emacs-lisp
-(add-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-left)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(exwm-randr-enable)
-#+END_SRC
-
-** EXWM Key Bindings
-Note: EXWM or X11 related key are defined with Super perfix key.
-
-#+BEGIN_SRC emacs-lisp
-;; USE EXWM KEY TO RUN COMMANDS
-;; SOURCE: https://github.com/vbuaraujo/emacs-configs/blob/master/init-exwm.el
-(defun exwm-command-shortcut (key command)
-  (exwm-input-set-key key
-		      `(lambda ()
-			 (interactive)
-			 (start-process "exwm-shortcut" nil "sh" "-c" ,command))))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(exwm-input-set-key (kbd "s-SPC") 'counsel-linux-app)
-(exwm-input-set-key (kbd "s-t") 'eshell)
-(exwm-input-set-key (kbd "s-s") 'jh/counsel-search)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(exwm-input-set-key (kbd "s-i") 'exwm-input-toggle-keyboard)
-(exwm-input-set-key (kbd "s-w") 'exwm-workspace-switch)
-(exwm-input-set-key (kbd "s-r") 'rename-buffer)
-(exwm-input-set-key (kbd "s-m") 'exwm-workspace-move-window)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; https://www.reddit.com/r/emacs/comments/6huok9/exwm_configs/dkvt5bs
-(exwm-input-set-key (kbd "s-h") #'windmove-left)
-(exwm-input-set-key (kbd "s-j") #'windmove-down)
-(exwm-input-set-key (kbd "s-k") #'windmove-up)
-(exwm-input-set-key (kbd "s-l") #'windmove-right)
-#+END_SRC
-
-Check out: Hydra + Ace-window. https://www.youtube.com/watch?v=_qZliI1BKzI
-#+BEGIN_SRC emacs-lisp
-(require 'buffer-move)
-(exwm-input-set-key (kbd "s-C-h") #'buf-move-left)
-(exwm-input-set-key (kbd "s-C-j") #'buf-move-down)
-(exwm-input-set-key (kbd "s-C-k") #'buf-move-up)
-(exwm-input-set-key (kbd "s-C-l") #'buf-move-right)
-#+END_SRC
-
-#+RESULTS:
-
-#+BEGIN_SRC emacs-lisp
-;; SOURCE: https://github.com/ch11ng/exwm/wiki/Configuration-Example
-(setq exwm-input-simulation-keys
-      '(
-	;; ;; movement
-	;; ([?\C-b] . [left])
-	;; ([?\M-b] . [C-left])
-	;; ([?\C-f] . [right])
-	;; ([?\M-f] . [C-right])
-	;; ([?\C-p] . [up])
-	;; ([?\C-n] . [down])
-	;; ([?\C-a] . [home])
-	;; ([?\C-e] . [end])
-	;; ([?\M-v] . [prior])
-	;; ([?\C-v] . [next])
-	;; ([?\C-d] . [delete])
-	;; ([?\C-k] . [S-end delete])
-
-	([?\C-c C-c] . [?\C-c])
-
-	;; cut/paste.
-	([?\M-w] . [?\C-c])
-	([?\C-y] . [?\C-v])))
-#+END_SRC
-
-** EXWM Enable
-
-#+BEGIN_SRC emacs-lisp
-(exwm-enable)
-#+END_SRC
-
 * File and Directory
 
 In this section, I'll configure the regarding files editing, reading, and directory operations.
@@ -5444,6 +5247,203 @@ Map <RET> to a key to show all options. By default, pressing <RET> does nothing,
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'org-mode-hook #'org-make-toc-mode)
+#+END_SRC
+
+** EXWM -- Use Emacs as a Window Manager
+
+*** Basic Setup
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'exwm)
+(require 'exwm-config)
+#+END_SRC
+
+Show all EXWM buffers in all workspaces.
+#+BEGIN_SRC emacs-lisp
+(setq exwm-workspace-show-all-buffers t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq exwm-layout-show-all-buffers t)
+#+END_SRC
+
+Able to resize non-floating buffer with mouse.
+#+BEGIN_SRC emacs-lisp
+(window-divider-mode)
+#+END_SRC
+
+*** Utils
+
+#+BEGIN_SRC emacs-lisp
+(defun switch-to-last-buffer ()
+  "Switch to last open buffer in current window."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+
+(exwm-input-set-key (kbd "s-<tab>") #'switch-to-last-buffer)
+#+END_SRC
+
+*** Auto-Generate an Appropriate Name to Each EXWM Buffer
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'exwm-update-class-hook
+          (lambda ()
+            (unless (or (string-prefix-p "sun-awt-X11-" exwm-instance-name)
+                        (string= "gimp" exwm-instance-name))
+              (exwm-workspace-rename-buffer exwm-class-name))))
+(add-hook 'exwm-update-title-hook
+          (lambda ()
+            (when (or (not exwm-instance-name)
+                      (string-prefix-p "sun-awt-X11-" exwm-instance-name)
+                      (string= "gimp" exwm-instance-name))
+              (exwm-workspace-rename-buffer exwm-title))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'exwm-update-title-hook (lambda () (exwm-workspace-rename-buffer exwm-title)))
+#+END_SRC
+
+Note: This function keeps giving out-of-range errors with pop-up windows.
+#+BEGIN_SRC emacs-lisp :tangle no
+;; SOURCE: https://github.com/ch11ng/exwm/issues/365#issuecomment-368338923
+(defun exwm-rename-buffer ()
+  "Rename buffers to X window titles."
+  (interactive)
+  (exwm-workspace-rename-buffer
+   (concat exwm-class-name ": "
+	   (if (<= (length exwm-title) 16) exwm-title
+	     (concat (substring exwm-title 0 20) "...")))))
+(add-hook 'exwm-update-class-hook 'exwm-rename-buffer)
+(add-hook 'exwm-update-title-hook 'exwm-rename-buffer)
+#+END_SRC
+
+References:
+1. https://github.com/ch11ng/exwm/wiki/Configuration-Example
+
+*** RandR (Multi-screen)
+
+#+BEGIN_SRC emacs-lisp
+(require 'exwm-randr)
+#+END_SRC
+
+The number of workspace should not be less than the number of monitors.
+#+BEGIN_SRC emacs-lisp
+(setq exwm-workspace-number 2)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq exwm-randr-workspace-output-plist '(1 "eDP-1-1" 0 "HDMI-1-2"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun jh/--exwm-second-screen-vertical-at-right ()
+  "Place a monitor display next to my laptop monitor. The external monitor is configured as vertical and placed to the right."
+  (start-process-shell-command
+   "xrandr" nil "xrandr --output eDP-1-1 --primary --output HDMI-1-2 --rotate left --right-of eDP-1-1 --auto"))
+
+(defun jh/--exwm-second-screen-vertical-at-left ()
+  "Place a monitor display next to my laptop monitor. The external monitor is configured as vertical and placed to the right."
+  (start-process-shell-command
+   "xrandr" nil "xrandr --output eDP-1-1 --primary --output HDMI-1-2 --rotate left --left-of eDP-1-1 --auto"))
+
+(defun jh/exwm-second-vertical-screen-place-at-left ()
+  "Configure the second screen to place at left to my laptop monitor."
+  (interactive)
+  (remove-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-right)
+  (add-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-left)
+  (jh/--exwm-second-screen-vertical-at-left))
+
+(defun jh/exwm-second-vertical-screen-place-at-right ()
+  "Configure the second screen to place at left to my laptop monitor."
+  (interactive)
+  (remove-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-left)
+  (add-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-right)
+  (jh/--exwm-second-screen-vertical-at-right))
+#+END_SRC
+
+Place to the right by default.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'exwm-randr-screen-change-hook #'jh/--exwm-second-screen-vertical-at-left)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(exwm-randr-enable)
+#+END_SRC
+
+*** EXWM Key Bindings
+Note: EXWM or X11 related key are defined with Super perfix key.
+
+#+BEGIN_SRC emacs-lisp
+;; USE EXWM KEY TO RUN COMMANDS
+;; SOURCE: https://github.com/vbuaraujo/emacs-configs/blob/master/init-exwm.el
+(defun exwm-command-shortcut (key command)
+  (exwm-input-set-key key
+		      `(lambda ()
+			 (interactive)
+			 (start-process "exwm-shortcut" nil "sh" "-c" ,command))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(exwm-input-set-key (kbd "s-SPC") 'counsel-linux-app)
+(exwm-input-set-key (kbd "s-t") 'eshell)
+(exwm-input-set-key (kbd "s-s") 'jh/counsel-search)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(exwm-input-set-key (kbd "s-i") 'exwm-input-toggle-keyboard)
+(exwm-input-set-key (kbd "s-w") 'exwm-workspace-switch)
+(exwm-input-set-key (kbd "s-r") 'rename-buffer)
+(exwm-input-set-key (kbd "s-m") 'exwm-workspace-move-window)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; https://www.reddit.com/r/emacs/comments/6huok9/exwm_configs/dkvt5bs
+(exwm-input-set-key (kbd "s-h") #'windmove-left)
+(exwm-input-set-key (kbd "s-j") #'windmove-down)
+(exwm-input-set-key (kbd "s-k") #'windmove-up)
+(exwm-input-set-key (kbd "s-l") #'windmove-right)
+#+END_SRC
+
+Check out: Hydra + Ace-window. https://www.youtube.com/watch?v=_qZliI1BKzI
+#+BEGIN_SRC emacs-lisp
+(require 'buffer-move)
+(exwm-input-set-key (kbd "s-C-h") #'buf-move-left)
+(exwm-input-set-key (kbd "s-C-j") #'buf-move-down)
+(exwm-input-set-key (kbd "s-C-k") #'buf-move-up)
+(exwm-input-set-key (kbd "s-C-l") #'buf-move-right)
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC emacs-lisp
+;; SOURCE: https://github.com/ch11ng/exwm/wiki/Configuration-Example
+(setq exwm-input-simulation-keys
+      '(
+	;; ;; movement
+	;; ([?\C-b] . [left])
+	;; ([?\M-b] . [C-left])
+	;; ([?\C-f] . [right])
+	;; ([?\M-f] . [C-right])
+	;; ([?\C-p] . [up])
+	;; ([?\C-n] . [down])
+	;; ([?\C-a] . [home])
+	;; ([?\C-e] . [end])
+	;; ([?\M-v] . [prior])
+	;; ([?\C-v] . [next])
+	;; ([?\C-d] . [delete])
+	;; ([?\C-k] . [S-end delete])
+
+	([?\C-c C-c] . [?\C-c])
+
+	;; cut/paste.
+	([?\M-w] . [?\C-c])
+	([?\C-y] . [?\C-v])))
+#+END_SRC
+
+*** EXWM Enable
+
+#+BEGIN_SRC emacs-lisp
+(exwm-enable)
 #+END_SRC
 
 * Footnotes
