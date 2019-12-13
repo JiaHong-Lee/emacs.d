@@ -490,6 +490,9 @@ References:
 1. github:domtronn/all-the-iocns.el
 
 ** Emacs Dashboard as Startup Screen
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 
 Use dashboard package as my startup page.
 #+BEGIN_SRC emacs-lisp
