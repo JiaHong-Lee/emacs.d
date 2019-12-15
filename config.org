@@ -2949,16 +2949,25 @@ Configure org-tangle to export scheme file to end with .scm. By default, it ends
 
 #+BEGIN_SRC emacs-lisp
 (require-package 'slime)
+(require-package 'slime-company)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq inferior-lisp-program "/usr/bin/sbcl")
-(setq slime-contribs '(slime-fancy))
+(setq inferior-lisp-program "/usr/local/bin/sbcl")
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(slime-setup '(slime-fancy slime-company))
+#+END_SRC
+
+#+URL: https://stackoverflow.com/a/2692474
+#+BEGIN_SRC emacs-lisp
+(setq slime-enable-evaluate-in-emacs t)
+#+END_SRC
 
 References:
 1. https://github.com/slime/slime
+2. https://github.com/anwyn/slime-company
 
 ** Org-babel for Common Lisp
 
