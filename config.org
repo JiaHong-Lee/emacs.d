@@ -489,9 +489,12 @@ Remember to run (all-the-icons-install-fonts) to install the Resource Fonts. Bea
 References:
 1. github:domtronn/all-the-iocns.el
 
+** Set Initial Buffer
 
 #+BEGIN_SRC emacs-lisp
+(setq initial-buffer-choice (jh/file-in-sync-directory "startup.org"))
 #+END_SRC
+
 ** UTF-8 Everywhere
 
 Setup to have UTF-8 everywhere? To display Chinese fonts in TTY.
