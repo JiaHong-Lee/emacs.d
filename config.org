@@ -489,102 +489,9 @@ Remember to run (all-the-icons-install-fonts) to install the Resource Fonts. Bea
 References:
 1. github:domtronn/all-the-iocns.el
 
-** Emacs Dashboard as Startup Screen
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-
-Use dashboard package as my startup page.
-#+BEGIN_SRC emacs-lisp
-(require 'dashboard)
-#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(dashboard-setup-startup-hook)
 #+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun jh/goto-dashboard-buffer ()
-  "Switch to *dashboard* buffer. Create one if the buffer does not exist."
-  (interactive)
-  (get-buffer-create "*dashboard*")
-  (set-buffer "*dashboard*")
-  (dashboard-refresh-buffer))
-
-(setq initial-buffer-choice 'jh/goto-dashboard-buffer)
-#+END_SRC
-
-Disable package loading init time. I don't find it useful.
-#+BEGIN_SRC emacs-lisp
-(setq dashboard-set-init-info nil)
-#+END_SRC
-
-Replace the ugly Emacs logo with Z(acque) logo.
-#+BEGIN_SRC emacs-lisp
-(setq dashboard-startup-banner
-      (jh/emacs-subdirectory "images/startup_logo/small_yellow_z.png"))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq dashboard-banner-logo-title
-      (concat "Happy hacking, " (upcase-initials user-login-name) " - Emacs ♥ you!"))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq dashboard-set-file-icons t)
-(setq dashboard-set-heading-icons nil)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq dashboard-center-content t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq dashboard-footer "\"不怕慢，只怕站。精诚所至，金石为开。\"                 ")
-(setq dashboard-footer-icon "")
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq dashboard-set-navigator t)
-
-(setq dashboard-navigator-buttons
-      `(((,(all-the-icons-octicon "globe" :height 0.8 :v-adjust 0.1)
-          "Homepage" "Browse homepage"
-          (lambda (&rest _) (browse-url "https://ddg.gg")))
-
-         (,(all-the-icons-material "search")
-          "Search" "Search DuckDuckGo"
-          (lambda (&rest _) (jh/counsel-search)))
-
-         (,(all-the-icons-faicon "play" :height 0.8 :v-adjust 0.1)
-          "YouTube" "Browse YouTube homepage"
-          (lambda (&rest _) (browse-url "https://youtube.com")))
-
-         (,(all-the-icons-faicon "rss" :v-adjust -0.1)
-          "Feed" "Browse RSS feeds"
-          (lambda (&rest _) (elfeed))))))
-#+END_SRC
-
-Use key bindings that makes sense to me.
-#+BEGIN_SRC emacs-lisp
-(define-key dashboard-mode-map (kbd "j") #'widget-forward)
-(define-key dashboard-mode-map (kbd "n") #'widget-forward)
-(define-key dashboard-mode-map (kbd "k") #'widget-backward)
-(define-key dashboard-mode-map (kbd "p") #'widget-backward)
-(define-key dashboard-mode-map (kbd "<tab>") #'dashboard-next-section)
-(define-key dashboard-mode-map (kbd "TAB") #'dashboard-next-section)
-(define-key dashboard-mode-map (kbd "<backtab>") #'dashboard-previous-section)
-(define-key dashboard-mode-map (kbd "S-TAB") #'dashboard-previous-section)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'evil
-  (evil-set-initial-state 'dashboard-mode 'emacs))
-#+END_SRC
-
-References:
-1. https://github.com/emacs-dashboard/emacs-dashboard
-
 ** UTF-8 Everywhere
 
 Setup to have UTF-8 everywhere? To display Chinese fonts in TTY.
@@ -5502,6 +5409,99 @@ Check out: Hydra + Ace-window. https://www.youtube.com/watch?v=_qZliI1BKzI
 #+BEGIN_SRC emacs-lisp
 (exwm-enable)
 #+END_SRC
+
+** Emacs Dashboard as Startup Screen
+
+Use dashboard package as my startup page.
+#+BEGIN_SRC emacs-lisp
+(require 'dashboard)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(dashboard-setup-startup-hook)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun jh/goto-dashboard-buffer ()
+  "Switch to *dashboard* buffer. Create one if the buffer does not exist."
+  (interactive)
+  (get-buffer-create "*dashboard*")
+  (set-buffer "*dashboard*")
+  (dashboard-refresh-buffer))
+
+(setq initial-buffer-choice 'jh/goto-dashboard-buffer)
+#+END_SRC
+
+Disable package loading init time. I don't find it useful.
+#+BEGIN_SRC emacs-lisp
+(setq dashboard-set-init-info nil)
+#+END_SRC
+
+Replace the ugly Emacs logo with Z(acque) logo.
+#+BEGIN_SRC emacs-lisp
+(setq dashboard-startup-banner
+      (jh/emacs-subdirectory "images/startup_logo/small_yellow_z.png"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq dashboard-banner-logo-title
+      (concat "Happy hacking, " (upcase-initials user-login-name) " - Emacs ♥ you!"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq dashboard-set-file-icons t)
+(setq dashboard-set-heading-icons nil)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq dashboard-center-content t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq dashboard-footer "\"不怕慢，只怕站。精诚所至，金石为开。\"                 ")
+(setq dashboard-footer-icon "")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq dashboard-set-navigator t)
+
+(setq dashboard-navigator-buttons
+      `(((,(all-the-icons-octicon "globe" :height 0.8 :v-adjust 0.1)
+          "Homepage" "Browse homepage"
+          (lambda (&rest _) (browse-url "https://ddg.gg")))
+
+         (,(all-the-icons-material "search")
+          "Search" "Search DuckDuckGo"
+          (lambda (&rest _) (jh/counsel-search)))
+
+         (,(all-the-icons-faicon "play" :height 0.8 :v-adjust 0.1)
+          "YouTube" "Browse YouTube homepage"
+          (lambda (&rest _) (browse-url "https://youtube.com")))
+
+         (,(all-the-icons-faicon "rss" :v-adjust -0.1)
+          "Feed" "Browse RSS feeds"
+          (lambda (&rest _) (elfeed))))))
+#+END_SRC
+
+Use key bindings that makes sense to me.
+#+BEGIN_SRC emacs-lisp
+(define-key dashboard-mode-map (kbd "j") #'widget-forward)
+(define-key dashboard-mode-map (kbd "n") #'widget-forward)
+(define-key dashboard-mode-map (kbd "k") #'widget-backward)
+(define-key dashboard-mode-map (kbd "p") #'widget-backward)
+(define-key dashboard-mode-map (kbd "<tab>") #'dashboard-next-section)
+(define-key dashboard-mode-map (kbd "TAB") #'dashboard-next-section)
+(define-key dashboard-mode-map (kbd "<backtab>") #'dashboard-previous-section)
+(define-key dashboard-mode-map (kbd "S-TAB") #'dashboard-previous-section)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'evil
+  (evil-set-initial-state 'dashboard-mode 'emacs))
+#+END_SRC
+
+References:
+1. https://github.com/emacs-dashboard/emacs-dashboard
 
 * Footnotes
 
