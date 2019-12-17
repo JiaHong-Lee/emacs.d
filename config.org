@@ -3719,6 +3719,24 @@ Change dired default sorting to directories first, then followed by files in alp
 (define-key dired-mode-map (kbd "`") 'ora-dired-open-term)
 #+END_SRC
 
+** OpenWith External Program
+#+BEGIN_SRC emacs-lisp
+(require-package 'openwith)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq openwith-confirm-invocation nil)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq openwith-associations '(("\\.docx\\'" "xdg-open" (file))
+                              ("\\.mp3\\'" "mpv" ("--no-video" file))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'dired-mode-hook 'openwith-mode)
+#+END_SRC
+
 ** File Editing
 
 A buffer is not a file. It is an intermediate form to hold contents before writing it to files. Being able to directly work on a file through its buffer is very convenient. I will call it a file-buffer.
