@@ -3624,6 +3624,11 @@ Quick switching between buffer windows.
 (global-set-key [remap other-window] 'ace-window)
 #+END_SRC
 
+Limits ace-window to windows in the current frame.
+#+BEGIN_SRC emacs-lisp
+(setq aw-scope 'frame)
+#+END_SRC
+
 ** Hydra -- tying it all
 
 #+BEGIN_SRC emacs-lisp
