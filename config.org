@@ -2496,9 +2496,9 @@ This matches the APA citation style that I usually use.
 
 Not quite sure the differences between these and the =reftex-default-bibliography= variable.
 #+BEGIN_SRC emacs-lisp
-(setq org-ref-bibliography-notes "~/Documents/bibliography/notes.txt"
+(setq org-ref-bibliography-notes "~/Documents/papers/notes.txt"
       org-ref-default-bibliography reftex-default-bibliography
-      org-ref-pdf-directory "~/Documents/papers/pdfs/")
+      org-ref-pdf-directory "~/Documents/papers/miscellaneous/")
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
