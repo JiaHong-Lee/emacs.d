@@ -175,16 +175,30 @@ Check if an executable is installed.
 [TODO] If the executable is not installed, install them at Emacs boot up.
 #+BEGIN_SRC emacs-lisp :tangle no
 
+** Use Package
+I am using use-package because my Emacs startup is too slow and I want to avoid slow startup. Also, my Emacs has been very laggy nowadays. I suspect that it could be too many packages loaded on startup?
+#+BEGIN_SRC emacs-lisp
+(require-package 'use-package)
 #+END_SRC
 
 ** list-packages
+This can further reduce load time because use-package.el is no longer needed at runtime?
+#+BEGIN_SRC emacs-lisp
+(eval-when-compile
+  (require 'use-package))
+#+END_SRC
 
 Open list-packages in fullframe.
+Setup use-package.
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'fullframe
  (fullframe list-packages quit-window))
+(require 'use-package-ensure)
+(setq use-package-always-ensure t) ; always install packages that are not installed.
 #+END_SRC
 
+References:
+1. https://github.com/jwiegley/use-package
 * Utility Third Library
 
 ** Fullframe
@@ -217,6 +231,7 @@ Provides a command which searches for unicode characters by name, and displays a
 A useful tool to hide/redefine mode indicator at the mode line.
 #+BEGIN_SRC emacs-lisp
 (require-package 'diminish)
+(use-package diminish)
 #+END_SRC
 
 ** Wgrep
