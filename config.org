@@ -74,39 +74,6 @@ The rest is in the config.org file.
 ;;; -*- lexical-binding: t; -*-
 #+END_SRC
 
-* GC Tweaks
-
-Emacs GC optimisation.
-
-[Disabled] Knowing when the GC is running. 
-[Reason] It's annoying to keep seeing the message popping up.
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq garbage-collection-messages t)
-#+END_SRC
-
-Set GC threshold to 1GB.
-#+BEGIN_SRC emacs-lisp
-(setq gc-cons-threshold #x40000000)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defmacro k-time (&rest body)
-  "Measure and return the time it takes evaluating BODY."
-  `(let ((time (current-time)))
-     ,@body
-     (float-time (time-since time))))
-
-;; When idle for 15sec run the GC no matter what.
-(defvar k-gc-timer
-  (run-with-idle-timer 15 t (lambda () (garbage-collect))))
-#+END_SRC
-
-References:
-1. http://akrl.sdf.org/
-   Emacs garbage collection magic hack
-2. https://www.reddit.com/r/emacs/comments/cbyza2/emacs_slight_lag_allocate_more_ram_garbage/
-   Where I found out about the "magic hack".
-
 * Zacque's Utility Function
 
 Here are utility functions that I wrote. I'm putting it here to load it at the beginning.
@@ -316,8 +283,12 @@ A useful tool to alert from the mode-line.
 
 ** Hydra
 
+** Garbage Collection Magic Hack
 #+BEGIN_SRC emacs-lisp
 (require-package 'hydra)
+(use-package gcmh
+  :diminish gcmh-mode
+  :config (gcmh-mode 1))
 #+END_SRC
 
 * Keeping Secrets in Emacs with GnuPG and Auth Sources
