@@ -3956,8 +3956,22 @@ Start =elfeed= in =evil-emacs-mode=.
 #+END_SRC
 
 Auto enable writeroom mode to centralise contents when I read Elfeed articles.
+**** Bash-completion + eshell
 #+BEGIN_SRC emacs-lisp
 (add-hook 'elfeed-show-mode 'writeroom-mode)
+(use-package bash-completion
+  :config
+  (bash-completion-setup)
+  (setq eshell-default-completion-function 'eshell-bash-completion)
+
+  (defun eshell-bash-completion ()
+    (while (pcomplete-here
+            (nth 2 (bash-completion-dynamic-complete-nocomint
+                    (save-excursion (eshell-bol) (point))
+                    (point)))))))
+#+END_SRC
+Referecences:
+1. https://github.com/andrejlamov/dotfiles/commit/17a716cbe4c8fd589212f319b9cca268c6e69eb9
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
