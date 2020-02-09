@@ -1171,11 +1171,9 @@ Disable the downcase that company does to the variables.
 (setq company-dabbrev-downcase nil)
 #+END_SRC
 
-[Before] Display company autocomplete immediately.
-[Changes] Change to less immediate because it is too laggy?
+Display company autocomplete immediately.
 #+BEGIN_SRC emacs-lisp
-;; (setq company-idle-delay 0)
-(setq company-idle-delay 0.5)
+(setq company-idle-delay 0)
 #+END_SRC
 
 Use "C-n" or "C-p" to cycle through auto-complete candidates.
@@ -1187,12 +1185,8 @@ Use "C-n" or "C-p" to cycle through auto-complete candidates.
 
 (define-key company-active-map (kbd "C-f") #'company-next-page)
 (define-key company-active-map (kbd "C-b") #'company-previous-page)
-(define-key company-active-map (kbd "C-n") #'company-complete-common-or-cycle)
-(define-key company-active-map (kbd "C-p") #'jh/reverse-company-complete-common-or-cycle)
-(define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
-(define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
-(define-key company-active-map (kbd "S-TAB") 'jh/reverse-company-complete-common-or-cycle)
-(define-key company-active-map (kbd "<backtab>") 'reverse-company-complete-common-or-cycle)
+(define-key company-active-map (kbd "C-n") #'company-select-next)
+(define-key company-active-map (kbd "C-p") #'company-select-previous)
 #+END_SRC
 
 Number the candidates to use M-1, M-2 to select completions.
