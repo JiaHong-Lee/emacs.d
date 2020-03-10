@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: Autotangle on Save
+# key: autotangle
+# --
+* Auto-Tangle This File On Save
+
+// Local Variables:
+// eval: (add-hook 'after-save-hook #'org-babel-tangle 0 t)
+// end:
