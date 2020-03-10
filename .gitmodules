@@ -25,3 +25,27 @@
 [submodule "lisp/framemove"]
 	path = lisp/framemove
 	url = ./lisp/framemove/
+[submodule "lisp/docker.el"]
+	path = lisp/docker.el
+	url = https://github.com/Silex/docker.el
+[submodule "lisp/emacs-jupyter"]
+	path = lisp/emacs-jupyter
+	url = https://github.com/dzop/emacs-jupyter
+[submodule "lisp/om.el"]
+	path = lisp/om.el
+	url = https://github.com/ndwarshuis/om.el
+[submodule "lisp/org-tanglesync.el"]
+	path = lisp/org-tanglesync.el
+	url = https://github.com/mtekman/org-tanglesync.el
+[submodule "lisp/outline-toc"]
+	path = lisp/outline-toc
+	url = https://github.com/abingham/outline-toc.el
+[submodule "lisp/ox-latex-subfigure"]
+	path = lisp/ox-latex-subfigure
+	url = https://github.com/linktohack/ox-latex-subfigure
+[submodule "lisp/podman.el"]
+	path = lisp/podman.el
+	url = ./lisp/podman.el/
+[submodule "lisp/pseudocode-mode"]
+	path = lisp/pseudocode-mode
+	url = https://github.com/jsalzbergedu/pseudocode-mode
