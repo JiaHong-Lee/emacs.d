@@ -67,3 +67,5 @@ docsets
 /history_backup
 /emacs.keyfreq
 /.#recentf
+/.last-package-update-day
+/.mypy_cache/
