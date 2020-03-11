@@ -5,10 +5,30 @@
 #+TAGS:   literate emacs config dotfile noexport
 
 * Introduction
+#+BEGIN_QUOTE
+Energy starts surging through your fingertips. Sparks fly, making
+the shadows grow and flicker ominously around you. You arch your
+back and open your eyes as if for the first time. The text appears
+more vibrant and colourful than you remember. Your fingers dance on
+the keyboard commanding the cursor with a joyful precision and
+control.
+
+You lean back and marvel as a shimmering swirl of syntactic and
+semantic structures project out of the screen and intertwine with a
+fractal beauty. You watch as meaning recursively unfolds into deeper
+meaning live in front of your eyes. You feel a deep and lasting
+synchronicity form as the boundaries between you and your Emacs
+wash away. You and your Emacs Live.
+
+M-x start-hacking.
+
+Source: https://github.com/overtone/emacs-live
+#+END_QUOTE
+
 Good config:
 1. https://github.com/ianpan870102/.personal-emacs.d
 
-This is an attempt to put my Emacs config into an org file. By doing so, my init.el file will contains only two lines of code:
+This is an attempt to put my Emacs config into an org file. By doing so, my init.el file will contains only two lines of code. The rest is in the config.org file. Note: This code block will be tangled to init.el, so do not edit the init.el file directly.
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el :results none
 ;;; init.el --- Where all the magic begins. -*- lexical-binding: t -*-
 
@@ -66,35 +86,24 @@ This is an attempt to put my Emacs config into an org file. By doing so, my init
 
 ;;; init.el ends here
 #+END_SRC
-
-The rest is in the config.org file.
-
 * Header
-
 #+BEGIN_SRC emacs-lisp
 ;;; -*- lexical-binding: t; -*-
 #+END_SRC
-
 * Zacque's Utility Function
-
 Here are utility functions that I wrote. I'm putting it here to load it at the beginning.
-
 #+BEGIN_SRC emacs-lisp
 (defun jh/get-all-subdirs (PATH DEPTH)
   "Get all subdirectories under the directory PATH. Does not include the directory itself in the result."
   (delete (expand-file-name PATH)
           (split-string (shell-command-to-string (concat "find " PATH " -type d" " -maxdepth " (number-to-string DEPTH))) "\n" t)))
-#+END_SRC
 
-#+BEGIN_SRC emacs-lisp
 (defun jh/get-dir-and-subdirs (PATH DEPTH)
   "Get all subdirectories under the directory PATH."
   (split-string
    (shell-command-to-string
     (concat "find " PATH " -type d" " -maxdepth " (number-to-string DEPTH))) "\n" t))
-#+END_SRC
 
-#+BEGIN_SRC emacs-lisp
 ;; A helper function
 ;; Source: https://stackoverflow.com/a/17165074
 (defun jh/get-dir-files-and-subdirs (directory &optional full match nosort)
@@ -108,38 +117,25 @@ Here are utility functions that I wrote. I'm putting it here to load it at the b
           result)
       (delete "." (delete ".." result)))))
 #+END_SRC
-
 * Manage Packages and Sources
 ** Add Package Source
-Add melpa as a package source.
+Add melpa as a package source. Add third-party library from the ./lisp directory. This is especially useful if I clone the library from Github and work on it. Since all .el files reside in one level deep in lisp directory, I will need to add all the subdirectory to the load path.
+
+With the helper function, =(jh/get-dir-files-and-subdirs ~/.emacs.d/lisp)= should return a result containing all the directory in lisp as a list. With this, I will only need to loop through the list and add each subdirectory path to the =load-path=.
 #+BEGIN_SRC emacs-lisp
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-#+END_SRC
+(setq package-enable-at-startup nil)
+(package-initialize)
 
-Load .el if newer than corresponding .elc.
-#+BEGIN_SRC emacs-lisp
-(setq load-prefer-newer t)
-#+END_SRC
+(setq load-prefer-newer t) ; load .el if newer than corresponding .elc
+(package-refresh-contents t) ; auto download package info asynchronously on Emacs startup
 
-Auto download package info asynchronously on Emacs startup.
-#+BEGIN_SRC emacs-lisp
-(package-refresh-contents t)
-#+END_SRC
-
-Add third-party library from the ./lisp directory. This is especially useful if I clone the library from Github and work on it. Since all .el files reside in one level deep in lisp directory, I will need to add all the subdirectory to the load path.
-
-With the helper function, =(jh/get-dir-files-and-subdirs ~/.emacs.d/lisp)= should return a result containing all the directory in lisp as a list. With this, I will only need to loop through the list and add each subdirectory path to the =load-path=.
-
-#+BEGIN_SRC emacs-lisp
 (dolist (subdir (jh/get-dir-files-and-subdirs "~/.emacs.d/lisp"))
   (add-to-list 'load-path (expand-file-name (concat "lisp/" subdir) user-emacs-directory)))
-#+END_SRC
 
-** ELPA Public Key
-#+BEGIN_SRC emacs-lisp
-;; Set GPG Directory for ELPA Public Key
-(setq package-gnupghome-dir "~/.gnupg")
+(with-eval-after-load 'fullframe
+  (fullframe list-packages quit-window))
 #+END_SRC
 ** Require-package
 A code orginally taken from Purcell, but now modified to suit my need.
@@ -153,28 +149,17 @@ A code orginally taken from Purcell, but now modified to suit my need.
     (package-install package)
     (require package)))
 #+END_SRC
-** list-packages
-Open list-packages in fullframe.
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'fullframe
- (fullframe list-packages quit-window))
-#+END_SRC
 ** Use Package
-I am using use-package because my Emacs startup is too slow and I want to avoid slow startup. Also, my Emacs has been very laggy nowadays. I suspect that it could be too many packages loaded on startup?
+I use ~use-package~ to organise my Emacs config and to speed up my Emacs init time. It was quite slow before and I suspect that there were too many packages loaded on startup.
 #+BEGIN_SRC emacs-lisp
-(require-package 'use-package)
-#+END_SRC
-
-This can further reduce load time because use-package.el is no longer needed at runtime?
-#+BEGIN_SRC emacs-lisp
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 (eval-when-compile
   (require 'use-package))
-#+END_SRC
 
-Setup use-package.
-#+BEGIN_SRC emacs-lisp
-(require 'use-package-ensure)
 (setq use-package-always-ensure t) ; always install packages that are not installed.
+(setq use-package-expand-minimally t)
 #+END_SRC
 
 Install system packages through Emacs. Add the :ensure-system-package keyword to use-package to ensure system binaries exist alongside my package declarations.
@@ -195,9 +180,9 @@ References:
 #+BEGIN_SRC emacs-lisp
 (use-package auto-package-update
   :config
-  (setq auto-package-update-interval 28) ;; update every 28 days
-  (setq auto-package-update-prompt-before-update t) ;; sometimes it's useful to skip an automatic update
-  (setq auto-package-update-hide-results nil) ;; show results buffer on finish updating
+  (setq auto-package-update-interval 28) ; update every 28 days
+  (setq auto-package-update-prompt-before-update t) ; sometimes it's useful to skip an automatic update
+  (setq auto-package-update-hide-results nil) ; show results buffer on finish updating
 
   (auto-package-update-maybe))
 #+END_SRC
@@ -207,17 +192,10 @@ Display some windows into "full-screen" mode.
 #+BEGIN_SRC emacs-lisp
 (use-package fullframe)
 #+END_SRC
-** Page-Break_lines
-Display ugly ^L page breaks as tidy horizontal lines.
-#+BEGIN_SRC emacs-lisp
-(use-package page-break-lines
-  :diminish page-break-lines-mode
-  :config (global-page-break-lines-mode))
-#+END_SRC
 ** List-unicode-display
 Provides a command which searches for unicode characters by name, and displays a list of matching characters with their names in a buffer.
 #+BEGIN_SRC emacs-lisp
-(require-package 'list-unicode-display)
+(use-package list-unicode-display)
 #+END_SRC
 ** Diminish
 A useful tool to hide/redefine mode indicator at the mode line.
@@ -226,31 +204,26 @@ A useful tool to hide/redefine mode indicator at the mode line.
 #+END_SRC
 ** Wgrep
 #+BEGIN_SRC emacs-lisp
-(require-package 'wgrep)
+(use-package wgrep)
 #+END_SRC
 ** Ripgrep
-rg is an Emacs interface to =ripgrep=. This package interoperates well with =wgrep=. Similar: =deadgrep=.
+There are many great Emacs packages that interface to =rg= tool. ~counsel~ provides the =counsel-rg= command which provides live search results. ~rg.el~ builts on ~compilation-mode~ and offers =rg-group-result= to combine results (=rg-dwim= is excellent). It interoperates well with =wgrep=. ~ripgrep.el~ searches starting in the project root (it offers =projectile-ripgrep=). ~socyl~ is a generic text search tool that supports =rg= plus others. ~deadgrep~ might be the best of all?
 #+BEGIN_SRC emacs-lisp
 (use-package rg
   :ensure-system-package rg
   :config
   (with-eval-after-load 'evil
     (evil-set-initial-state 'rg-mode 'emacs)))
-#+END_SRC
 
-#+NAME: Ripgrep Package
-#+BEGIN_SRC emacs-lisp
 ;; for integration with projectile.
 (use-package ripgrep
   :ensure-system-package rg
   :config
   (with-eval-after-load 'evil
     (evil-set-initial-state 'ripgrep-search-mode 'emacs)))
-#+END_SRC
 
-Use -i for case insensitive.
-#+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'counsel
+  ; use -i for case insensitive
   (setq counsel-rg-base-command "rg -i --no-heading --line-number --color never %s"))
 #+END_SRC
 
@@ -277,7 +250,9 @@ A handy tool to restart emacs, especially when using EXWM.
 ** Mode-Line-Bell
 A useful tool to alert from the mode-line.
 #+BEGIN_SRC emacs-lisp
-(require-package 'mode-line-bell)
+(use-package mode-line-bell
+  :config
+  (mode-line-bell-mode))
 #+END_SRC
 ** Garbage Collection Magic Hack
 #+BEGIN_SRC emacs-lisp
@@ -285,30 +260,30 @@ A useful tool to alert from the mode-line.
   :diminish gcmh-mode
   :config (gcmh-mode 1))
 #+END_SRC
-* Keeping Secrets in Emacs with GnuPG and Auth Sources
-Emacs offers to save my passwords when I want to use TRAMP. However, I would like to save it in an encrypted file. Create the file =~/.authinfo.gpg= and give only the current user permission to read-write to it.
+* Keeping Secrets in Emacs with GnuPG, Auth Sources and Pass
+~auth-source~ library is a way for Emacs to answer the old burning question: "what are my username and password?". Password-store (or simply =pass=) is a standard Unix password manager following the Unix philosophy. ~auth-source-pass~ integrates Emacs' auth-source library with password-store. It has been included in Emacs since version 26.
+#+BEGIN_SRC emacs-lisp
+(use-package auth-source-pass
+  :ensure nil
+  :config (auth-source-pass-enable))
+#+END_SRC
+
+Emacs offers to save my passwords when I want to use TRAMP. However, I would like to save it in an encrypted file. Create the file =~/.emacs.d/.authinfo.gpg= and give only the current user permission to read-write to it. The following shell commands will do:
 #+BEGIN_SRC shell
+touch ~/.emacs.d/.authinfo.gpg
 chmod 600 ~/.emacs.d/.authinfo.gpg
+#+END_SRC
+Then configure Emacs accordingly.
+#+BEGIN_SRC emacs-lisp
+(setq package-gnupghome-dir "~/.gnupg") ; set it for ELPA public key
+(setq auth-sources '((:source "~/.emacs.d/.authinfo.gpg"))) ; file to save my credentials
 #+END_SRC
 
 Set it to use =gpg= explicitly (it is the default). In some case, I might want to use =gpg2=.
 #+BEGIN_SRC emacs-lisp
-(setq epg-gpg-program "gpg2")
-#+END_SRC
-
-Save my credential inside this self-defined file in .emacs.d dir.
-#+BEGIN_SRC emacs-lisp
-(setq auth-sources '((:source "~/.emacs.d/.authinfo.gpg")))
-#+END_SRC
-
-gpg2 runs the pinentry app for password prompt. Use Emacs for the prompt. 
-#+BEGIN_SRC emacs-lisp
-(setq epg-pinentry-mode 'loopback)
-#+END_SRC
-
-Echo a lot of additional, helpful information to the *Messages* buffer.
-#+BEGIN_SRC emacs-lisp
-(setq auth-source-debug t)
+(setq epg-gpg-program "gpg2") ; set it explicitly
+(setq epg-pinentry-mode 'loopback) ; use Emacs for password prompt instead of other pinentry apps
+(setq auth-source-debug t) ; echo helpful information to *Messages* buffer.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -317,9 +292,62 @@ Echo a lot of additional, helpful information to the *Messages* buffer.
   (evil-set-initial-state 'epa-key-list-mode 'emacs))
 #+END_SRC
 
-Managing secrets in Emacs. =password-store= exposes API that can be used to fetch secrets from my local .password-store.
+There are two Emacs packages that deals with pass: ~password-store~ and ~pass~. The ~password-store~ comes with the =pass= system packages. It is written by the =pass= authors. The ~pass~ package offers a better interface but I think that is overkill. What I need is just an ivy interface for me to pick an entry to copy the password or view/edit the file, with other options defined as ivy-actions. So, based on the two packages, I have written my own function to do what I need.
+TODO:
+1. Delete entry is lagging. Seems like it stucks somewhere.
 #+BEGIN_SRC emacs-lisp
-(require-package 'password-store)
+(defun jh/--pass-copy-or-create (entry)
+  "Copy password if the entry exists. Otherwise, create a new entry."
+  (if (member entry (password-store-list))
+      (password-store-copy entry)
+    (message "%s not found. Creating new entry." entry)
+    (jh/--pass-create-new entry)))
+
+(defun jh/--pass-create-new (entry)
+  (let* ((password (read-passwd "Password: " t))
+         (command (format "echo %s | %s insert -m -f %s"
+                          (shell-quote-argument password)
+                          password-store-executable
+                          (shell-quote-argument entry)))
+         (ret (process-file-shell-command command)))
+    (if (zerop ret)
+        (progn
+          (message "Successfully inserted entry for %s" entry)
+          (find-file (password-store--entry-to-file entry)))
+      (message "Cannot insert entry for %s" entry))
+    nil))
+
+(defun jh/--pass-copy-field (entry)
+  (let ((field (password-store-read-field entry)))
+    (password-store-copy-field entry field)))
+
+(defun jh/--pass-rename (entry)
+  (let ((new-name (read-string "Rename entry to: " entry)))
+    (password-store-rename entry new-name)))
+
+(defun jh/--pass-delete (entry)
+  (when (yes-or-no-p (format "Do you really want to remove the entry %s? " entry))
+    (password-store-remove entry)))
+
+(defun jh/--pass-open-entry-file (entry)
+  (find-file (password-store--entry-to-file entry)))
+
+(defun jh/password-store ()
+  "Using ivy-completion to filter and select a password entry to
+1. copy password to the kill ring
+2. copy field to the kill ring
+3. rename the entry
+4. delete the entry
+5. open the entry file. User can enter an unmatched input to create a new password entry."
+  (interactive)
+  (ivy-read "Password-store entry: "
+            (password-store-list)
+            :action '(1
+                      ("c" jh/--pass-copy-or-create "copy password")
+                      ("f" jh/--pass-copy-field "copy field")
+                      ("r" jh/--pass-rename "rename entry")
+                      ("d" jh/--pass-delete "delete entry")
+                      ("o" jh/--pass-open-entry-file "open entry file"))))
 #+END_SRC
 
 References:
@@ -446,6 +474,13 @@ Remember to run (all-the-icons-install-fonts) to install the Resource Fonts. Bea
 
 References:
 1. github:domtronn/all-the-iocns.el
+** Page-Break_lines
+Display ugly ^L page breaks as tidy horizontal lines.
+#+BEGIN_SRC emacs-lisp
+(use-package page-break-lines
+  :diminish page-break-lines-mode
+  :config (global-page-break-lines-mode))
+#+END_SRC
 ** Set Initial Buffer
 #+BEGIN_SRC emacs-lisp
 (setq initial-buffer-choice (jh/file-in-sync-directory "startup.org"))
