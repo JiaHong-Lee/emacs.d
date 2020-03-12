@@ -772,6 +772,7 @@ Flymake is a built-in library to Emacs. It is rewritten in Emacs version 26.1.
 ** Magit -- Git Client
 #+BEGIN_SRC emacs-lisp
 (use-package magit
+  :ensure-system-package (git diff)
   :config
   (with-eval-after-load 'fullframe
     (fullframe magit-status magit-mode-quit-window))
