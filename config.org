@@ -244,8 +244,8 @@ A handy tool to restart emacs, especially when using EXWM.
 A useful tool to alert from the mode-line.
 #+BEGIN_SRC emacs-lisp
 (use-package mode-line-bell
-  :config
-  (mode-line-bell-mode))
+  :init (setq ring-bell-function 'ignore)
+  :hook (after-init . mode-line-bell-mode))
 #+END_SRC
 ** Garbage Collection Magic Hack
 #+BEGIN_SRC emacs-lisp
@@ -393,11 +393,6 @@ I used to using Dropbox for syncing. But after I realise that Dropbox limits Fre
 #+BEGIN_SRC emacs-lisp
 (tool-bar-mode -1)
 (menu-bar-mode -1)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq ring-bell-function 'ignore)
-(add-hook 'after-init-hook 'mode-line-bell-mode)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
