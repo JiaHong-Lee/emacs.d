@@ -306,7 +306,7 @@ TODO:
     (if (zerop ret)
         (progn
           (message "Successfully inserted entry for %s" entry)
-          (find-file (password-store--entry-to-file entry)))
+          (jh/--pass-open-entry-file entry))
       (message "Cannot insert entry for %s" entry))
     nil))
 
@@ -323,9 +323,9 @@ TODO:
     (password-store-remove entry)))
 
 (defun jh/--pass-open-entry-file (entry)
-  (find-file (password-store--entry-to-file entry)))
+  (password-store--run-edit entry))
 
-(defun jh/password-store ()
+(defun jh/ivy-pass ()
   "Using ivy-completion to filter and select a password entry to
 1. copy password to the kill ring
 2. copy field to the kill ring
