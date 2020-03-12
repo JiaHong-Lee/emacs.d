@@ -150,7 +150,7 @@ A code orginally taken from Purcell, but now modified to suit my need.
     (require package)))
 #+END_SRC
 ** Use Package
-I use ~use-package~ to organise my Emacs config and to speed up my Emacs init time. It was quite slow before and I suspect that there were too many packages loaded on startup.
+I use ~use-package~ to organise my Emacs config and to speed up my Emacs init time. It was quite slow before and I suspect that there were too many packages loaded on startup. Add the :ensure-system-package keyword to use-package to ensure system binaries exist alongside my package declarations. Moreover, it will attempt to install the missing package if it does not already exist. Note: ~use-package-ensure-system-package~ is now resides within the official ~use-package~.
 #+BEGIN_SRC emacs-lisp
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -160,16 +160,9 @@ I use ~use-package~ to organise my Emacs config and to speed up my Emacs init ti
 
 (setq use-package-always-ensure t) ; always install packages that are not installed.
 (setq use-package-expand-minimally t)
-#+END_SRC
 
-Install system packages through Emacs. Add the :ensure-system-package keyword to use-package to ensure system binaries exist alongside my package declarations.
-#+BEGIN_SRC emacs-lisp
-;; default dependency of use-package-ensure-system-package
-(use-package system-packages
-  :config
-  (setq system-packages-use-sudo t))
-
-(use-package use-package-ensure-system-package)
+(use-package use-package-ensure-system-package
+  :init (setq system-packages-use-sudo t))
 #+END_SRC
 
 References:
