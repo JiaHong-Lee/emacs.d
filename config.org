@@ -3656,6 +3656,14 @@ Start Eshell in Emacs state.
 (evil-set-initial-state 'eshell-mode 'emacs)
 #+END_SRC
 
+Enable Plan9 smart shell display.
+#+BEGIN_SRC emacs-lisp
+(require 'em-smart)
+(setq eshell-where-to-jump 'begin)
+(setq eshell-review-quick-commands nil)
+(setq eshell-smart-space-goes-to-end t)
+#+END_SRC
+
 Use ~/.bash_history for eshell.
 #+BEGIN_SRC emacs-lisp
 (setenv "HISTFILE" "/home/zacque/.bash_history")
