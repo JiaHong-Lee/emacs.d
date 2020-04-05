@@ -88,7 +88,13 @@ This is an attempt to put my Emacs config into an org file. By doing so, my init
 #+END_SRC
 * Header
 #+BEGIN_SRC emacs-lisp
-;;; -*- lexical-binding: t; -*-
+;;; config.el --- This is the resultant file tangled from config.org -*- lexical-binding: t; -*-
+;;; Commentary:
+
+;; 
+
+;;; Code:
+
 #+END_SRC
 * Zacque's Utility Function
 Here are utility functions that I wrote. I'm putting it here to load it at the beginning.
