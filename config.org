@@ -266,6 +266,81 @@ Evil and ivy are the core of my configs.
 
 References:
 1. http://vimcasts.org/episodes/swapping-two-regions-of-text-with-exchange-vim
+** Ivy
+#+BEGIN_SRC emacs-lisp
+(use-package ivy
+  :diminish
+  :init
+  (use-package smex
+    ;; smex will sort the result of counsel-M-x
+    )
+
+  (use-package historian
+    ;; store the results of completing-read and similar functions persistently to provide better completion candidates for recent or frequent used item.
+    :config (historian-mode))
+
+  (use-package ivy-historian
+    :config (ivy-historian-mode))
+
+  :config
+  (use-package counsel
+    ;; power ivy with counsel
+    :diminish
+    :config
+    (global-set-key (kbd "M-x") 'counsel-M-x)
+    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+    (global-set-key (kbd "C-h f") 'counsel-describe-function)
+    (global-set-key (kbd "C-h v") 'counsel-describe-variable)
+
+    ;; counsel-search comes with counsel library. It queries the search engine and open the result page in web browser. Use a custom ddg search engine to use the familiar ddg search result page.
+    (add-to-list 'counsel-search-engines-alist '(ddgz "https://duckduckgo.com/ac/" "https://duckduckgo.com/?q=" counsel--search-request-data-ddg))
+    (setq counsel-search-engine 'ddgz)
+
+    ;; I want counsel-search to behave more like the browser omnibar which open the url directly when it is prefixed with http(s)://
+    (defun jh/counsel-search-action (x)
+      "Browse URL if x is an URL. If not, consult search engine on x."
+      (if (string-prefix-p "http" x)
+          (browse-url x)
+        (browse-url
+         (concat
+          (nth 2 (assoc counsel-search-engine counsel-search-engines-alist))
+          x))))
+    (defun jh/counsel-search ()
+      "Ivy interface for dynamically querying a search engine."
+      (interactive)
+      (require 'request)
+      (require 'json)
+      (ivy-read "search: " #'counsel-search-function
+                :action #'jh/counsel-search-action
+                :dynamic-collection t
+                :caller 'counsel-search)))
+
+  (ivy-mode)
+  (setq ivy-use-virtual-buffers t) ;; includes recentf and bookmarks
+  (setq enable-recursive-minibuffers t)
+  (setq ivy-count-format "")
+  (setq ivy-virtual-abbreviate 'fullpath)
+  (setq ivy-initial-inputs-alist '((Man-completion-table . "^") ;; or (man. "^")?
+                                   (woman . "^")))
+
+  ;; IDO-style directory navigation
+  (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
+  (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-immediate-done)
+  (define-key ivy-minibuffer-map (kbd "C-RET") #'ivy-immediate-done)
+
+  ;; Open file in dired from ivy-switch-buffer
+  (defun open-file-directory-from-path (x)
+    "Open the directory given a file path"
+    (find-file (file-name-directory x)))
+
+  (ivy-set-actions 'ivy-switch-buffer '(("d" open-file-directory-from-path "directory")))
+
+  )
+#+END_SRC
+
+References:
+1. https://emacs.stackexchange.com/questions/38841/counsel-m-x-always-shows
+2. https://github.com/purcell/emacs.d/blob/master/lisp/init-ivy.el
 * Zacque's Utility Function
 Here are utility functions that I wrote. I'm putting it here to load it at the beginning.
 #+BEGIN_SRC emacs-lisp
@@ -861,109 +936,6 @@ Show key-binding completion suggestions or key-binding hints.
   :config
   (setq guide-key/guide-key-sequence t))
 #+END_SRC
-* Enable Ivy Mode
-#+BEGIN_SRC emacs-lisp
-(require-package 'smex) ;; to power ivy
-
-(require-package 'ivy)
-(ivy-mode 1)
-(diminish 'ivy-mode)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq ivy-use-virtual-buffers t) ;; includes recentf and bookmarks
-(setq enable-recursive-minibuffers t)
-(setq ivy-virtual-abbreviate 'fullpath)
-(setq ivy-count-format "")
-#+END_SRC
-
-Remove =counsel-M-x= initial-inputs "^" character [fn:19].
-#+BEGIN_SRC emacs-lisp
-(setq-default ivy-initial-inputs-alist '((man . "^")
-                                         (woman . "^")))
-#+END_SRC
-
-IDO-style directory navigation [fn:13]. 
-#+BEGIN_SRC emacs-lisp
-(define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
-(dolist (key '("C-j" "C-RET"))
-  (define-key ivy-minibuffer-map (kbd key) #'ivy-immediate-done))
-#+END_SRC
-
-Power up Ivy with Counsel mode.
-#+BEGIN_SRC emacs-lisp
-(require-package 'counsel)
-(diminish 'counsel-mode)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-x") 'counsel-M-x) ;; Couple with smex mode!
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun sanityinc/enable-ivy-flx-matching ()
-    "Make `ivy' matching work more like IDO."
-    (interactive)
-    (require-package 'flx)
-    (setq-default ivy-re-builders-alist
-                  '((t . ivy--regex-fuzzy))))
-#+END_SRC
-
-Use Ivy with Historian-mode [fn:14]. Historian-mode stores the results of completing-read and similar functions persistently to provide better completion candidates for recent or frequent used item.
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'historian)
-(historian-mode 1)
-
-(require-package 'ivy-historian)
-(ivy-historian-mode 1)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun open-file-directory-from-path (x)
-  "Open the directory given a file path"
-  (find-file (file-name-directory x)))
-
-(ivy-set-actions 'ivy-switch-buffer '(("d" open-file-directory-from-path "directory")))
-#+END_SRC
-
-** Counsel-Search
-Counsel-search comes with =counsel= library. 
-
-I want it to behave more like browser's omnibar/address bar by customising the original =counsel-search-action=.
-#+BEGIN_SRC emacs-lisp
-(defun jh/counsel-search-action (x)
-  "Browse URL if x is an URL. If not, consult search engine on x."
-  (if (string-prefix-p "http" x)
-      (browse-url x)
-    (browse-url
-     (concat
-      (nth 2 (assoc counsel-search-engine counsel-search-engines-alist))
-      x))))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun jh/counsel-search ()
-  "Ivy interface for dynamically querying a search engine."
-  (interactive)
-  (require 'request)
-  (require 'json)
-  (ivy-read "search: " #'counsel-search-function
-            :action #'jh/counsel-search-action
-            :dynamic-collection t
-            :caller 'counsel-search))
-#+END_SRC
-
-Add a custom ddg search engine to use familiar ddg search result page.
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'counsel-search-engines-alist '(ddgz "https://duckduckgo.com/ac/" "https://duckduckgo.com/?q=" counsel--search-request-data-ddg))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq counsel-search-engine 'ddgz)
-#+END_SRC
-
 * Recentf
 Settings for tracking recent files.
 #+BEGIN_SRC emacs-lisp
@@ -5528,15 +5500,11 @@ References:
 
 [fn:20] https://github.com/flycheck/flycheck/pull/1412
 
-[fn:19] https://emacs.stackexchange.com/questions/38841/counsel-m-x-always-shows
-
 [fn:18] http://tumashu.github.io/pyim/
 
 [fn:15] https://emacs.stackexchange.com/questions/5608/how-to-let-eshell-remember-sudo-password-for-two-minutes
 
 [fn:14] https://github.com/PythonNut/historian.el
-
-[fn:13] https://github.com/purcell/emacs.d/blob/master/lisp/init-ivy.el
 
 [fn:12] https://github.com/skeeto/elfeed/issues/267 OR https://gitlab.com/ambrevar/dotfiles/blob/master/.emacs.d/lisp/init-elfeed.el
 
