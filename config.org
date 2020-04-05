@@ -3305,6 +3305,14 @@ Taken from Purcell. This package might prettier elisp expessions output.
   :hook (emacs-lisp-mode . highlight-quoted-mode))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(smart-jump-register :modes '(emacs-lisp-mode lisp-interaction-mode)
+                     :jump-fn 'symbol-function
+                     :pop-fn 'pop-tag-mark
+                     :should-jump t
+                     :heuristic 'error
+                     :async nil)
+#+END_SRC
 * Enable Slime Mode for Common Lisp
 #+BEGIN_SRC emacs-lisp
 (require-package 'slime)
