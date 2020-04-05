@@ -86,7 +86,8 @@ This is an attempt to put my Emacs config into an org file. By doing so, my init
 
 ;;; init.el ends here
 #+END_SRC
-* Header
+* Bootstrap Config
+I use ~use-package~ to organise my Emacs config, to speed up my Emacs init time, and to make sure that a package is installed if it does not already installed. I suspect that there were too many packages loaded on startup previously.
 #+BEGIN_SRC emacs-lisp
 ;;; config.el --- This is the resultant file tangled from config.org -*- lexical-binding: t; -*-
 ;;; Commentary:
@@ -95,7 +96,175 @@ This is an attempt to put my Emacs config into an org file. By doing so, my init
 
 ;;; Code:
 
+;; Defining a sync directory for org uses
+(defconst jh/sync-directory "/home/zacque/Dropbox/DropSyncFiles")
+
+(menu-bar-mode -1)
+(toggle-scroll-bar -1)
+(tool-bar-mode -1)
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(setq inhibit-startup-screen t)
+(setq initial-buffer-choice (expand-file-name "startup.org" jh/sync-directory))
+(setq-default initial-scratch-message (concat ";; Happy hacking, " user-login-name " - Emacs ❤ you!\n\n"))
+
+;; Make sure that C-v and M-v returns cursor to the same position.
+(setq scroll-preserve-screen-position 'always)
+
+;; Prevent variables from clustering the init.el
+(defconst custom-file (expand-file-name "custom.el" user-emacs-directory))
+(unless (file-exists-p custom-file)
+  (shell-command (concat "touch " custom-file)))
+(setq custom-file custom-file)
+(load custom-file)
+
+(require 'package)
+(setq package-enable-at-startup nil)
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")))
+(package-initialize)
+
+(setq load-prefer-newer t) ;; load .el if it's newer than corresponding .elc
+(package-refresh-contents t) ;; auto download package info asynchronously on Emacs startup
+
+(with-eval-after-load 'fullframe
+  (fullframe list-packages quit-window))
+
+;; Basics
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-when-compile
+  (require 'use-package))
+
+(setq use-package-always-ensure t) ;; always install packages that are not installed
+(setq use-package-expand-minimally t)
+
+(use-package use-package-ensure-system-package
+  ;; Add the :ensure-system-package keyword to ensure some system binaries alongside my package declarations.
+  :init (setq system-packages-use-sudo t))
 #+END_SRC
+
+References:
+1. https://github.com/jwiegley/use-package
+2. https://github.com/waymondo/use-package-ensure-system-package
+3. https://gitlab.com/jabranham/system-packages
+* Core Packages
+Evil and ivy are the core of my configs.
+#+BEGIN_SRC emacs-lisp
+(use-package evil
+  ;; evil is an extensible vi layer that emulate the main features of Vim in Emacs. 
+  :config
+  (evil-mode)
+  (define-key evil-motion-state-map [remap evil-next-line] 'evil-next-visual-line)
+  (define-key evil-motion-state-map [remap evil-previous-line] 'evil-previous-visual-line)
+
+  ;; C-o is evil-jump-backward, therefore I define C-S-o to evil-jump-forward
+  (define-key evil-motion-state-map (kbd "C-S-o") 'evil-jump-forward)
+
+  ;; Set some built-in modes to launch in evil emacs state (in addition to the default).
+  (cl-loop for (mode . state) in
+	       '((image-mode . emacs)
+	         (eww-mode . emacs)
+	         (Info-mode . emacs)
+	         (calendar-mode . emacs)
+	         (process-menu-mode . emacs)
+	         (diff-mode . emacs))
+	       do (evil-set-initial-state mode state))
+
+  (evil-define-command jh/evil-save-modified-and-close-buffer (file &optional bang)
+    "Saves the current buffer and closes the buffer."
+    :repeat nil
+    (interactive "<f><!>")
+    (when (buffer-modified-p)
+      (evil-write nil nil nil file bang))
+    (kill-buffer))
+
+  (evil-define-command jh/evil-save-and-close-buffer (file &optional bang)
+    "Saves the current buffer and closes the window."
+    :repeat nil
+    (interactive "<f><!>")
+    (evil-write nil nil nil file bang)
+    (kill-buffer))
+
+  ;; Ex :q should kill the current buffer rather than quitting emacs entirely
+  (evil-ex-define-cmd "q" 'kill-this-buffer)
+
+  ;; Type :quit to close emacs
+  (evil-ex-define-cmd "quit" 'evil-quit)
+
+  ;; Ex :wq should save and close the buffer, rather than quitting emacs entirely
+  (evil-ex-define-cmd "wq" 'jh/evil-save-and-close-buffer)
+
+  ;; Ex :digraphs should show digraphs
+  (evil-ex-define-cmd "digraphs" 'evil-ex-show-digraphs)
+
+  ;; Make evil-search similar to Vim's search?
+  (evil-select-search-module 'evil-search-module 'evil-search)
+  (setq evil-search-wrap t
+        evil-regexp-search t)
+
+  (use-package evil-anzu
+    ;; Show (current match/total matches) info in the mode-line
+    )
+
+  (use-package evil-visual-mark-mode
+    ;; Display mark at a point during evil-jump-to-mark
+    :hook (evil-mode . evil-visual-mark-mode))
+
+  (use-package evil-matchit
+    ;; Use % to jump between HTML tags, Python blocks
+    :config (global-evil-matchit-mode))
+
+  (use-package sentence-navigation
+    ;; To define sentence as a evil text object
+    :config
+    (define-key evil-outer-text-objects-map "s" 'sentence-nav-evil-a-sentence)
+    (define-key evil-outer-text-objects-map "s" 'sentence-nav-evil-inner-sentence))
+
+  (use-package evil-surround
+    ;; Edit surrounding quotes or tags directly
+    :config
+    (global-evil-surround-mode)
+
+    ;; issue: evil-surround-change inserts unwanted spaces by changes (this-form) to [ this-form ]. References: https://github.com/emacs-evil/evil-surround/issues/86
+    ;; use non-spaced pairs when surrounding with an opening brace
+    (evil-add-to-alist
+     'evil-surround-pairs-alist
+     ?\( '("(" . ")")
+     ?\[ '("[" . "]")
+     ?\{ '("{" . "}")
+     ?\) '("( " . " )")
+     ?\] '("[ " . " ]")
+     ?\} '("{ " . " }")))
+
+  (use-package evil-args
+    ;; Edit function arguments as evil textobjects
+    :config
+    (define-key evil-outer-text-objects-map "a" 'evil-inner-arg)
+    (define-key evil-inner-text-objects-map "a" 'evil-outer-arg)
+
+    (defun jh/evil-args-switch-to-c-mode ()
+      "Switch evil-args parameters to adapt to C-derivative modes"
+      (setq evil-args-delimiters '(", " ";")))
+
+    (add-hook 'c-mode-hook #'jh/evil-args-switch-to-c-mode))
+
+  (use-package evil-numbers
+    ;; Increment/decrement numbers. E.g. 1 to 2.
+    :config
+    (define-key evil-normal-state-map (kbd "<kp-add>") 'evil-numbers/inc-at-pt)
+    (define-key evil-normal-state-map (kbd "<kp-subtract>") 'evil-numbers/dec-at-pt))
+
+  (use-package evil-exchange
+    ;; Swap two regions of text
+    :config
+    (define-key evil-operator-state-map "x" 'evil-exchange/cx)
+    (define-key evil-visual-state-map "X" 'evil-exchange))
+  )
+#+END_SRC
+
+References:
+1. http://vimcasts.org/episodes/swapping-two-regions-of-text-with-exchange-vim
 * Zacque's Utility Function
 Here are utility functions that I wrote. I'm putting it here to load it at the beginning.
 #+BEGIN_SRC emacs-lisp
@@ -122,59 +291,12 @@ Here are utility functions that I wrote. I'm putting it here to load it at the b
           (setq result (delete (concat directory "/..") result))
           result)
       (delete "." (delete ".." result)))))
+
+(defun jh/file-in-sync-directory (&rest SEQUENCES)
+  "Return full path to FILE in the sync-directory as defined by jh/sync-directory. Extra arguments are concatenated to the path. E.g. (jh/file-in-sync-directory SUB-DIR \"file.org\") returns path to jh/sync-directory+SUB-DIR+file.org."
+  (mapconcat 'identity (push jh/sync-directory SEQUENCES) "/"))
 #+END_SRC
 * Manage Packages and Sources
-** Add Package Source
-Add melpa as a package source. Add third-party library from the ./lisp directory. This is especially useful if I clone the library from Github and work on it. Since all .el files reside in one level deep in lisp directory, I will need to add all the subdirectory to the load path.
-
-With the helper function, =(jh/get-dir-files-and-subdirs ~/.emacs.d/lisp)= should return a result containing all the directory in lisp as a list. With this, I will only need to loop through the list and add each subdirectory path to the =load-path=.
-#+BEGIN_SRC emacs-lisp
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(setq package-enable-at-startup nil)
-(package-initialize)
-
-(setq load-prefer-newer t) ; load .el if newer than corresponding .elc
-(package-refresh-contents t) ; auto download package info asynchronously on Emacs startup
-
-(dolist (subdir (jh/get-dir-files-and-subdirs "~/.emacs.d/lisp"))
-  (add-to-list 'load-path (expand-file-name (concat "lisp/" subdir) user-emacs-directory)))
-
-(with-eval-after-load 'fullframe
-  (fullframe list-packages quit-window))
-#+END_SRC
-** Require-package
-A code orginally taken from Purcell, but now modified to suit my need.
-#+BEGIN_SRC emacs-lisp
-(defun require-package (package)
-  "Require a PACKAGE. Install PACKAGE if not already installed. PACKAGE will be required immediately after installation."
-  (if (package-installed-p package)
-      (require package)
-    (unless package-archive-contents
-      (package-refresh-contents))
-    (package-install package)
-    (require package)))
-#+END_SRC
-** Use Package
-I use ~use-package~ to organise my Emacs config and to speed up my Emacs init time. It was quite slow before and I suspect that there were too many packages loaded on startup. Add the :ensure-system-package keyword to use-package to ensure system binaries exist alongside my package declarations. Moreover, it will attempt to install the missing package if it does not already exist. Note: ~use-package-ensure-system-package~ is now resides within the official ~use-package~.
-#+BEGIN_SRC emacs-lisp
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(eval-when-compile
-  (require 'use-package))
-
-(setq use-package-always-ensure t) ; always install packages that are not installed.
-(setq use-package-expand-minimally t)
-
-(use-package use-package-ensure-system-package
-  :init (setq system-packages-use-sudo t))
-#+END_SRC
-
-References:
-1. https://github.com/jwiegley/use-package
-2. https://github.com/waymondo/use-package-ensure-system-package
-3. https://gitlab.com/jabranham/system-packages
 ** Auto Package Update
 #+BEGIN_SRC emacs-lisp
 (use-package auto-package-update
@@ -372,48 +494,11 @@ A reminder of mortality. Deep dive into the reflection of life.
 References:
 1. http://manuel-uberti.github.io//emacs/2019/07/06/memento-mori/
    Where I read about it.
-** Sync directory
-I used to using Dropbox for syncing. But after I realise that Dropbox limits Free User account to syncing three accounts, I decided to switch to Nextcloud. Here I define the directory for syncing.
-#+BEGIN_SRC emacs-lisp
-(defconst jh/sync-directory "/home/zacque/Dropbox/DropSyncFiles")
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun jh/file-in-sync-directory (&rest SEQUENCES)
-  "Return full path to FILE in the sync-directory as defined by jh/sync-directory. Extra arguments are concatenated to the path. E.g. (jh/file-in-sync-directory SUB-DIR \"file.org\") returns path to jh/sync-directory+SUB-DIR+file.org."
-  (mapconcat 'identity (push jh/sync-directory SEQUENCES) "/"))
-#+END_SRC
 * Personalise & Aesthetic
-#+BEGIN_SRC emacs-lisp
-(use-package "startup"
-  :ensure nil
-  :config (setq inhibit-startup-screen t))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package scroll-bar
-  :ensure nil
-  :config (scroll-bar-mode -1))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
 (global-visual-line-mode 1) ;; wrap line
 (with-eval-after-load 'diminish  ;; diminish library is loaded after this line
   (diminish 'visual-line-mode))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defalias 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
-
-Make sure C-v and M-v returns cursor to the same position.
-#+BEGIN_SRC emacs-lisp
-(setq scroll-preserve-screen-position 'always)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -438,15 +523,6 @@ Create directory if not already created. Got the code from [[https://github.com/
     (when (not (file-exists-p dir))
       (message "Make directory: %s" dir)
       (make-directory dir))))
-#+END_SRC
-*** Move the Custom Variables into a Dedicated File
-To prevent custom variable form cluttering the init.el file.
-#+BEGIN_SRC emacs-lisp
-(defconst custom-file "~/.emacs.d/custom.el")
-(unless (file-exists-p custom-file)
-  (shell-command (concat "touch " custom-file)))
-(setq custom-file custom-file)
-(load custom-file)
 #+END_SRC
 *** Define the Backup Directory
 #+BEGIN_SRC emacs-lisp
@@ -474,10 +550,6 @@ Display ugly ^L page breaks as tidy horizontal lines.
 (use-package page-break-lines
   :diminish page-break-lines-mode
   :config (global-page-break-lines-mode))
-#+END_SRC
-** Set Initial Buffer
-#+BEGIN_SRC emacs-lisp
-(setq initial-buffer-choice (jh/file-in-sync-directory "startup.org"))
 #+END_SRC
 ** UTF-8 Everywhere
 Setup to have UTF-8 everywhere? To display Chinese fonts in TTY.
@@ -590,12 +662,6 @@ Define a function to make it easy to disable page number display inside a mode. 
 (defun display-line-numbers-disable-hook ()
   "Disable display-line-numbers locally."
   (display-line-numbers-mode -1))
-#+END_SRC
-** Initial Scratch Message
-Taken from Purcell.
-#+BEGIN_SRC emacs-lisp
-(setq-default initial-scratch-message
-              (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
 #+END_SRC
 ** 80% Width
 Center align content for better reading experience. Set-face-attribute is needed to remove the grey background colour.
@@ -909,102 +975,6 @@ Settings for tracking recent files.
               recentf-exclude '("/tmp/" "/ssh:"))
 #+END_SRC
 * Enable Evil mode
-** Evil
-
-#+BEGIN_SRC emacs-lisp
-;; Evil mode
-(require-package 'evil)
-(evil-mode 1)
-#+END_SRC
-
-Override the default 'j' and 'k' key movements.
-#+BEGIN_SRC emacs-lisp
-(define-key evil-motion-state-map [remap evil-next-line] 'evil-next-visual-line)
-(define-key evil-motion-state-map [remap evil-previous-line] 'evil-previous-visual-line)
-#+END_SRC 
-
-"C-o" is evil-jump-backward. Therefore I set "C-S-o" to jump forward.
-#+BEGIN_SRC emacs-lisp
-(define-key evil-motion-state-map (kbd "C-S-o") 'evil-jump-forward)
-#+END_SRC
-
-Set some built-in modes to launch in emacs-state.
-#+BEGIN_SRC emacs-lisp
-;; SET EVIL INITIAL STATE FOR SOME MODES (IN ADDITION TO THE DEFAULT)
-(cl-loop for (mode . state) in
-	 '((image-mode . emacs)
-	   (eww-mode . emacs)
-	   (Info-mode . emacs)
-	   (calendar-mode . emacs)
-	   (process-menu-mode . emacs)
-	   (diff-mode . emacs))
-	 do (evil-set-initial-state mode state))
-#+END_SRC
-
-Redefine =evil-ex-commands= to close buffers instead of the frame (Emacs windows).
-#+BEGIN_SRC emacs-lisp
-(evil-define-command jh/evil-save-modified-and-close-buffer (file &optional bang)
-  "Saves the current buffer and closes the buffer."
-  :repeat nil
-  (interactive "<f><!>")
-  (when (buffer-modified-p)
-    (evil-write nil nil nil file bang))
-  (kill-buffer))
-
-(evil-define-command jh/evil-save-and-close-buffer (file &optional bang)
-  "Saves the current buffer and closes the window."
-  :repeat nil
-  (interactive "<f><!>")
-  (evil-write nil nil nil file bang)
-  (kill-buffer))
-
-;; Ex :q should kill the current buffer rather than quitting emacs entirely
-(evil-ex-define-cmd "q" 'kill-this-buffer)
-
-;; Type :quit to close emacs
-(evil-ex-define-cmd "quit" 'evil-quit)
-
-(evil-ex-define-cmd "wq" 'jh/evil-save-and-close-buffer)
-#+END_SRC
-
-Define :digraphs to show digraphs.
-#+BEGIN_SRC emacs-lisp
-(evil-ex-define-cmd "digraphs" 'evil-ex-show-digraphs)
-#+END_SRC
-** Evil Visual Mark
-
-Display Evil marks in the buffer.
-#+BEGIN_SRC emacs-lisp
-(require 'evil-visual-mark-mode)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'evil-mode-hook 'evil-visual-mark-mode)
-#+END_SRC
-
-** Evil Search
-Make evil-search similar to Vim's search. 
-Issue: 
-1. Highlight does not go away.
-#+BEGIN_SRC emacs-lisp :tangle no
-(evil-select-search-module 'evil-search-module 'evil-search)
-#+END_SRC
-
-Default values. Make it explicit.
-#+BEGIN_SRC emacs-lisp
-(setq evil-search-wrap t
-      evil-regexp-search t)
-#+END_SRC
-
-To show (current match/total matches) info in the mode-line using evil-search-forward.
-#+BEGIN_SRC emacs-lisp
-(require-package 'evil-anzu)
-#+END_SRC
-
-References:
-1. https://github.com/syohex/emacs-anzu
-2. https://stackoverflow.com/a/42371439
-
 ** Evil Smart-Jump
 Use this package to go to definitions by leveraging a series of methods.
 #+BEGIN_SRC emacs-lisp
@@ -1019,112 +989,6 @@ Smart-jump opens xref when there are more than one candidate.
 #+BEGIN_SRC emacs-lisp
 (evil-set-initial-state 'xref--xref-buffer-mode 'emacs)
 #+END_SRC
-
-** Evil-Sentence
-
-Use evil-sentence to operate on a text sentence object.
-
-#+BEGIN_SRC emacs-lisp
-;; evil-sentence
-(require-package 'sentence-navigation)
-
-;;; Using evil-sentence/sentence-navigation
-(define-key evil-outer-text-objects-map "s" 'sentence-nav-evil-a-sentence)
-(define-key evil-inner-text-objects-map "s" 'sentence-nav-evil-inner-sentence)
-#+END_SRC
-
-** Evil-Matchit
-
-Use evil-matchit to jump between HTML tags using '%'.
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'evil-matchit)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(global-evil-matchit-mode 1)
-#+END_SRC
-
-** Evil-Surround
-
-Use evil-surround to deal with surrounding quotes or tags.
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'evil-surround)
-#+END_SRC
-
-Note: Add hook to evil-mode does not work.
-#+BEGIN_SRC emacs-lisp
-(global-evil-surround-mode 1)
-#+END_SRC
-
-Problem: evil-surround-change inserts unwanted spaces. E.g. it changes (this-form) to [ this-form ]. This code solves that. Reference: https://github.com/emacs-evil/evil-surround/issues/86#issuecomment-258552759
-#+BEGIN_SRC emacs-lisp
-;; use non-spaced pairs when surrounding with an opening brace
-(evil-add-to-alist
- 'evil-surround-pairs-alist
- ?\( '("(" . ")")
- ?\[ '("[" . "]")
- ?\{ '("{" . "}")
- ?\) '("( " . " )")
- ?\] '("[ " . " ]")
- ?\} '("{ " . " }"))
-#+END_SRC
-
-** Evil-Numbers
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'evil-numbers)
-#+END_SRC
-
-Use the keypad + and - without shadowing the regular + and -.
-#+BEGIN_SRC emacs-lisp
-(define-key evil-normal-state-map (kbd "<kp-add>") 'evil-numbers/inc-at-pt)
-(define-key evil-normal-state-map (kbd "<kp-subtract>") 'evil-numbers/dec-at-pt)
-#+END_SRC
-
-References:
-1. https://github.com/cofi/evil-numbers
-
-** Evil-Exchange
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'evil-exchange)
-#+END_SRC
-
-Use define-key instead of =evil-exchange-cx-install=. Wrapping it in a function makes it feels difficult and opaque.
-#+BEGIN_SRC emacs-lisp
-(define-key evil-operator-state-map "x" 'evil-exchange/cx)
-(define-key evil-visual-state-map "X" 'evil-exchange)
-#+END_SRC
-
-References:
-1. https://github.com/Dewdrops/evil-exchange
-2. http://vimcasts.org/episodes/swapping-two-regions-of-text-with-exchange-vim
-
-** Evil-Args
-
-Funtion arguments as textobjects.
-#+BEGIN_SRC emacs-lisp
-(require-package 'evil-args)
-#+END_SRC
-
-Bind evil-args text objects.
-#+BEGIN_SRC emacs-lisp
-(define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
-(define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
-#+END_SRC
-
-For C-derivative modes.
-#+BEGIN_SRC emacs-lisp
-(defun jh/evil-args-switch-to-c-mode ()
-  "Switch evil-args parameters to adapt to C-derivative modes"
-  (setq evil-args-delimiters '(", " ";")))
-
-(add-hook 'c-mode-hook #'jh/evil-args-switch-to-c-mode)
-#+END_SRC
-
-For Lispy modes, see [[evil-lisp-args][evil-lisp-args]].
 
 * Company Mode
 Company-mode is a framework to "complete anything". 
