@@ -2600,6 +2600,12 @@ References:
           ("blog" :components ("technical-notes" "blog-static")))))
 #+END_SRC
 
+* Org Enhancements
+#+BEGIN_SRC emacs-lisp
+(use-package orglink-cursor
+  :load-path "lisp/orglink-cursor"
+  :hook (org-mode . orglink-cursor-mode))
+#+END_SRC
 * Evil's Reading-State for Org-mode
 
 Define an Evil's state for easy browsing, reading, and navigating in Org-mode. This serves as a higher level of abstraction over the NORMAL "mode" because like org-speed-key-commands, it offers quick keys to perform actions on the level of trees, subtrees, properties, tags, and org source blocks while the NORMAL "mode" navigates between lines. I think NORMAL "mode" is good for editing but what I want is a "mode" in Org-mode for reading. So I define an Evil state to achieve that.
