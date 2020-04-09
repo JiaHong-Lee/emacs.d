@@ -52,3 +52,6 @@
 [submodule "lisp/orglink-cursor"]
 	path = lisp/orglink-cursor
 	url = ./lisp/orglink-cursor/
+[submodule "lisp/org-common-link"]
+	path = lisp/org-common-link
+	url = ./lisp/org-common-link/
