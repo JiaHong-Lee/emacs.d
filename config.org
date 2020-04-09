@@ -526,6 +526,11 @@ Lisp mode deals a lot with parens.
 (dolist (hook (mapcar #'derived-mode-hook-name jh/lispy-modes))
   (add-hook hook 'jh/lisp-setup))
 
+(use-package elisp-lint
+  ;; Basic linting for Emacs-Lisp.
+  ;; See: flycheck-package, package-lint
+  )
+
 (use-package ipretty
   ;; Pretty print the result of an elisp expression
   :hook (emacs-lisp-mode . ipretty-mode))
