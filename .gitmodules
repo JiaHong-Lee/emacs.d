@@ -52,9 +52,9 @@
 [submodule "lisp/orglink-cursor"]
 	path = lisp/orglink-cursor
 	url = ./lisp/orglink-cursor/
-[submodule "lisp/org-common-link"]
-	path = lisp/org-common-link
-	url = ./lisp/org-common-link/
+[submodule "lisp/org-common-links"]
+	path = lisp/org-common-links
+	url = ./lisp/org-common-links/
 [submodule "lisp/ivy-pass"]
 	path = lisp/ivy-pass
 	url = ./lisp/ivy-pass/

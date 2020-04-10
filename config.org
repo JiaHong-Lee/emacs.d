@@ -1577,8 +1577,8 @@ References:
 1. github:abo-abo/org-download
 ** Org Common Links
 #+BEGIN_SRC emacs-lisp
-(use-package org-common-link
-  :load-path "lisp/org-common-link")
+(use-package org-common-links
+  :load-path "lisp/org-common-links")
 #+END_SRC
 * Org GTD
 ** Organise My Life Into Org Files
