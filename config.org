@@ -556,7 +556,6 @@ Lisp mode deals a lot with parens.
 
 (use-package rainbow-delimiters
   ;; highlight different layers of parentheses
-  :disabled
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;;; Common Lisp
@@ -963,13 +962,6 @@ References:
   (use-package flymake-cursor
     :load-path "lisp/flymake-cursor"
     :hook (flymake-mode . flymake-cursor-mode)))
-
-(use-package highlight-parentheses
-  ;; Highlight surrounding parentheses, especially useful for lisp modes.
-  :diminish
-  :hook (prog-mode . highlight-parentheses-mode)
-  :config
-  (setq hl-paren-colors '("orange" "firebrick1" "navy")))
 
 (use-package hl-line
   ;; Highlight current line.
