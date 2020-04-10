@@ -55,3 +55,6 @@
 [submodule "lisp/org-common-link"]
 	path = lisp/org-common-link
 	url = ./lisp/org-common-link/
+[submodule "lisp/ivy-pass"]
+	path = lisp/ivy-pass
+	url = ./lisp/ivy-pass/
