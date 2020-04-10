@@ -552,6 +552,7 @@ Lisp mode deals a lot with parens.
   :diminish (paredit . " Par"))
 
 (use-package highlight-quoted
+  ;; highlight Lisp quotes and quoted symbols
   :hook (emacs-lisp-mode . highlight-quoted-mode))
 
 (use-package rainbow-delimiters
