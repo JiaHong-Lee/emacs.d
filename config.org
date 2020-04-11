@@ -510,6 +510,7 @@ Lisp mode deals a lot with parens.
   '(jh/enable-check-parens-on-save
     jh/evil-args-switch-to-lisp-mode
     enable-paredit-mode
+    prism-mode
     aggressive-indent-mode)
   "Define all hooks to run in all Lisp modes.")
 
@@ -525,6 +526,10 @@ Lisp mode deals a lot with parens.
 (require 'derived)
 (dolist (hook (mapcar #'derived-mode-hook-name jh/lispy-modes))
   (add-hook hook 'jh/lisp-setup))
+
+(use-package prism
+  ;; Colour code expressions according to their depth level
+  )
 
 (use-package elisp-lint
   ;; Basic linting for Emacs-Lisp.
@@ -554,10 +559,6 @@ Lisp mode deals a lot with parens.
 (use-package highlight-quoted
   ;; highlight Lisp quotes and quoted symbols
   :hook (emacs-lisp-mode . highlight-quoted-mode))
-
-(use-package rainbow-delimiters
-  ;; highlight different layers of parentheses
-  :hook (prog-mode . rainbow-delimiters-mode))
 
 ;;; Common Lisp
 (use-package slime
