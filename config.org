@@ -599,6 +599,12 @@ Use cases:
   (setq org-babel-python-command "python3")
   (setq gud-pdb-command-name "python -m pdb")) ; python debugger program
 
+(use-package pyenv-mode
+  ;; Integrate pyenv with Python-mode
+  :ensure-system-package pyenv
+  :config
+  (pyenv-mode))
+
 (use-package anaconda-mode
   :hook ((python-mode . anaconda-mode)
          (python-mode . anaconda-eldoc-mode))
