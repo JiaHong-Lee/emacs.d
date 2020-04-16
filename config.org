@@ -704,9 +704,10 @@ References:
   :ensure nil
   :mode ("\\.info\\'" . Info-on-current-buffer)
   :init
-  ;; add default info directory in case $INFOPATH is set by program like GNU Guix
-  (add-to-list 'Info-directory-list "/usr/local/share/info/")
-  (add-to-list 'Info-directory-list "/usr/share/info/")
+  ;; add default Info-directory-list to the end of Info-directory-list in case $INFOPATH is set by program like GNU Guix
+  (dolist (dir Info-default-directory-list)
+    (unless (member dir Info-directory-list)
+      (setq Info-directory-list (append Info-directory-list (list dir)))))
   :config
   ;; add an info directory to load additional .info files
   (add-to-list 'Info-directory-list "~/Info_Files_Manual"))
