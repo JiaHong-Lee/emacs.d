@@ -625,6 +625,31 @@ Use cases:
 References:
 1. https://www.emacswiki.org/emacs/PythonProgrammingInEmacs
 2. https://thoughtbot.com/blog/emacs-as-a-python-ide
+* Graphviz-Dot Mode
+#+BEGIN_SRC emacs-lisp
+(use-package graphviz-dot-mode
+  ;; A major mode for editing Graphviz .dot file
+  :config
+  (setq graphviz-dot-indent-width 4)
+
+  (use-package company-graphviz-dot
+    ;; Company completion function for graphviz-dot-mode
+    )
+  )
+#+END_SRC
+* PlantUML Mode
+#+BEGIN_SRC emacs-lisp
+(use-package plantuml-mode
+  ;; A major mode for editing PlantUML sources
+  :init
+  (with-eval-after-load 'ob-plantuml
+    (let ((jar-name "plantuml.jar")
+          (url "http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar"))
+      (setq org-plantuml-jar-path (expand-file-name "plantuml.jar" user-emacs-directory))
+      (unless (file-exists-p org-plantuml-jar-path)
+        (url-copy-file url org-plantuml-jar-path))))
+  )
+#+END_SRC
 * File Editing
 #+BEGIN_SRC emacs-lisp
 ;; go to the next/previous file (by name). use prefix c-u to go back.
@@ -2632,28 +2657,8 @@ References:
   (interactive)
   (cl-letf (((symbol-function 'delete-file) #'ignore))
     (org-babel-tangle '(4))))
-** Graphviz and PlantUML
-#+BEGIN_SRC emacs-lisp
-(require-package 'graphviz-dot-mode)
-#+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(require-package 'plantuml-mode)
-#+END_SRC
 
-#+SOURCE: Purcell .emacs.d
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'ob-plantuml
-  (let ((jar-name "plantuml.jar")
-        (url "http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar"))
-    (setq org-plantuml-jar-path (jh/emacs-subdirectory "plantuml.jar"))
-    (unless (file-exists-p org-plantuml-jar-path)
-      (url-copy-file url org-plantuml-jar-path))))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq org-ditaa-jar-path (jh/emacs-subdirectory "ditaa.jar"))
-#+END_SRC
 (add-hook 'org-babel-after-execute-hook 'org-display-inline-images) ; auto-display generated image after org-src execution, especially useful for ob-jupyter, ob-ditaa, Graphviz and PlantUML
 
 (use-package ob-async
