@@ -2611,20 +2611,10 @@ References:
 (setq org-confirm-babel-evaluate nil)
 (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
-#+END_SRC
+(setq org-edit-src-content-indentation 0) ; don't indent source code relative to the #+BEGIN_SRC org-src block
+(setq org-src-window-setup 'other-window) ; edit org-src block in the other window instead of force organising all the windows side-by-side
 
-Disabling default source code block indentation by 2 spaces (relative to the #+BEGIN_SRC and #+END_SRC lines) makes direct editing much easier [fn:11].
-#+BEGIN_SRC emacs-lisp
-(setq org-edit-src-content-indentation 0)
-#+END_SRC
-
-Edit org-src-code on the other window, instead of force organising all the frame into two side-by-side window.
-#+BEGIN_SRC emacs-lisp
-(setq org-src-window-setup 'other-window)
-#+END_SRC
-
-Use org template system to generate source blocks.
-#+BEGIN_SRC emacs-lisp
+;; org template for commonly used language
 (add-to-list 'org-structure-template-alist '("el" "#+BEGIN_SRC emacs-lisp?\n#+END_SRC"))
 (add-to-list 'org-structure-template-alist '("py" "#+BEGIN_SRC python\n?\n#+END_SRC"))
 (add-to-list 'org-structure-template-alist '("sh" "#+BEGIN_SRC shell\n?\n#+END_SRC"))
@@ -2633,11 +2623,8 @@ Use org template system to generate source blocks.
 (add-to-list 'org-structure-template-alist '("dot" "#+BEGIN_SRC dot :file ?.png :cmdline -Kdot -Tpng\n\n#+END_SRC"))
 (add-to-list 'org-structure-template-alist '("pl" "#+BEGIN_SRC plantuml :file ?.png \n\n#+END_SRC"))
 (add-to-list 'org-structure-template-alist '("cl" "#+BEGIN_SRC lisp\n?\n#+END_SRC"))
-#+END_SRC
 
-Instead of replace the file content on every tangle, use this to append code to the file.
-#+BEGIN_SRC emacs-lisp :tangle no
-;; SOURCE: https://emacs.stackexchange.com/a/38898
+;; append code to the targeted file, see https://emacs.stackexchange.com/a/38898
 (defun org-babel-tangle-append ()
   "Append source code block at point to its tangle file.
    The command works like `org-babel-tangle' with prefix arg
@@ -2645,52 +2632,6 @@ Instead of replace the file content on every tangle, use this to append code to 
   (interactive)
   (cl-letf (((symbol-function 'delete-file) #'ignore))
     (org-babel-tangle '(4))))
-(add-hook 'org-mode-hook #'org-babel-tangle-append)
-#+END_SRC
-
-Auto-display generated image after each execution. This is especially useful for ob-jupyter, ob-ditaa, Graphviz and PlantUML. Source: https://github.com/dzop/emacs-jupyter/issues/178
-#+BEGIN_SRC emacs-lisp
-(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
-#+END_SRC
-
-** org-babel-timestamp
-
-[Failed] Advising no working.
-#+BEGIN_SRC emacs-lisp :tangle no
-(defun jh/org-babel-insert-timestamp ()
-  (let* ((code-block-info (org-babel-get-src-block-info))
-         (code-block-params (nth 2 code-block-info))
-         (code-block-name (nth 4 code-block-info))
-         (timestampp (cdr (assoc :timestamp code-block-params))))
-    (when (equal timestampp "t")
-      (save-excursion
-        (replace-regexp "#\\+RESULTS:" (concat "#+RESULTS"
-                                               (format-time-string "[%F %r]")
-                                               ":"))))))
-
-(advice-add 'org-babel-execute-src-block :after #'jh/org-babel-insert-timestamp)
-#+END_SRC
-
-References:
-1. https://emacs.stackexchange.com/a/35904
-
-** ob-async
-
-Run ob-babel asynchronously. I hope this could be the default behaviour?
-#+BEGIN_SRC emacs-lisp
-(require-package 'ob-async)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia"))
-#+END_SRC
-
-Note:
-1. The package does not support :session header-arg for now. See github:astahlman/ob-async#1.
-
-References:
-1. github:astahlman/ob-async
-
 ** Graphviz and PlantUML
 #+BEGIN_SRC emacs-lisp
 (require-package 'graphviz-dot-mode)
@@ -2713,11 +2654,15 @@ References:
 #+BEGIN_SRC emacs-lisp
 (setq org-ditaa-jar-path (jh/emacs-subdirectory "ditaa.jar"))
 #+END_SRC
+(add-hook 'org-babel-after-execute-hook 'org-display-inline-images) ; auto-display generated image after org-src execution, especially useful for ob-jupyter, ob-ditaa, Graphviz and PlantUML
 
-** Load all babel
+(use-package ob-async
+  ;; Run ob-babel asynchronously
+  ;; Note: it doesn't support :session header-arg. See: https://github.com/astahlman/ob-async/issues/1
+  :config
+  (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia")))
 
-List the supported language for org-babel.
-#+BEGIN_SRC emacs-lisp
+;; Load all babel supported language
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((R . t)
@@ -2740,6 +2685,10 @@ List the supported language for org-babel.
    (C . t)))
 #+END_SRC
 
+References:
+1. https://robmoss.github.io/2018/02/19/Live-coding-Emacs-and-ghci
+2. https://github.com/dzop/emacs-jupyter/issues/178
+3. github:astahlman/ob-async
 * Emacs Research
 ** Ivy-bibtex
 
@@ -4880,9 +4829,6 @@ References:
 [fn:13] https://github.com/purcell/emacs.d/blob/master/lisp/init-ivy.el
 
 [fn:12] https://github.com/skeeto/elfeed/issues/267 OR https://gitlab.com/ambrevar/dotfiles/blob/master/.emacs.d/lisp/init-elfeed.el
-
-[fn:11] https://robmoss.github.io/2018/02/19/Live-coding-Emacs-and-ghci
-
 
 [fn:7] http://www.nongnu.org/geiser/
 
