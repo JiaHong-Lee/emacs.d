@@ -2631,7 +2631,6 @@ References:
 5. github:alphapapa/org-graph-view & github:jethrokuan/org-roam
    Check this out: view org buffers as a clickable, graphical mind-map.
 * Org Literate Programming/ Org-babel/ Ox-babel
-
 #+BEGIN_SRC emacs-lisp
 (setq org-confirm-babel-evaluate nil)
 (setq org-src-fontify-natively t)
