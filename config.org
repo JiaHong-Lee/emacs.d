@@ -3254,39 +3254,34 @@ References:
 Fullfill the prerequisite. Clone the git repo. Build. And done.
 
 *** Config
-
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "~/gitrepo/software/emacs-libvterm")
-(require 'vterm)
+(use-package vterm
+  :load-path "lisp/emacs-libvterm"
+  :config
+  (defun jh/--customise-vterm-display ()
+    "Customise font face to make looks like a typical terminal emulator."
+    ;; (buffer-face-set '(:family "Hack" :height 103))
+    (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch)
+    (buffer-face-mode t)
+    (buffer-face-set '(:family "Hack"))
+    (setq header-line-format " "))
+  (add-hook 'vterm-mode-hook #'jh/--customise-vterm-display)
+
+  (defun jh/--truncate-lines ()
+    "To make the line wrapping works normally."
+    (setq truncate-lines t))
+  (add-hook 'vterm-mode-hook #'jh/--truncate-lines)
+
+  (evil-set-initial-state 'vterm-mode 'emacs)
+
+
+  ;; Exit buffer after exiting Vterm
+  (setq vterm-kill-buffer-on-exit t))
 #+END_SRC
 
-Customise VTerm font face to make it looks more like a typical terminal emulator.
-#+BEGIN_SRC emacs-lisp
-(defun jh/--customise-vterm-display ()
-  "Sets a special font for Org-mode writing and more."
-  ;; (buffer-face-set '(:family "Hack" :height 103))
-  (buffer-face-set '(:family "Hack"))
-  (setq header-line-format " "))
-
-(add-hook 'vterm-mode-hook #'jh/--customise-vterm-display)
-#+END_SRC
-
-To make the line wrapping in VTerm works normally. Reference: https://superuser.com/a/988843
-#+BEGIN_SRC emacs-lisp
-(defun jh/--truncate-lines ()
-  (setq truncate-lines t))
-(add-hook 'vterm-mode-hook #'jh/--truncate-lines)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(evil-set-initial-state 'vterm-mode 'emacs)
-#+END_SRC
-
-Exit buffer after exit vterm. Reference: https://github.com/akermu/emacs-libvterm/issues/24#issuecomment-438048042
-#+BEGIN_SRC emacs-lisp
-(add-hook 'vterm-exit-functions (lambda (process)
-				  (kill-buffer)))
-#+END_SRC
+References: 
+1. https://superuser.com/a/988843
+2. https://github.com/akermu/emacs-libvterm/issues/24#issuecomment-438048042
 * Handy Small Functions
 Open the current file-buffer using system viewer [fn:32].
 #+BEGIN_SRC emacs-lisp
