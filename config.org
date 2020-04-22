@@ -637,6 +637,7 @@ References:
 
   (use-package company-graphviz-dot
     ;; Company completion function for graphviz-dot-mode
+    :load-path "lisp/graphviz-dot-mode"
     )
   )
 #+END_SRC
