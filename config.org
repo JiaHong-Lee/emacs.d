@@ -990,7 +990,7 @@ References:
   :diminish
   :hook (prog-mode . highlight-indent-guides-mode)
   :config
-  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-method 'bitmap)
   (setq highlight-indent-guides-responsive 'top)
   (setq highlight-indent-guides-delay 0))
 
