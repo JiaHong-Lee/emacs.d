@@ -128,7 +128,8 @@ I use ~use-package~ to organise my Emacs config, to speed up my Emacs init time,
 
 (require 'package)
 (setq package-enable-at-startup nil)
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")))
+(setq package-archives '(("elpa" . "https://elpa.gnu.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
 (setq load-prefer-newer t) ;; load .el if it's newer than corresponding .elc
