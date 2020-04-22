@@ -1381,8 +1381,11 @@ Set it to use =gpg= explicitly (it is the default). In some case, I might want t
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package ivy-pass
-  :load-path "lisp/ivy-pass")
+  (use-package password-store
+    ;; provides interface to work with pass
+    :config
+    (use-package ivy-pass
+      :load-path "lisp/ivy-pass"))
 #+END_SRC
 
 References:
