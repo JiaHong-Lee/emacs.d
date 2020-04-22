@@ -654,6 +654,14 @@ References:
         (url-copy-file url org-plantuml-jar-path))))
   )
 #+END_SRC
+* TLA+ Mode
+#+BEGIN_SRC emacs-lisp
+(use-package tla-mode
+  :load-path "lisp/tla-mode")
+#+END_SRC
+
+References:
+1. https://github.com/ratish-punnoose/tla-mode
 * File Editing
 #+BEGIN_SRC emacs-lisp
 ;; go to the next/previous file (by name). use prefix c-u to go back.
