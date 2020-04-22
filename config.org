@@ -1060,15 +1060,17 @@ References:
   (define-key Man-mode-map (kbd "f") #'scroll-up-command)
   (define-key Man-mode-map (kbd "b") #'scroll-down-command))
 
-(use-package counsel-dash
-  ;; browse dash in Emacs using ivy completion framework
-  :load-path "lisp/counsel-dash"
+(use-package dash-docs
   :config
   (setq dash-docs-docsets-path (expand-file-name "docsets" user-emacs-directory)) ;; use absolute path
   (setq dash-docs-common-docsets '("opencv" "keras" "python3" "java" "numpy" "ansible" "pytorch" "terraform" "matplotlib"))
 
   ;; change the default doc browser to using eww
-  (setq dash-docs-browser-func 'eww))
+  (setq dash-docs-browser-func 'eww)
+
+  (use-package counsel-dash
+    ;; browse dash in Emacs using ivy completion framework
+    :load-path "lisp/counsel-dash"))
 #+END_SRC
 * Emacs Ergonomics
 #+BEGIN_SRC emacs-lisp
