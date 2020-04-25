@@ -839,6 +839,14 @@ to
   :diminish (yas-minor-mode . " Ⓨ")
   :hook ((text-mode prog-mode) . yas-minor-mode)
   :config
+  ;; workaround sideeffect function. see: https://emacs.stackexchange.com/a/24062
+  (defun yas/org-get-time-stamp (&rest args)
+    "Return the string that `org-insert-time-stamp' would insert."
+    (with-temp-buffer
+      (apply #'org-insert-time-stamp args)
+      (buffer-string)))
+
+
   (yas-reload-all))
 
 (use-package writeroom-mode
