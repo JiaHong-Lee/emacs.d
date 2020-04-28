@@ -2957,186 +2957,112 @@ References:
 ** Eshell as my Terminal
 Eshell is a shell, not a terminal emulator. It plays well with CLI, but not TUI. However, since Emacs has UI, some commands might have a replacement in Emacs. E.g. top -> proced, alsomixer -> volume.
 #+BEGIN_SRC emacs-lisp
-(require 'eshell)
-(require 'esh-mode)
-#+END_SRC
+(use-package eshell
+  :ensure nil
+  :config
+  (use-package esh-mode
+    :ensure nil)
 
-Start Eshell in Emacs state.
-#+BEGIN_SRC emacs-lisp
-(evil-set-initial-state 'eshell-mode 'emacs)
-#+END_SRC
+  (evil-set-initial-state 'eshell-mode 'emacs)
 
-Enable Plan9 smart shell display.
-#+BEGIN_SRC emacs-lisp
-(require 'em-smart)
-(setq eshell-where-to-jump 'begin)
-(setq eshell-review-quick-commands nil)
-(setq eshell-smart-space-goes-to-end t)
-#+END_SRC
+  ;; enable Plan9 smart shell display.
+  (require 'em-smart)
+  (setq eshell-where-to-jump 'begin)
+  (setq eshell-review-quick-commands nil)
+  (setq eshell-smart-space-goes-to-end t)
 
-Use ~/.bash_history for eshell.
-#+BEGIN_SRC emacs-lisp
-(setenv "HISTFILE" "/home/zacque/.bash_history")
-(setq eshell-history-file-name nil) ;; use HISTFILE value
-#+END_SRC
+  ;; use ~/.bash_history for eshell
+  (setenv "HISTFILE" (expand-file-name "~/.bash_history"))
+  (setq eshell-history-file-name nil) ; use HISTFILE value
+  (setq eshell-history-size 9999999) ; note: eshell does not support unbounded history length
+  (setq eshell-save-history-on-exit t)
 
-*Note:* Eshell does not support unbounded history length.
-#+BEGIN_SRC emacs-lisp
-(setq eshell-history-size 9999999)
-(setq eshell-save-history-on-exit t)
-#+END_SRC
+  (setq eshell-buffer-maximum-lines 4096)
+  (setq eshell-scroll-to-bottom-on-input t)
+  (setq eshell-cmpl-ignore-case t)
+  (setq eshell-hist-ignoredups t)
 
-#+BEGIN_SRC emacs-lisp
-(setq eshell-buffer-maximum-lines 4096)
-#+END_SRC
+  (setq eshell-destroy-buffer-when-process-dies t) ; to kill *top* buffer on exit
 
-#+BEGIN_SRC emacs-lisp
-(setq eshell-scroll-to-bottom-on-input t)
-#+END_SRC
+  ;; makes eshell prompt similar to Bash
+  ;; reference: https://www.emacswiki.org/emacs/EshellPrompt#toc6
+  (defun jh/--eshell-prompt ()
+    (let* ((home (getenv "HOME"))
+           (login-info (concat (user-login-name) "@" (system-name) ":"))
+           (pwd (replace-regexp-in-string "/home/zacque" "~" (eshell/pwd))))
+      (concat
+       (propertize login-info 'face `(:foreground "green"))
+       (propertize pwd 'face `(:foreground "gold"))
+       (if (= (user-uid) 0) "# " "$ "))))
 
-#+BEGIN_SRC emacs-lisp
-(setq eshell-cmpl-ignore-case t)
-#+END_SRC
+  (setq eshell-prompt-function 'jh/--eshell-prompt)
+  (setq eshell-prompt-regexp "^[^#$\n]*[#$] ")
 
-#+BEGIN_SRC emacs-lisp
-(setq eshell-hist-ignoredups t)
-#+END_SRC
+  ;; cache sudo password in eshell
+  (require 'em-tramp)
+  (setq eshell-prefer-lisp-functions t)
+  (setq eshell-prefer-lisp-variables t)
+  (setq password-cache t)
+  (setq password-cache-expiry 600) ;; seconds
 
-To kill *top* buffer on exiting the process.
-#+BEGIN_SRC emacs-lisp
-(setq eshell-destroy-buffer-when-process-dies t)
-#+END_SRC
+  ;; C-r to search previous history using ivy/counsel
+  (define-key eshell-mode-map (kbd "C-r") #'counsel-esh-history)
 
-Make the Eshell prompt behaves more like Bash.
-#+URL: https://www.emacswiki.org/emacs/EshellPrompt#toc6
-#+BEGIN_SRC emacs-lisp
-(defun jh/--eshell-prompt ()
-  (let* ((home (getenv "HOME"))
-         (login-info (concat (user-login-name) "@" (system-name) ":"))
-         (pwd (replace-regexp-in-string "/home/zacque" "~" (eshell/pwd))))
-    (concat
-     (propertize login-info 'face `(:foreground "green"))
-     (propertize pwd 'face `(:foreground "gold"))
-     (if (= (user-uid) 0) "# " "$ "))))
+  ;; Use C-d to exit eshell
+  (defun jh/eshell-quit-or-delete-char (arg)
+    (interactive "p")
+    (if (and (eolp)
+             (looking-back eshell-prompt-regexp))
+        (eshell-life-is-too-much) ; Why not? (eshell/exit)
+      (delete-forward-char arg)))
+  (define-key eshell-mode-map (kbd "C-d") 'jh/eshell-quit-or-delete-char)
 
-(setq eshell-prompt-function 'jh/--eshell-prompt)
-(setq eshell-prompt-regexp "^[^#$\n]*[#$] ")
-#+END_SRC
+  (use-package xterm-color)
 
-[Not Working] Caching sudo password in eshell. This is useful so that eshell does not prompt for password for every sudo command [fn:15].
-#+BEGIN_SRC emacs-lisp
-(require 'em-tramp)
-(setq eshell-prefer-lisp-functions t)
-(setq eshell-prefer-lisp-variables t)
-(setq password-cache t)
-(setq password-cache-expiry 600) ;; seconds
-#+END_SRC
+  ;; makes ls output colourful
+  (defun jh/--eshell-set-term ()
+    (setenv "TERM" "xterm-256color"))
 
-Progress bar for apt in shell. Source: https://oremacs.com/2019/03/24/shell-apt/
-#+BEGIN_SRC emacs-lisp
-(advice-add
- 'ansi-color-apply-on-region
- :before 'ora-ansi-color-apply-on-region)
+  (add-hook 'eshell-mode-hook 'jh/--eshell-set-term)
 
-(defun ora-ansi-color-apply-on-region (begin end)
-  "Fix progress bars for e.g. apt(8).
-Display progress in the mode line instead."
-  (let ((end-marker (copy-marker end))
-        mb)
-    (save-excursion
-      (goto-char (copy-marker begin))
-      (while (re-search-forward "\0337" end-marker t)
-        (setq mb (match-beginning 0))
-        (when (re-search-forward "\0338" end-marker t)
-          (ora-apt-progress-message
-           (substring-no-properties
-            (delete-and-extract-region mb (point))
-            2 -2)))))))
+  ;; not sure what this does
+  (defun jh/--eshell-enable-xterm-preserve-properties ()
+    (setq xterm-color-preserve-properties t))
 
-;; (defun ora-apt-progress-message (progress)
-;;   (setq mode-line-process
-;;         (if (string-match
-;;              "Progress: \\[ *\\([0-9]+\\)%\\]" progress)
-;;             (list
-;;              (concat ":%s "
-;;                      (match-string 1 progress)
-;;                      "%%%% "))
-;;           '(":%s")))
-;;   (force-mode-line-update))
+  (add-hook 'eshell-mode-hook 'jh/--eshell-enable-xterm-preserve-properties)
 
-(defun ora-apt-progress-message (progress)
-  (message
-   (replace-regexp-in-string
-    "%" "%%"
-    (ansi-color-apply progress))))
-#+END_SRC
+  (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+  (setq eshell-output-filter-functions (delete 'eshell-handle-ansi-color eshell-output-filter-functions))
 
-C-r to search previous history using ivy/counsel.
-#+BEGIN_SRC emacs-lisp
-(define-key eshell-mode-map (kbd "C-r") #'counsel-esh-history)
-#+END_SRC
+  ;; remove the default "Welcome to the Emacs shell\n\n" message on Eshell startup.
+  (setq eshell-banner-message "")
 
-Use C-d to exit Eshell.
-TODO: Only delete char if it's at the input line; otherwise, send C-d.
-#+BEGIN_SRC emacs-lisp
-(defun jh/eshell-quit-or-delete-char (arg)
-  (interactive "p")
-  (if (and (eolp)
-           (looking-back eshell-prompt-regexp))
-      (eshell-life-is-too-much) ; Why not? (eshell/exit)
-    (delete-forward-char arg)))
-(define-key eshell-mode-map (kbd "C-d") 'jh/eshell-quit-or-delete-char)
+  (setq eshell-highlight-prompt t)
+
+  (defun jh/--customise-eshell-display ()
+    "Sets a special font for Org-mode writing and more."
+    (buffer-face-set '(:family "Hack" :height 103))
+    ;; (buffer-face-set '(:family "Hack"))
+    (setq header-line-format " "))
+
+  (add-hook 'eshell-mode-hook #'jh/--customise-eshell-display)
+
+  (use-package eshell-up)
+  (use-package eshell-z)
+  (use-package eshell-did-you-mean
+    :config
+    (eshell-did-you-mean-setup)))
 #+END_SRC
 
 References:
-1. https://github.com/peterwvj/emacs.d/blob/master/lisp/eshell-config-pvj.el
-2. https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org
-*** Personalisation & Beautification
-Dependencies: xterm-color.
-
-This will make =ls= output colourful.
-#+BEGIN_SRC emacs-lisp
-(defun jh/--eshell-set-term ()
-  (setenv "TERM" "xterm-256color"))
-
-(add-hook 'eshell-mode-hook 'jh/--eshell-set-term)
-#+END_SRC
-
-Not sure what this does.
-#+BEGIN_SRC emacs-lisp
-(defun jh/--eshell-enable-xterm-preserve-properties ()
-  (setq xterm-color-preserve-properties t))
-
-(add-hook 'eshell-mode-hook 'jh/--eshell-enable-xterm-preserve-properties)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
-(setq eshell-output-filter-functions (delete 'eshell-handle-ansi-color eshell-output-filter-functions))
-#+END_SRC
-
-Remove the default "Welcome to the Emacs shell\n\n" message on Eshell startup.
-#+BEGIN_SRC emacs-lisp
-(setq eshell-banner-message "")
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq eshell-highlight-prompt t)
-#+END_SRC
-
-Customise Eshell font face to make it looks like a typical terminal emulator.
-#+BEGIN_SRC emacs-lisp
-(defun jh/--customise-eshell-display ()
-  "Sets a special font for Org-mode writing and more."
-  (buffer-face-set '(:family "Hack" :height 103))
-  ;; (buffer-face-set '(:family "Hack"))
-  (setq header-line-format " "))
-
-(add-hook 'eshell-mode-hook #'jh/--customise-eshell-display)
-#+END_SRC
-
-References:
-1. https://github.com/peterwvj/emacs.d/blob/master/lisp/eshell-config-pvj.el
+1. https://emacs.stackexchange.com/questions/5608/how-to-let-eshell-remember-sudo-password-for-two-minutes
+   Cache sudo password.
+2. https://oremacs.com/2019/03/24/shell-apt/
+   Progress bar
+3. https://github.com/peterwvj/emacs.d/blob/master/lisp/eshell-config-pvj.el
+4. https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org
+5. https://github.com/peterwvj/emacs.d/blob/master/lisp/eshell-config-pvj.el
+6. https://github.com/xuchunyang/eshell-did-you-mean
 *** Subcommand Completions
 Eshell uses pcomplete package for programmable completion. Completions are defined as functions named =pcomplete/COMMAND=, where COMMAND is the name of the command for which this function provides completions.
 
@@ -3229,29 +3155,6 @@ References:
 #+END_SRC
 Referecences:
 1. https://github.com/andrejlamov/dotfiles/commit/17a716cbe4c8fd589212f319b9cca268c6e69eb9
-*** Eshell-up
-#+BEGIN_SRC emacs-lisp
-(require-package 'eshell-up)
-#+END_SRC
-*** Eshell-z
-#+BEGIN_SRC emacs-lisp
-(require-package 'eshell-z)
-#+END_SRC
-*** Eshell-Did-You-Mean
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-Not working!
-#+BEGIN_SRC emacs-lisp
-(require-package 'eshell-did-you-mean)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(eshell-did-you-mean-setup)
-#+END_SRC
-
-References:
-1. https://github.com/xuchunyang/eshell-did-you-mean
 ** Libvterm/VTerm
 
 *** Pre-requisite
@@ -4845,8 +4748,6 @@ References:
 [fn:19] https://emacs.stackexchange.com/questions/38841/counsel-m-x-always-shows
 
 [fn:18] http://tumashu.github.io/pyim/
-
-[fn:15] https://emacs.stackexchange.com/questions/5608/how-to-let-eshell-remember-sudo-password-for-two-minutes
 
 [fn:14] https://github.com/PythonNut/historian.el
 
