@@ -1079,7 +1079,7 @@ References:
 (use-package dash-docs
   :config
   (setq dash-docs-docsets-path (expand-file-name "docsets" user-emacs-directory)) ;; use absolute path
-  (setq dash-docs-common-docsets '("opencv" "keras" "python3" "java" "numpy" "ansible" "pytorch" "terraform" "matplotlib"))
+  (setq dash-docs-common-docsets '("python3" "NumPy" "Pandas" "scikit-learn" "matplotlib"))
 
   ;; change the default doc browser to using eww
   (setq dash-docs-browser-func 'eww)
