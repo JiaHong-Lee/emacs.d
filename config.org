@@ -1480,175 +1480,187 @@ Use the format year/month/day.
 (setq calendar-date-style 'iso)
 #+END_SRC
 * Org-Mode
-
 #+BEGIN_SRC emacs-lisp
-(require 'org)
+(use-package org
+  ;; The great org-mode
+  :ensure nil
+  :mode ("\\.txt\\'" . org-mode) ; associates txt file with org-mode
+  :config
+  (global-set-key (kbd "C-c l") 'org-store-link)
+
+  (setq org-startup-indented t) ; open an org file with hard indentation
+  (setq org-startup-folded 'content) ; open an org file by showing all children
+  (setq org-catch-invisible-edits 'smart-and-error) ; prevent deleting hidden texts
+
+  (setq org-hide-emphasis-markers nil) ; do not hide the markup symbol, i.e. ~, =, *
+  (setq org-use-sub-superscripts "{}") ; display texts as sub- and superscripts only with {}, e.g. i_{2}, not i_2.
+  (setq org-tags-column -40) ; set the placement of tags at org headings
+
+  (defun jh/toggle-org-mode-writing-configuration ()
+    "Sets a special font for Org-mode writing and more. See: https://shreyas.ragavan.co/post/951004ce-add0-4e7e-b6e2-2932e0dee429/."
+    (interactive)
+    (buffer-face-set '(:family "IosevkaCC")) ; use Iosevka font
+    (setq header-line-format " ")
+    (setq line-spacing 0.1)
+    (setq left-margin-width 2)
+    (setq right-margin-width 2)
+    (set-window-buffer nil (current-buffer)))
+  (add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-configuration)
+
+  (use-package org-indent
+    :ensure nil
+    :diminish org-indent-mode)
+
+  (use-package org-common-links
+    ;; define commonly used org-links
+    :load-path "lisp/org-common-links")
+
+  (use-package orglink-cursor
+    ;; echo url to minibuffer for orglink under cursor
+    :load-path "lisp/orglink-cursor"
+    :hook (org-mode . orglink-cursor-mode))
+
+  ;;; Org Literate Programming/ Org-babel/ Ox-babel
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
+  (setq org-edit-src-content-indentation 0) ; don't indent source code relative to the #+BEGIN_SRC org-src block
+  (setq org-src-window-setup 'other-window) ; edit org-src block in the other window instead of force organising all the windows side-by-side
+
+  ;; org template for commonly used language
+  (add-to-list 'org-structure-template-alist '("el" "#+BEGIN_SRC emacs-lisp?\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("py" "#+BEGIN_SRC python\n?\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("sh" "#+BEGIN_SRC shell\n?\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("jp" "#+BEGIN_SRC jupyter-python\n?\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("di" "#+BEGIN_SRC ditaa :file ?.png :cmdline -r -s 0.8\n\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("dot" "#+BEGIN_SRC dot :file ?.png :cmdline -Kdot -Tpng\n\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("pl" "#+BEGIN_SRC plantuml :file ?.png \n\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("cl" "#+BEGIN_SRC lisp\n?\n#+END_SRC"))
+
+  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images) ; auto-display generated image after org-src execution, especially useful for ob-jupyter, ob-ditaa, Graphviz and PlantUML
+
+  ;; Load all babel supported language
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((R . t)
+     (ditaa . t)
+     (dot . t)
+     (emacs-lisp . t)
+     (gnuplot . t)
+     (haskell . nil)
+     (latex . t)
+     (ledger . t)
+     (ocaml . nil)
+     (octave . t)
+     (plantuml . t)
+     (python . t)
+     (ruby . t)
+     (screen . nil)
+     (shell . t)
+     (sqlite . t)
+     (scheme . t)
+     (C . t))))
 #+END_SRC
 
-Open txt file in org-mode.
-#+BEGIN_SRC emacs-lisp
-;; Associate txt file with org-mode
-(add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
-#+END_SRC
-
-Prevent deleting hidden texts. https://emacs.stackexchange.com/a/2091
-#+BEGIN_SRC emacs-lisp
-(setq org-catch-invisible-edits 'smart-and-error)
-#+END_SRC
-
-Use =org-cliplink= to fetch a page title and format it into an org-link.
-#+BEGIN_SRC emacs-lisp
-(require-package 'org-cliplink)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-c l") 'org-store-link)
-#+END_SRC
-
-** Personalisation & Beautification
-Beautifying org-mode.
-
-Define new org-heading levels to prevent it from repeating from org-level-1 fontface because org-level-1 fontface is special and is a bit larger.
-#+URL: https://emacs.stackexchange.com/a/22126
-#+BEGIN_SRC emacs-lisp
-(defface org-level-9 ;; originally copied from org-level-8
-  (org-compatible-face nil ;; not inheriting from outline-9 because that does not exist
-    '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
-      (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon"))
-      (((class color) (min-colors 8)) (:foreground "green"))))
-  "Face used for level 9 headlines."
-  :group 'org-faces)
-(defface org-level-10
-  (org-compatible-face nil
-    '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
-      (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon"))
-      (((class color) (min-colors 8)) (:foreground "green"))))
-  "Face used for level 10 headlines."
-  :group 'org-faces)
-(defface org-level-11
-  (org-compatible-face nil
-    '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
-      (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon"))
-      (((class color) (min-colors 8)) (:foreground "green"))))
-  "Face used for level 11 headlines."
-  :group 'org-faces)
-(defface org-level-12
-  (org-compatible-face nil
-    '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
-      (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon"))
-      (((class color) (min-colors 8)) (:foreground "green"))))
-  "Face used for level 12 headlines."
-  :group 'org-faces)
-(defface org-level-13
-  (org-compatible-face nil
-    '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
-      (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon"))
-      (((class color) (min-colors 8)) (:foreground "green"))))
-  "Face used for level 13 headlines."
-  :group 'org-faces)
-(defface org-level-14
-  (org-compatible-face nil
-    '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
-      (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon"))
-      (((class color) (min-colors 8)) (:foreground "green"))))
-  "Face used for level 14 headlines."
-  :group 'org-faces)
-(setq org-level-faces (append org-level-faces (list 'org-level-9 'org-level-10 'org-level-11 'org-level-12 'org-level-13 'org-level-14)))
-(setq org-n-level-faces (length org-level-faces))
-#+END_SRC
-
-Open an org file by showing all children.
-#+BEGIN_SRC emacs-lisp
-(setq org-startup-folded 'content)
-#+END_SRC
-
-=(diminish 'org-indent-mode)= does not work directly. The call to it must occur after org-indent.el has ben loaded. Reference: https://emacs.stackexchange.com/questions/22531/diminish-org-indent-mode
-#+BEGIN_SRC emacs-lisp
-(require 'org-indent)
-(diminish 'org-indent-mode)
-#+END_SRC
-
-Open an org file with hard indentation by default.
-#+BEGIN_SRC emacs-lisp
-(setq org-startup-indented t)
-#+END_SRC
-
-Use Iosevka Font for Org-mode: https://shreyas.ragavan.co/post/951004ce-add0-4e7e-b6e2-2932e0dee429/
-#+BEGIN_SRC emacs-lisp
-(defun jh/toggle-org-mode-writing-configuration ()
-  "Sets a special font for Org-mode writing and more."
-  (interactive)
-  (buffer-face-set '(:family "IosevkaCC"))
-  (setq header-line-format " ")
-  (setq line-spacing 0.1)
-  (setq left-margin-width 2)
-  (setq right-margin-width 2)
-  (set-window-buffer nil (current-buffer)))
-
-(add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-configuration)
-#+END_SRC
-
-Override Org-mode subscript and superscripts default behaviours for display. Mixing LaTeX with plain text.
-#+BEGIN_SRC emacs-lisp
-(setq org-use-sub-superscripts "{}")
-#+END_SRC
-
-Do not hide the markup symbol such as /, ~, and so on.
-#+BEGIN_SRC emacs-lisp
-(setq org-hide-emphasis-markers nil)
-#+END_SRC
+Extra:
+1. github:abo-abo/org-download
+   Drag and drop images to Emacs org-mode.
+2. om.el
+   Function library for Org hacker.
 
 References:
 1. http://blog.lujun9972.win/emacs-document/blog/2018/10/22/ricing-up-org-mode/index.html
    Org mode ricing.
-
-** Function Library for Org Hacker
+* Org Export
 #+BEGIN_SRC emacs-lisp
-(use-package om
-  :load-path "lisp/om.el")
-#+END_SRC
-** Org Journal
+(use-package ox
+  ;; package for org export
+  :ensure nil
+  :config
 
-Use Org-mode for writing journals.
-TODO: Filter all headings with tag journal using ivy-read.
+  (setq org-export-with-sub-superscripts "{}")
+  (setq org-export-allow-bind-keywords t) ; allows #+BIND keywords to work in org buffers, making it more portable
+
+  (use-package htmlize
+    ;; export Org-files into HTML files
+    :config (setq org-html-htmlize-output-type 'css)) ; export CSS into an external file instead of inlining it
+
+  ;;; Expor to LaTeX
+  (setq org-latex-prefer-user-labels t)
+
+  (defun org-latex-ignore-heading-filter-headline (headline backend info)
+    "Filter headings from exported to LaTeX. Strip headline from HEADLINE. Ignore BACKEND and INFO."
+    (when (and (org-export-derived-backend-p backend 'latex)
+               (string-match "\\`.*ignoreheading.*\n" headline))
+      (replace-match "" nil nil headline)))
+  (add-to-list 'org-export-filter-headline-functions 'org-latex-ignore-heading-filter-headline)
+
+  (add-to-list 'org-latex-packages-alist '("" "minted")) ; LaTeX syntax highlighting
+  (setq org-latex-listings 'minted))
+#+END_SRC
+
+References:
+1. https://emacs.stackexchange.com/a/29698
+   Allows #+BIND keyword.
+2. https://tex.stackexchange.com/a/127287
+   http://article.gmane.org/gmane.emacs.orgmode/67692
+   Filter headline exported to LaTeX.
+3. https://emacs.stackexchange.com/a/45051
+   Export LaTeX code with syntax highlighting.
+* Org Publish
 #+BEGIN_SRC emacs-lisp
-(defun jh/find-or-create-today-datetree (pfx)
-  "Find or create today datetree entry under a heading with a tag journal in the current buffer. Call with prefix C-u to input DATE int the format (M D Y)."
-  (interactive "p")
-  (let ((cal-date))
-    (if (eq pfx 1)
-        (setq cal-date (calendar-current-date))
-      (setq cal-date (read)))
-    (counsel-org-goto)
-    (org-datetree-find-date-create cal-date 'subtree-at-point)))
+(use-package ox-publish
+  :ensure nil
+  :init
+  (setq jh/blog-header-file "~/Dropbox/DropSyncFiles/blog-writing/resources/header.html"
+        jh/blog-footer-file "~/Dropbox/DropSyncFiles/blog-writing/resources/footer.html")
+
+  ;; Load partials on memory
+  (defun jh/read-my-blog-header (arg)
+    (with-temp-buffer
+      (insert-file-contents jh/blog-header-file)
+      (buffer-string)))
+
+  (defun jh/read-my-blog-footer (arg)
+    (with-temp-buffer
+      (insert-file-contents jh/blog-footer-file)
+      (buffer-string)))
+
+  :config
+  (setq org-publish-project-alist
+        '(;; Articles
+          ("technical-notes"
+           :base-directory "~/Dropbox/DropSyncFiles/blog-writing/technical"
+           :base-extension "txt\\|org"
+           :recursive t
+           :exclude "^\\..*"
+           :auto-sitemap t
+           :sitemap-title "Blog Index"
+           :sitemap-filename "index.txt"
+           :sitemap-sort-files anti-chronologically
+           :sitemap-sort-files first
+           :sitemap-style list
+           :publishing-directory "~/machines/blog/technical"
+           :publishing-function org-html-publish-to-html
+           :html-head nil
+           :html-head-include-default-style nil
+           :html-head-include-scripts nil
+           :html-preamble jh/read-my-blog-header
+           :html-postamble jh/read-my-blog-footer)
+
+          ("blog-static"
+           :base-directory "~/Dropbox/DropSyncFiles/blog-writing/resources"
+           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|eot\\|svg\\|woff\\|woff2\\|ttf"
+           :publishing-directory "~/machines/blog/technical/resources"
+           :publishing-function org-publish-attachment)
+
+          ("blog" :components ("technical-notes" "blog-static")))))
 #+END_SRC
 
-** Org-Tags
-
-Reduce the distance for better viewing at half-split windows.
-#+BEGIN_SRC emacs-lisp
-(setq org-tags-column -40)
-#+END_SRC
-
-** Org Spelling Checker
+* Org GTD
 :PROPERTIES:
 :header-args: :tangle no
 :END:
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'flyspell
-  (add-hook 'org-mode-hook #'flyspell-mode))
-#+END_SRC
-
-** Org Download
-Drag and drop images to Emacs org-mode.
-References:
-1. github:abo-abo/org-download
-** Org Common Links
-#+BEGIN_SRC emacs-lisp
-(use-package org-common-links
-  :load-path "lisp/org-common-links")
-#+END_SRC
-* Org GTD
 ** Organise My Life Into Org Files
 Tasks are separated into logical groupings/projects. For large groupings/projects, separate org files are used to store the tasks. Subdirectories are used for collections of files for multiple projects that belong together.
 
@@ -2339,9 +2351,12 @@ Sync semi-automatically.
 References:
 1. https://cestlaz.github.io/posts/using-emacs-26-gcal/
 
-* Org Capture, Refile, Archive
+** Org Capture, Refile, Archive
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 
-** Org Capture
+*** Org Capture
 
 Set the default destination for notes captured.
 #+BEGIN_SRC emacs-lisp
@@ -2372,7 +2387,7 @@ References:
    Official docs. Taking it as a starting point.
 2. https://www.reddit.com/r/emacs/comments/7zqc7b/share_your_org_capture_templates/duq0nnr
 
-** Org Refile
+*** Org Refile
 
 #+BEGIN_SRC emacs-lisp
 (defun jh/opened-buffer-files ()
@@ -2427,116 +2442,6 @@ Source: https://stackoverflow.com/a/26683663
 References:
 1. https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
 
-* Org Export
-
-#+BEGIN_SRC emacs-lisp
-(require 'ox)
-#+END_SRC
-
-There is a need to format and share. This allows #+BIND keywords to work in an org buffer. Enable this for portability and reproducibility.
-#+URL: https://emacs.stackexchange.com/a/29698
-#+BEGIN_SRC emacs-lisp
-(setq org-export-allow-bind-keywords t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq org-latex-prefer-user-labels t)
-#+END_SRC
-
-To export an Org-file into HTML file, install package =htmlize= to export Org file into HTML files. Then, export using an external CSS file instead of the original =inline-css= option.
-#+BEGIN_SRC emacs-lisp
-(require-package 'htmlize)
-(setq org-html-htmlize-output-type 'css)
-#+END_SRC
-
-Override Org-mode subscript and superscripts default behaviours during export.
-#+BEGIN_SRC emacs-lisp
-(setq org-export-with-sub-superscripts "{}")
-#+END_SRC
-
-#+url: https://tex.stackexchange.com/a/127287
-#+BEGIN_SRC emacs-lisp
-;;; Nicolas Goaziou, http://article.gmane.org/gmane.emacs.orgmode/67692
-(defun org-latex-ignore-heading-filter-headline (headline backend info)
-  "Strip headline from HEADLINE. Ignore BACKEND and INFO."
-  (when (and (org-export-derived-backend-p backend 'latex)
-             (string-match "\\`.*ignoreheading.*\n" headline))
-    (replace-match "" nil nil headline)))
-(add-to-list 'org-export-filter-headline-functions
-             'org-latex-ignore-heading-filter-headline)
-#+END_SRC
-
-** LaTeX Export Code Syntax Highlighting
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'org-latex-packages-alist '("" "minted"))
-(setq org-latex-listings 'minted)
-#+END_SRC
-
-References:
-1. https://emacs.stackexchange.com/a/45051
-
-** Org-latex-subfigure
-#+BEGIN_SRC emacs-lisp
-(use-package ox-latex-subfigure
-  :init (setq org-latex-prefer-user-labels t)
-  :load-path "lisp/ox-latex-subfigure"
-  :config (require 'ox-latex-subfigure))
-#+END_SRC
-
-* Org Publish
-#+BEGIN_SRC emacs-lisp
-(use-package ox-publish
-  :ensure nil
-  :init
-  (setq jh/blog-header-file "~/Dropbox/DropSyncFiles/blog-writing/resources/header.html"
-        jh/blog-footer-file "~/Dropbox/DropSyncFiles/blog-writing/resources/footer.html")
-
-  ;; Load partials on memory
-  (defun jh/read-my-blog-header (arg)
-    (with-temp-buffer
-      (insert-file-contents jh/blog-header-file)
-      (buffer-string)))
-
-  (defun jh/read-my-blog-footer (arg)
-    (with-temp-buffer
-      (insert-file-contents jh/blog-footer-file)
-      (buffer-string)))
-
-  :config
-  (setq org-publish-project-alist
-        '(;; Articles
-          ("technical-notes"
-           :base-directory "~/Dropbox/DropSyncFiles/blog-writing/technical"
-           :base-extension "txt"
-           :recursive t
-           :exclude "^\\..*"
-           :auto-sitemap t
-           :sitemap-filename "sitemap.txt"
-           :sitemap-sort-files anti-chronologically
-           :sitemap-sort-files first
-           :publishing-directory "~/machines/blog/technical"
-           :publishing-function org-html-publish-to-html
-           :html-head nil
-           :html-head-include-default-style nil
-           :html-head-include-scripts nil
-           :html-preamble jh/read-my-blog-header
-           :html-postamble jh/read-my-blog-footer)
-
-          ("blog-static"
-           :base-directory "~/Dropbox/DropSyncFiles/blog-writing/resources"
-           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|eot\\|svg\\|woff\\|woff2\\|ttf"
-           :publishing-directory "~/machines/blog/resources"
-           :publishing-function org-publish-attachment)
-
-          ("blog" :components ("technical-notes" "blog-static")))))
-#+END_SRC
-
-* Org Enhancements
-#+BEGIN_SRC emacs-lisp
-(use-package orglink-cursor
-  :load-path "lisp/orglink-cursor"
-  :hook (org-mode . orglink-cursor-mode))
-#+END_SRC
 * Evil's Reading-State for Org-mode
 
 Define an Evil's state for easy browsing, reading, and navigating in Org-mode. This serves as a higher level of abstraction over the NORMAL "mode" because like org-speed-key-commands, it offers quick keys to perform actions on the level of trees, subtrees, properties, tags, and org source blocks while the NORMAL "mode" navigates between lines. I think NORMAL "mode" is good for editing but what I want is a "mode" in Org-mode for reading. So I define an Evil state to achieve that.
@@ -2661,69 +2566,6 @@ References:
    Cursor color.
 5. github:alphapapa/org-graph-view & github:jethrokuan/org-roam
    Check this out: view org buffers as a clickable, graphical mind-map.
-* Org Literate Programming/ Org-babel/ Ox-babel
-#+BEGIN_SRC emacs-lisp
-(setq org-confirm-babel-evaluate nil)
-(setq org-src-fontify-natively t)
-(setq org-src-tab-acts-natively t)
-(setq org-edit-src-content-indentation 0) ; don't indent source code relative to the #+BEGIN_SRC org-src block
-(setq org-src-window-setup 'other-window) ; edit org-src block in the other window instead of force organising all the windows side-by-side
-
-;; org template for commonly used language
-(add-to-list 'org-structure-template-alist '("el" "#+BEGIN_SRC emacs-lisp?\n#+END_SRC"))
-(add-to-list 'org-structure-template-alist '("py" "#+BEGIN_SRC python\n?\n#+END_SRC"))
-(add-to-list 'org-structure-template-alist '("sh" "#+BEGIN_SRC shell\n?\n#+END_SRC"))
-(add-to-list 'org-structure-template-alist '("jp" "#+BEGIN_SRC jupyter-python\n?\n#+END_SRC"))
-(add-to-list 'org-structure-template-alist '("di" "#+BEGIN_SRC ditaa :file ?.png :cmdline -r -s 0.8\n\n#+END_SRC"))
-(add-to-list 'org-structure-template-alist '("dot" "#+BEGIN_SRC dot :file ?.png :cmdline -Kdot -Tpng\n\n#+END_SRC"))
-(add-to-list 'org-structure-template-alist '("pl" "#+BEGIN_SRC plantuml :file ?.png \n\n#+END_SRC"))
-(add-to-list 'org-structure-template-alist '("cl" "#+BEGIN_SRC lisp\n?\n#+END_SRC"))
-
-;; append code to the targeted file, see https://emacs.stackexchange.com/a/38898
-(defun org-babel-tangle-append ()
-  "Append source code block at point to its tangle file.
-   The command works like `org-babel-tangle' with prefix arg
-   but `delete-file' is ignored."
-  (interactive)
-  (cl-letf (((symbol-function 'delete-file) #'ignore))
-    (org-babel-tangle '(4))))
-
-
-(add-hook 'org-babel-after-execute-hook 'org-display-inline-images) ; auto-display generated image after org-src execution, especially useful for ob-jupyter, ob-ditaa, Graphviz and PlantUML
-
-(use-package ob-async
-  ;; Run ob-babel asynchronously
-  ;; Note: it doesn't support :session header-arg. See: https://github.com/astahlman/ob-async/issues/1
-  :config
-  (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia")))
-
-;; Load all babel supported language
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((R . t)
-   (ditaa . t)
-   (dot . t)
-   (emacs-lisp . t)
-   (gnuplot . t)
-   (haskell . nil)
-   (latex . t)
-   (ledger . t)
-   (ocaml . nil)
-   (octave . t)
-   (plantuml . t)
-   (python . t)
-   (ruby . t)
-   (screen . nil)
-   (shell . t)
-   (sqlite . t)
-   (scheme . t)
-   (C . t)))
-#+END_SRC
-
-References:
-1. https://robmoss.github.io/2018/02/19/Live-coding-Emacs-and-ghci
-2. https://github.com/dzop/emacs-jupyter/issues/178
-3. github:astahlman/ob-async
 * Emacs Research
 ** Ivy-bibtex
 
