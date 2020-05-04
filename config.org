@@ -923,8 +923,7 @@ References:
     (interactive)
     (display-line-numbers-mode 1)
     (setq display-line-numbers 'visual
-          display-line-numbers-width 4
-          display-line-numbers-width t))
+          display-line-numbers-width 4))
   (add-hook 'prog-mode-hook #'jh/display-visual-line-numbers)
   (add-hook 'text-mode-hook #'jh/display-visual-line-numbers)
 
