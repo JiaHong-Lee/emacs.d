@@ -668,6 +668,12 @@ References:
 
 References:
 1. https://github.com/ratish-punnoose/tla-mode
+* JSON Mode
+#+BEGIN_SRC emacs-lisp
+(use-package json-mode
+  ;; A major mode for editing JSON files
+  )
+#+END_SRC
 * TOML Mode
 #+BEGIN_SRC emacs-lisp
 (use-package toml-mode)
