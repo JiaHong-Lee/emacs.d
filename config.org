@@ -1056,6 +1056,11 @@ References:
   :ensure nil
   :config
   (setq debugger-bury-or-kill 'kill)) ;; kill debugger windows on exit
+
+(use-package editorconfig
+  ;; Support common config file across IDEs
+  :config
+  (editorconfig-mode 1))
 #+END_SRC
 
 References:
@@ -1070,6 +1075,7 @@ References:
    Integrate company with 'ident-for-tab-command'.
 7. https://www.emacswiki.org/emacs/FacesPerBuffer
    Custom font for prog-mode.
+8. https://editorconfig.org/
 * Docs Reference Ergonomics
 #+BEGIN_SRC emacs-lisp
 (use-package help
