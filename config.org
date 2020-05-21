@@ -1525,6 +1525,16 @@ Use the format year/month/day.
     (set-window-buffer nil (current-buffer)))
   (add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-configuration)
 
+  (defun jh/find-or-create-today-datetree (pfx)
+    "Find or create today datetree entry under a heading with a tag journal in the current buffer. Call with prefix C-u to input DATE int the format (M D Y)."
+    (interactive "p")
+    (let ((cal-date))
+      (if (eq pfx 1)
+          (setq cal-date (calendar-current-date))
+        (setq cal-date (read)))
+      (counsel-org-goto)
+      (org-datetree-find-date-create cal-date 'subtree-at-point)))
+
   (use-package org-indent
     :ensure nil
     :diminish org-indent-mode)
