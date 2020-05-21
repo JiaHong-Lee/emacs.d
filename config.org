@@ -246,8 +246,11 @@ Evil and ivy are the core of my configs.
   (use-package sentence-navigation
     ;; To define sentence as a evil text object
     ;; Broken: see issue https://github.com/noctuid/emacs-sentence-navigation/issues/9
-    :disabled
+    ;; Fix: Use the latest ample-regexps
+    :load-path "lisp/emacs-sentence-navigation"
     :config
+    (define-key evil-motion-state-map ")" 'sentence-nav-evil-forward)
+    (define-key evil-motion-state-map "(" 'sentence-nav-evil-backward)
     (define-key evil-outer-text-objects-map "s" 'sentence-nav-evil-a-sentence)
     (define-key evil-outer-text-objects-map "s" 'sentence-nav-evil-inner-sentence))
 
