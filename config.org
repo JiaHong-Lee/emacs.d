@@ -1194,6 +1194,14 @@ References:
   ;; provides a command which searches for unicode characters by name, and displays a list of matching characters with their names in a buffer.
   )
 
+(use-package explain-pause-mode
+  ;; a package to watch for long pauses
+  :load-path "lisp/explain-pause-mode"
+  :diminish
+  :config
+  (setq explain-pause-blocking-too-long-ms 40)
+  (explain-pause-mode 1))
+
 ;; allow access to emacsclient from terminal
 (require 'server)
 (unless (server-running-p)
