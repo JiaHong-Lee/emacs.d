@@ -2579,6 +2579,9 @@ References:
 5. github:alphapapa/org-graph-view & github:jethrokuan/org-roam
    Check this out: view org buffers as a clickable, graphical mind-map.
 * Emacs Research
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 ** Ivy-bibtex
 
 A bibliography manager based on Ivy.
@@ -2740,6 +2743,22 @@ Remove the default "M-TAB" binding to flyspell-auto-correct-word. Currently, I a
 (define-key flyspell-mode-map (kbd "C-M-i") nil)
 #+END_SRC
 
+* LaTeX Writing Ergonomics
+#+BEGIN_SRC emacs-lisp
+(use-package tex
+  ;; load auctex
+  :defer t
+  :ensure auctex
+  :config
+  (setq LaTeX-item-indent 1) ; for list items
+  (setq LaTeX-indent-level 3)
+  (use-package company-auctex
+    :config
+    (company-auctex-init)))
+#+END_SRC
+
+References:
+1.  https://www.reddit.com/r/emacs/comments/ev7igv/why_is_auctex_loaded_using_usepackage_tex_instead/
 * Alert
 #+BEGIN_SRC emacs-lisp
 (require-package 'alert)
