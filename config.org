@@ -2708,7 +2708,7 @@ Load the library to enable arxiv org-link support, e.g. arxiv:0801.1144.
 References:
 1. http://kitchingroup.cheme.cmu.edu/blog/2015/03/09/Bibtex-Entries-from-Arxiv-org/
 
-* Writing Experience
+* Text Writing Ergonomics
 ** Writing in Chinese Pinyin
 Writing in Chinese pinyin [fn:18]. Use =set-input-method= to switch between languages. Use =toggle-input-method= to easily switch back.
 #+BEGIN_SRC emacs-lisp
