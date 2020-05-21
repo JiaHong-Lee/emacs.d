@@ -668,6 +668,10 @@ References:
 
 References:
 1. https://github.com/ratish-punnoose/tla-mode
+* TOML Mode
+#+BEGIN_SRC emacs-lisp
+(use-package toml-mode)
+#+END_SRC
 * File Editing
 #+BEGIN_SRC emacs-lisp
 ;; go to the next/previous file (by name). use prefix c-u to go back.
@@ -4382,12 +4386,6 @@ References:
 
 References:
 1. https://github.com/Lindydancer/ini-mode
-
-** Enable toml-mode
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'toml-mode)
-#+END_SRC
 
 ** Restclient for Testing API
 
