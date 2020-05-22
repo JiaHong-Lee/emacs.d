@@ -47,6 +47,18 @@ This is an attempt to put my Emacs config into an org file. By doing so, my init
 
 ;;; init.el ends here
 #+END_SRC
+* Bootstrap Config
+This section defines the minimum config that I cannot live without. There are three main packages that I use: use-package, ivy, and evil.
+
+I use ~use-package~ to organise my Emacs config, to speed up my Emacs init time, and to make sure that a package is installed if it does not already installed. I suspect that previously there were too many packages loaded on startup.
+
+I use ~ivy~ and ~counsel~ for easy navigation around Emacs.
+
+I use ~evil~ to emulate vim in Emacs.
+#+BEGIN_SRC emacs-lisp
+;;; config.el --- a file tangled from config.org -*- lexical-binding: t; -*-
+
+;;; Commentary:
 ;;----------------------------------------------------------------------------
 ;;    ___ _ __ ___   __ _  ___ ___
 ;;   / _ \ '_ ` _ \ / _` |/ __/ __|
@@ -69,19 +81,7 @@ This is an attempt to put my Emacs config into an org file. By doing so, my init
 ;; Source: http://www.mygooglest.com/fni/dot-emacs.html
 ;;----------------------------------------------------------------------------
 
-* Bootstrap Config
-I use ~use-package~ to organise my Emacs config, to speed up my Emacs init time, and to make sure that a package is installed if it does not already installed. I suspect that there were too many packages loaded on startup previously.
-#+BEGIN_SRC emacs-lisp
-;;; config.el --- This is the resultant file tangled from config.org -*- lexical-binding: t; -*-
-;;; Commentary:
-
-;; 
-
 ;;; Code:
-
-;; Defining a sync directory for org uses
-(defconst jh/sync-directory "/home/zacque/Dropbox/DropSyncFiles")
-
 ;; Setup my .emacs.d directory. Create directories if not already existed
 (let* ((subdirs '("lisp" "backups" "themes"))
        (fulldirs (mapcar (lambda (d) (expand-file-name d user-emacs-directory)) subdirs)))
@@ -96,7 +96,6 @@ I use ~use-package~ to organise my Emacs config, to speed up my Emacs init time,
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (setq inhibit-startup-screen t)
-(setq initial-buffer-choice (expand-file-name "startup.org" jh/sync-directory))
 (setq-default initial-scratch-message (concat ";; Happy hacking, " user-login-name " - Emacs ❤ you!\n\n"))
 
 ;; Make sure that C-v and M-v returns cursor to the same position.
@@ -115,49 +114,99 @@ I use ~use-package~ to organise my Emacs config, to speed up my Emacs init time,
                          ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
-(setq load-prefer-newer t) ;; load .el if it's newer than corresponding .elc
-(package-refresh-contents t) ;; auto download package info asynchronously on Emacs startup
+(setq load-prefer-newer t) ; load .el if it's newer than corresponding .elc
+(package-refresh-contents t) ; auto download package info asynchronously on Emacs startup
 
-(with-eval-after-load 'fullframe
-  (fullframe list-packages quit-window))
+;; track recent files
+(add-hook 'after-init-hook 'recentf-mode)
+(setq-default recentf-max-menu-items 1000
+              recentf-max-saved-items nil ;; save the entire list
+              recentf-exclude '("/tmp/" "/ssh:"))
 
-;; Basics
+(setq backup-directory-alist `(("." . ,(expand-file-name "backups" user-emacs-directory)))
+      backup-by-copying t       ; Don't delink hardlinks
+      version-control t         ; Use version numbers on backups
+      delete-old-versions t     ; Automatically delete excess backups
+      kept-new-versions 20      ; Number of newest versions to keep
+      kept-old-versions 5       ; Number of the old versions to keep
+      vc-make-backup-files t)   ; Make backups file even from a version controlled dir
+
+;; resolve buffer name conflicts
+(setq uniquify-buffer-name-style 'reverse
+      uniquify-separator " • "
+      uniquify-after-kill-buffer-p t
+      uniquify-ignore-buffers-re "^\\*")
+
+;;; Basics
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 (eval-when-compile
   (require 'use-package))
 
-(setq use-package-always-ensure t) ;; always install packages that are not installed
+(setq use-package-always-ensure t) ; always install packages that are not installed
 (setq use-package-expand-minimally t)
 
-(use-package use-package-ensure-system-package
-  ;; Add the :ensure-system-package keyword to ensure some system binaries alongside my package declarations.
-  :init (setq system-packages-use-sudo t))
-#+END_SRC
+(use-package evil
+  ;; emulates Vim within Emacs
+  :config
+  (evil-mode 1)
 
-Use-package extension ideas:
-1. :config-after
-   Load the config only after the package X is loaded. E.g.
-   #+BEGIN_SRC emacs-lisp :tangle no
-   (use-package abc
-     :config-after (evil
-                    (setq abc abc)
-                    (blah blah blah)))
-   #+END_SRC
-2. :replace/ :override
-   Specify that this package replace/override another package X. This is useful to indicate that a package supercede another package. E.g.
-   #+BEGIN_SRC emacs-lisp :tangle no
-   (use-package symbol-overlay
-     :replace highlight-numbers)
-   #+END_SRC
-3. conditional loading depending on Emacs version
-   Can I use :if?
+  ;; navigate by visual line instead of actual line number
+  (define-key evil-motion-state-map [remap evil-next-line] 'evil-next-visual-line)
+  (define-key evil-motion-state-map [remap evil-previous-line] 'evil-previous-visual-line)
+
+  ;; complements C-o which is evil-jump-backward
+  (define-key evil-motion-state-map (kbd "C-S-o") 'evil-jump-forward)
+
+  ;; Ex :q should kill the current buffer rather than quitting emacs entirely
+  (evil-ex-define-cmd "q" 'kill-this-buffer)
+
+  ;; Type :quit to close emacs
+  (evil-ex-define-cmd "quit" 'evil-quit)
+
+  ;; Ex :wq should save and close the buffer, rather than quitting emacs entirely
+  (evil-define-command jh/evil-save-and-close-buffer (file &optional bang)
+    "Saves the current buffer and closes the window."
+    :repeat nil
+    (interactive "<f><!>")
+    (evil-write nil nil nil file bang)
+    (kill-buffer))
+  (evil-ex-define-cmd "wq" 'jh/evil-save-and-close-buffer))
+
+(use-package ivy
+  ;; a powerful completion package
+  :diminish
+  :init
+  (use-package smex) ; sort the result of counsel-M-x
+  :config
+  (ivy-mode)
+  (setq ivy-use-virtual-buffers t) ;; includes recentf and bookmarks
+  (setq enable-recursive-minibuffers t)
+  (setq ivy-count-format "")
+  (setq ivy-virtual-abbreviate 'fullpath)
+
+  ;; IDO-style directory navigation
+  (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
+  (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-immediate-done)
+  (define-key ivy-minibuffer-map (kbd "C-RET") #'ivy-immediate-done)
+
+  (use-package counsel
+    :diminish
+    :config
+    (global-set-key (kbd "M-x") 'counsel-M-x)
+    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+    (global-set-key (kbd "C-h f") 'counsel-describe-function)
+    (global-set-key (kbd "C-h v") 'counsel-describe-variable))
+
+  ;; note: this has to be placed after counsel package because the
+  ;; package redefines this variable
+  (setq ivy-initial-inputs-alist '((Man-completion-table . "^") ;; or (man. "^")?
+                                   (woman . "^"))))
+#+END_SRC
 
 References:
 1. https://github.com/jwiegley/use-package
-2. https://github.com/waymondo/use-package-ensure-system-package
-3. https://gitlab.com/jabranham/system-packages
 * Core Packages
 Evil and ivy are the core of my configs.
 ** Evil
@@ -165,12 +214,6 @@ Evil and ivy are the core of my configs.
 (use-package evil
   ;; evil is an extensible vi layer that emulate the main features of Vim in Emacs. 
   :config
-  (evil-mode)
-  (define-key evil-motion-state-map [remap evil-next-line] 'evil-next-visual-line)
-  (define-key evil-motion-state-map [remap evil-previous-line] 'evil-previous-visual-line)
-
-  ;; C-o is evil-jump-backward, therefore I define C-S-o to evil-jump-forward
-  (define-key evil-motion-state-map (kbd "C-S-o") 'evil-jump-forward)
 
   ;; Set some built-in modes to launch in evil emacs state (in addition to the default).
   (cl-loop for (mode . state) in
@@ -189,22 +232,6 @@ Evil and ivy are the core of my configs.
     (when (buffer-modified-p)
       (evil-write nil nil nil file bang))
     (kill-buffer))
-
-  (evil-define-command jh/evil-save-and-close-buffer (file &optional bang)
-    "Saves the current buffer and closes the window."
-    :repeat nil
-    (interactive "<f><!>")
-    (evil-write nil nil nil file bang)
-    (kill-buffer))
-
-  ;; Ex :q should kill the current buffer rather than quitting emacs entirely
-  (evil-ex-define-cmd "q" 'kill-this-buffer)
-
-  ;; Type :quit to close emacs
-  (evil-ex-define-cmd "quit" 'evil-quit)
-
-  ;; Ex :wq should save and close the buffer, rather than quitting emacs entirely
-  (evil-ex-define-cmd "wq" 'jh/evil-save-and-close-buffer)
 
   ;; Ex :digraphs should show digraphs
   (evil-ex-define-cmd "digraphs" 'evil-ex-show-digraphs)
@@ -286,10 +313,6 @@ References:
 (use-package ivy
   :diminish
   :init
-  (use-package smex
-    ;; smex will sort the result of counsel-M-x
-    )
-
   (use-package historian
     ;; store the results of completing-read and similar functions persistently to provide better completion candidates for recent or frequent used item.
     :config (historian-mode))
@@ -302,10 +325,6 @@ References:
     ;; power ivy with counsel
     :diminish
     :config
-    (global-set-key (kbd "M-x") 'counsel-M-x)
-    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-    (global-set-key (kbd "C-h f") 'counsel-describe-function)
-    (global-set-key (kbd "C-h v") 'counsel-describe-variable)
 
     ;; counsel-search comes with counsel library. It queries the search engine and open the result page in web browser. Use a custom ddg search engine to use the familiar ddg search result page.
     (add-to-list 'counsel-search-engines-alist '(ddgz "https://duckduckgo.com/ac/" "https://duckduckgo.com/?q=" counsel--search-request-data-ddg))
@@ -329,19 +348,6 @@ References:
                 :action #'jh/counsel-search-action
                 :dynamic-collection t
                 :caller 'counsel-search)))
-
-  (ivy-mode)
-  (setq ivy-use-virtual-buffers t) ;; includes recentf and bookmarks
-  (setq enable-recursive-minibuffers t)
-  (setq ivy-count-format "")
-  (setq ivy-virtual-abbreviate 'fullpath)
-  (setq ivy-initial-inputs-alist '((Man-completion-table . "^") ;; or (man. "^")?
-                                   (woman . "^")))
-
-  ;; IDO-style directory navigation
-  (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
-  (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-immediate-done)
-  (define-key ivy-minibuffer-map (kbd "C-RET") #'ivy-immediate-done)
 
   ;; Open file in dired from ivy-switch-buffer
   (defun open-file-directory-from-path (x)
@@ -368,36 +374,6 @@ References:
 (use-package fullframe
   ;; open buffer into "full-screen" mode until quit it
   )
-
-(use-package recentf
-  ;; track recent files
-  :ensure nil
-  :hook (after-init . recentf-mode)
-  :config
-  (setq-default recentf-max-menu-items 1000
-                recentf-max-saved-items nil ;; save the entire list
-                recentf-exclude '("/tmp/" "/ssh:")))
-
-
-(use-package files
-  :ensure nil
-  :config
-  (setq backup-directory-alist '(("." . "~/.emacs.d/backups"))
-        backup-by-copying t       ; Don't delink hardlinks
-        version-control t         ; Use version numbers on backups
-        delete-old-versions t     ; Automatically delete excess backups
-        kept-new-versions 20      ; Number of newest versions to keep
-        kept-old-versions 5       ; Number of the old versions to keep
-        vc-make-backup-files t))  ; Make backups file even from a version controlled dir
-
-(use-package uniquify
-  ;; resolve buffer name conflicts
-  :ensure nil
-  :config
-  (setq uniquify-buffer-name-style 'reverse
-        uniquify-separator " • "
-        uniquify-after-kill-buffer-p t
-        uniquify-ignore-buffers-re "^\\*"))
 
 (use-package mode-line-bell
   :init (setq ring-bell-function 'ignore)
