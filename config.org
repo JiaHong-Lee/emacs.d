@@ -3125,7 +3125,13 @@ References:
   (interactive)
   (find-file "~/.emacs.d/config.org"))
 
-(provide 'init-main)
+(provide 'init-config)
+;; Local Variables:
+;; coding: utf-8
+;; no-byte-compile: t
+;; End:
+
+;;; config.el ends here
 #+END_SRC
 * Archived                    :noexport:
 :PROPERTIES:
