@@ -33,6 +33,20 @@ This is an attempt to put my Emacs config into an org file. By doing so, my init
 ;;; init.el --- Where all the magic begins. -*- lexical-binding: t -*-
 
 ;;; COMMENTARY:
+;; Read config.org for literate config.
+
+;;; CODE:
+;; SOURCE: https://github.com/jamiecollinson/dotfiles/blob/master/.emacs
+(org-babel-load-file (concat user-emacs-directory "config.org"))
+
+(provide 'init)
+;; Local Variables:
+;; coding: utf-8
+;; no-byte-compile: t
+;; End:
+
+;;; init.el ends here
+#+END_SRC
 ;;----------------------------------------------------------------------------
 ;;    ___ _ __ ___   __ _  ___ ___
 ;;   / _ \ '_ ` _ \ / _` |/ __/ __|
@@ -55,37 +69,6 @@ This is an attempt to put my Emacs config into an org file. By doing so, my init
 ;; Source: http://www.mygooglest.com/fni/dot-emacs.html
 ;;----------------------------------------------------------------------------
 
-;;----------------------------------------------------------------------------
-;;
-;;                __   _,--="=--,_   __
-;;               /  \."    .-.    "./  \
-;;              /  ,/  _   : :   _  \/` \
-;;              \  `| /o\  :_:  /o\ |\__/
-;;               `-'| :="~` _ `~"=: |
-;;                  \`     (_)     `/
-;;           .-"-.   \      |      /   .-"-.
-;;      .---{     }--|  /,.-'-.,\  |--{     }---.
-;;       )  (_)_)_)  \_/`~-===-~`\_/  (_(_(_)  (
-;;      (                                       )
-;;       )          Recreating Purcell         (
-;;      (            Emacs Experience           )
-;;       )                                     (
-;;      '---------------------------------------'
-;;
-;;----------------------------------------------------------------------------
-
-;;; CODE:
-;; SOURCE: https://github.com/jamiecollinson/dotfiles/blob/master/.emacs
-(org-babel-load-file (concat user-emacs-directory "config.org"))
-
-(provide 'init)
-;; Local Variables:
-;; coding: utf-8
-;; no-byte-compile: t
-;; End:
-
-;;; init.el ends here
-#+END_SRC
 * Bootstrap Config
 I use ~use-package~ to organise my Emacs config, to speed up my Emacs init time, and to make sure that a package is installed if it does not already installed. I suspect that there were too many packages loaded on startup previously.
 #+BEGIN_SRC emacs-lisp
