@@ -1,4 +1,4 @@
-#+TITLE:  Zacque's Literate Emacs Config
+#+TITLE:  My Literate Emacs Config -- Where All the Magic Happens
 #+AUTHOR: Lee Jia Hong
 #+EMAIL:  jia_hong@live.com.my
 #+DATE:   [2018-06-09 Sat]
