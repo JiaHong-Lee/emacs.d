@@ -207,6 +207,138 @@ I use ~evil~ to emulate vim in Emacs.
 
 References:
 1. https://github.com/jwiegley/use-package
+* Candies
+This is a section to add enhancements to Emacs, e.g. performance, theme and assistance packages. These packages are ok to be absent, but their existence adds value to Emacs usability.
+#+BEGIN_SRC emacs-lisp
+;;; Eye Candy
+;; Use Overpass Mono as the default font
+(add-to-list 'default-frame-alist '(font . "Overpass Mono"))
+
+;; load theme
+(setq custom-theme-directory (concat user-emacs-directory "themes/"))
+(dolist (subdir (directory-files custom-theme-directory t ".*-theme"))
+  (add-to-list 'custom-theme-load-path subdir))
+(load-theme 'dracula t) ; night theme, but use theme leuven for day theme
+
+;; display ^L as a horizontal line. Useful for separating section in helps or codes.
+(use-package page-break-lines
+  :diminish page-break-lines-mode
+  :config (global-page-break-lines-mode))
+
+;; remove mode indicator at the mode line, or redefine it
+(use-package diminish)
+
+;; add icon fonts and propertise them
+(use-package all-the-icons)
+
+;;; Performance
+(use-package gcmh
+  :diminish gcmh-mode
+  :config (gcmh-mode))
+
+;;; Assistance
+;; open buffer into "full-screen" mode until closing it
+(use-package fullframe)
+
+(use-package mode-line-bell
+  ;; alert from the mode-line
+  :init (setq ring-bell-function 'ignore)
+  :hook (after-init . mode-line-bell-mode))
+
+;; precise window switching
+(use-package ace-window
+  :config
+  (ace-window-display-mode)             ; show keys in the modeline
+  (global-set-key [remap other-window] 'ace-window)
+  (setq aw-scope 'frame)) ; limits ace-window to the current frame
+
+(use-package ibuffer
+  :ensure nil
+  :config
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (fullframe ibuffer ibuffer-quit)
+
+  ;; Use human readable Size column instead of original one
+  (define-ibuffer-column size-h
+    (:name "Size" :inline t)
+    (file-size-human-readable (buffer-size)))
+
+  ;; Modify the default ibuffer-formats (toggle with `)
+  (setq ibuffer-formats
+        '((mark modified read-only vc-status-mini " "
+                (name 22 22 :left :elide)
+                " "
+                (size-h 9 -1 :right)
+                " "
+                (mode 12 12 :left :elide)
+                " "
+                vc-relative-file)
+          (mark modified read-only vc-status-mini " "
+                (name 22 22 :left :elide)
+                " "
+                (size-h 9 -1 :right)
+                " "
+                (mode 14 14 :left :elide)
+                " "
+                (vc-status 12 12 :left)
+                " "
+                vc-relative-file)))
+
+  (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
+
+  (use-package ibuffer-vc
+    ;; Group buffers by vc root directory
+    :config
+    (defun ibuffer-set-up-preferred-filters ()
+      (ibuffer-vc-set-filter-groups-by-vc-root)
+      (unless (eq ibuffer-sorting-mode 'filename/process)
+        (ibuffer-do-sort-by-filename/process)))
+
+    (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)))
+
+;; display key-binding completion suggestions/hints
+;; this :replace which-key (newer)
+(use-package which-key
+  :diminish
+  :hook (after-init . which-key-mode)
+  :config
+  (setq which-key-idle-delay 1.0)
+  (setq which-key-idle-secondary-delay 0.05)
+  (setq which-key-allow-evil-operators t))
+;; (use-package guide-key
+;;   :diminish guide-key-mode
+;;   :hook (after-init . guide-key-mode)
+;;   :config
+;;   (setq guide-key/guide-key-sequence t))
+
+;; provides a command which searches for unicode characters by name,
+;; and displays a list of matching characters with their names in a
+;; buffer.
+(use-package list-unicode-display)
+
+;; a reminder of my mortality, a reflection of life
+(use-package memento-mori
+  :config
+  (setq memento-mori-birth-date (password-store-get-field "personal-info" "birthday"))
+  (memento-mori-mode))
+
+;; a package to watch for long pauses, good for debugging Emacs config
+(use-package explain-pause-mode
+  :load-path "lisp/explain-pause-mode"
+  :diminish
+  :config
+  (setq explain-pause-blocking-too-long-ms 40)
+  (explain-pause-mode 1))
+
+;; a handy tool to restart Emacs, especially when using EXWM
+(use-package restart-emacs
+  :commands (restart-emacs))
+
+;; allow access to emacsclient from terminal
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+#+END_SRC
 * Core Packages
 Evil and ivy are the core of my configs.
 ** Evil
@@ -362,22 +494,8 @@ References:
 References:
 1. https://emacs.stackexchange.com/questions/38841/counsel-m-x-always-shows
 2. https://github.com/purcell/emacs.d/blob/master/lisp/init-ivy.el
-* Performance
 #+BEGIN_SRC emacs-lisp
-;; Performance
-(use-package gcmh
-  :diminish gcmh-mode
-  :config (gcmh-mode))
-#+END_SRC
-* Assistance
-#+BEGIN_SRC emacs-lisp
-(use-package fullframe
-  ;; open buffer into "full-screen" mode until quit it
-  )
 
-(use-package mode-line-bell
-  :init (setq ring-bell-function 'ignore)
-  :hook (after-init . mode-line-bell-mode))
 #+END_SRC
 * Temp
 #+BEGIN_SRC emacs-lisp
@@ -400,49 +518,6 @@ References:
     (package-install package)
     (require package)))
 #+END_SRC
-* Beautification
-#+BEGIN_SRC emacs-lisp
-(dolist (subdir (jh/get-all-subdirs (concat user-emacs-directory "themes") 1))
-  (add-to-list 'custom-theme-load-path subdir))
-(load-theme 'dracula t) ; use theme leuven for day theme
-
-;; Use Overpass Mono as the default font
-(add-to-list 'default-frame-alist '(font . "Overpass Mono"))
-
-(use-package diminish
-  ;; hide or redefine mode indicator at the mode line
-  )
-
-(use-package page-break-lines
-  ;; display ^L as a horizontal line. Useful for separating section in helps or codes.
-  :diminish page-break-lines-mode
-  :config (global-page-break-lines-mode))
-
-(blink-cursor-mode -1)
-
-(defun jh/toggle-reading-face-mode ()
-  "Define a reading \"mode\", e.g. Info."
-  (interactive)
-  (buffer-face-set '(:family "Montserrat")))
-
-(defun jh/centre-align-buffer-content ()
-  "Centralise buffer content by setting the fringe."
-  (interactive)
-  (let ((full-width (window-width))
-        (target-width (* .60 (window-width))))
-    (set-fringe-style (round (- full-width target-width)))
-    (set-face-attribute 'fringe nil :background nil)))
-
-;; What is this for??
-(with-eval-after-load 'diminish
-  (with-eval-after-load 'face-remap
-    (diminish 'buffer-face-mode)))
-#+END_SRC
-
-Beautiful Emacs themes:
-1. https://github.com/mauforonda/emacs/blob/master/personal-theme.org
-
-Font name can be expressed using the Fontconfig pattern (see: [[info:emacs#Fonts][info:emacs#Fonts]]): fontname[-fontsize][:name1=value1][:name2=value2]... where nameN can be one of 'slant', 'weight', 'style', width', and 'spacing.
 * IDE Framework
 An IDE is a complex piece of software. Emacs is the best Lisp editor and I want it to be the best editor completing with features to rival the best IDE in the market. Here I define the framework to declare the framework of a programming language. Components of an IDE:
 1. console, shell
@@ -1071,140 +1146,6 @@ References:
     ;; browse dash in Emacs using ivy completion framework
     :load-path "lisp/counsel-dash"))
 #+END_SRC
-* Emacs Ergonomics
-#+BEGIN_SRC emacs-lisp
-(use-package ibuffer
-  :ensure nil
-  :config
-  (global-set-key (kbd "C-x C-b") 'ibuffer)
-  (fullframe ibuffer ibuffer-quit)
-
-  ;; Use human readable Size column instead of original one
-  (define-ibuffer-column size-h
-    (:name "Size" :inline t)
-    (file-size-human-readable (buffer-size)))
-
-  ;; Modify the default ibuffer-formats (toggle with `)
-  (setq ibuffer-formats
-        '((mark modified read-only vc-status-mini " "
-                (name 22 22 :left :elide)
-                " "
-                (size-h 9 -1 :right)
-                " "
-                (mode 12 12 :left :elide)
-                " "
-                vc-relative-file)
-          (mark modified read-only vc-status-mini " "
-                (name 22 22 :left :elide)
-                " "
-                (size-h 9 -1 :right)
-                " "
-                (mode 14 14 :left :elide)
-                " "
-                (vc-status 12 12 :left)
-                " "
-                vc-relative-file)))
-
-  (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
-
-  (use-package ibuffer-vc
-    ;; Group buffers by vc root directory
-    :config
-    (defun ibuffer-set-up-preferred-filters ()
-      (ibuffer-vc-set-filter-groups-by-vc-root)
-      (unless (eq ibuffer-sorting-mode 'filename/process)
-        (ibuffer-do-sort-by-filename/process)))
-
-    (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)))
-
-(use-package ace-window
-  :config
-  (ace-window-display-mode)             ; show keys in the modeline
-  (global-set-key [remap other-window] 'ace-window)
-  (setq aw-scope 'frame)) ; limits ace-window to the current frame
-
-(use-package auto-package-update
-  ;; auto update packages every N days
-  :config
-  (setq auto-package-update-interval 28) ; update every 28 days
-  (setq auto-package-update-prompt-before-update t) ; sometimes it's useful to skip an automatic update
-  (setq auto-package-update-hide-results nil) ; show results buffer on finish updating
-
-  (auto-package-update-maybe))
-
-(use-package guide-key
-  ;; show key-binding completion suggestions/hints
-  ;; :replace which-key (newer)
-  :diminish guide-key-mode
-  :hook (after-init . guide-key-mode)
-  :config
-  (setq guide-key/guide-key-sequence t))
-
-(use-package restart-emacs
-  ;; a handy tool to restart Emacs, especially when using EXWM
-  :commands (restart-emacs))
-
-(use-package mode-line-bell
-  ;; alert from the mode-line
-  :init (setq ring-bell-function 'ignore)
-  :hook (after-init . mode-line-bell-mode))
-
-(use-package list-unicode-display
-  ;; provides a command which searches for unicode characters by name, and displays a list of matching characters with their names in a buffer.
-  )
-
-(use-package explain-pause-mode
-  ;; a package to watch for long pauses
-  :load-path "lisp/explain-pause-mode"
-  :diminish
-  :config
-  (setq explain-pause-blocking-too-long-ms 40)
-  (explain-pause-mode 1))
-
-;; allow access to emacsclient from terminal
-(require 'server)
-(unless (server-running-p)
-  (server-start))
-#+END_SRC
-
-A sample hydra to tie ace-window and other relevant functionalities together.
-#+BEGIN_SRC emacs-lisp :tangle no
-(defhydra hydra-window-z ()
-  "Hydra-window"
-  ("h" windmove-left)
-  ("j" windmove-down)
-  ("k" windmove-up)
-  ("l" windmove-right)
-
-  ("H" buf-move-left)
-  ("J" buf-move-down)
-  ("K" buf-move-up)
-  ("L" buf-move-right)
-
-  ("1" ace-window "ace")
-  ("s" (lambda () (interactive) (ace-window 4)) "swap")
-  ("d" (lambda () (interactive) (ace-window 16)) "delete")
-
-  ("|" (lambda ()
-	 (interactive)
-	 (split-window-right)
-	 (windmove-right)))
-  ("-" (lambda ()
-	 (interactive)
-	 (split-window-below)
-	 (windmove-down)))
-  ("u" (progn
-	 (winner-undo)
-	 (setq this-command 'winner-undo)))
-  ("f" counsel-find-file)
-  ("r" winner-redo)
-  ("d" delete-window))
-
-(global-set-key (kbd "<f1>") 'hydra-window-z/body)
-#+END_SRC
-References:
-1. https://oremacs.com/2015/01/29/more-hydra-goodness/
-   Combining ace-window and windmove with hydra.
 * Emacs Interface to External Programs
 #+BEGIN_SRC emacs-lisp
 (use-package emms
@@ -1406,28 +1347,7 @@ Add my personal info.
 (setq user-full-name (password-store-get-field "personal-info" "fullname"))
 (setq user-mail-address (password-store-get-field "personal-info" "personal-hotmail"))
 #+END_SRC
-** Emacs-memento-mori
-A reminder of mortality. Deep dive into the reflection of life.
-#+BEGIN_SRC emacs-lisp
-(use-package memento-mori
-  :config
-  (setq memento-mori-birth-date (password-store-get-field "personal-info" "birthday"))
-  (memento-mori-mode))
-#+END_SRC
-
-References:
-1. http://manuel-uberti.github.io//emacs/2019/07/06/memento-mori/
-   Where I read about it.
 * Personalise & Aesthetic
-** All-the-icons
-#+BEGIN_SRC emacs-lisp
-(require-package 'all-the-icons)
-#+END_SRC
-
-Remember to run (all-the-icons-install-fonts) to install the Resource Fonts. Bear in mind, this will run =fc-cache -f -v= which can take some time to complete.
-
-References:
-1. github:domtronn/all-the-iocns.el
 ** UTF-8 Everywhere
 Setup to have UTF-8 everywhere? To display Chinese fonts in TTY.
 #+BEGIN_SRC emacs-lisp
