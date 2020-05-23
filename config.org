@@ -827,9 +827,14 @@ References:
   (add-to-list 'Info-directory-list "~/Info_Files_Manual"))
 
 (use-package pdf-tools
-  :ensure-system-package (imagemagick pdftk)
+  ;; :ensure-system-package (imagemagick pdftk)
   :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
   :config
+  (dolist (pkg '(pdf-annot pdf-cache pdf-dev pdf-history pdf-info
+                           pdf-isearch pdf-links pdf-misc pdf-occur
+                           pdf-outline pdf-sync pdf-util pdf-view
+                           pdf-virtual))
+    (require pkg))
   (pdf-tools-install)
 
   ;; Performance
