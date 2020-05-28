@@ -626,17 +626,40 @@ This section contains configs of editing a file, not its content. By editing a f
 References:
 1. http://pragmaticemacs.com/emacs/aligning-text/
    Whitespace alignment
+* Basic File Navigation         :layer1:
+By file navigation, I mean moving from one file to another. Dired's config is included.
+#+BEGIN_SRC emacs-lisp
+;; go to the next/previous file (by name). use prefix c-u to go back.
+;; https://emacs.stackexchange.com/a/12164
+(defun jh/goto-next-file (&optional backward)
+  "Find the next file (by name) in the current directory.
+     With prefix arg, find the previous file."
+  (interactive "P")
+  (when buffer-file-name
+    (let* ((file (expand-file-name buffer-file-name))
+           (files (cl-remove-if (lambda (file) (cl-first (file-attributes file)))
+                                (sort (directory-files (file-name-directory file) t nil t) 'string<)))
+           (pos (mod (+ (cl-position file files :test 'equal) (if backward -1 1))
+                     (length files))))
+      (find-file (nth pos files)))))
 
 ;; a reminder of my mortality, a reflection of life
 (use-package memento-mori
   :config
   (setq memento-mori-birth-date (password-store-get-field "personal-info" "birthday"))
   (memento-mori-mode))
+(defun jh/goto-previous-file ()
+  (interactive)
+  (goto-next-file t))
 
 ;; a package to watch for long pauses, good for debugging Emacs config
 (use-package explain-pause-mode
   :load-path "lisp/explain-pause-mode"
   :diminish
+(use-package dired
+  :ensure nil
+  :init
+  (setq delete-by-moving-to-trash t) ; unlike shell rm cmd
   :config
   (setq explain-pause-blocking-too-long-ms 40)
   (explain-pause-mode 1))
@@ -649,10 +672,18 @@ References:
 (require 'server)
 (unless (server-running-p)
   (server-start))
+  (setq dired-dwim-target t) ; set the default dired target to an adjacent dired buffer location.
+  (setq dired-listing-switches "-alh --group-directories-first")
+  (setq delete-by-moving-to-trash t)
+  (define-key dired-mode-map (kbd "C-c C-q") 'wdired-change-to-wdired-mode))
 #+END_SRC
 * Core Packages
 Evil and ivy are the core of my configs.
 ** Evil
+
+References:
+1. https://web.archive.org/web/20141020081338/http://truongtx.me:80/2013/04/25/dired-as-default-file-manager-5-customize-ls-command/
+   Dired listing switches
 #+BEGIN_SRC emacs-lisp
 (use-package evil
   ;; evil is an extensible vi layer that emulate the main features of Vim in Emacs. 
