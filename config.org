@@ -923,6 +923,49 @@ default; set PAGE-P to non-nil to rotate only the current page.
 entire document."
     (interactive "P")
     (pdf-view--rotate nil (not arg)))
+* Basic Org-Mode
+Org-mode is important for me.
+#+BEGIN_SRC emacs-lisp
+(use-package org
+  :ensure nil
+  :config
+  (defun jh/toggle-org-mode-writing-configuration ()
+    "Sets a special font for Org-mode writing and more. See: https://shreyas.ragavan.co/post/951004ce-add0-4e7e-b6e2-2932e0dee429/."
+    (interactive)
+    (buffer-face-set '(:family "IBM Plex Mono")) ; use font for large screen
+    (setq header-line-format " ")
+    (setq line-spacing 0.1)
+    (setq left-margin-width 2)
+    (setq right-margin-width 2)
+    (set-window-buffer nil (current-buffer)))
+  (add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-configuration)
+
+  (defun jh/find-or-create-today-datetree (pfx)
+    "Find or create today datetree entry under a heading with a tag journal in the current buffer. Call with prefix C-u to input DATE int the format (M D Y)."
+    (interactive "p")
+    (let ((cal-date))
+      (if (eq pfx 1)
+          (setq cal-date (calendar-current-date))
+        (setq cal-date (read)))
+      (counsel-org-goto)
+      (org-datetree-find-date-create cal-date 'subtree-at-point)))
+
+  (use-package org-indent
+    :ensure nil
+    :diminish org-indent-mode)
+
+  (use-package org-common-links
+    ;; define commonly used org-links
+    :load-path "lisp/org-common-links")
+
+  (use-package orglink-cursor
+    ;; echo url to minibuffer for orglink under cursor
+    :load-path "lisp/orglink-cursor"
+    :hook (org-mode . orglink-cursor-mode))
+
+  (org-babel-do-load-languages 'org-babel-load-languages '((emacs-lisp . t)
+                                                           (shell . t))))
+#+END_SRC
 
   (defun pdf-view-rotate-counterclockwise (&optional arg)
     "Rotate PDF page 90 degrees counterclockwise.  With prefix ARG,
@@ -1423,63 +1466,9 @@ Use the format year/month/day.
   ;; The great org-mode
   :ensure nil
   :config
-  (defun jh/toggle-org-mode-writing-configuration ()
-    "Sets a special font for Org-mode writing and more. See: https://shreyas.ragavan.co/post/951004ce-add0-4e7e-b6e2-2932e0dee429/."
-    (interactive)
-    (buffer-face-set '(:family "IosevkaCC")) ; use Iosevka font
-    (setq header-line-format " ")
-    (setq line-spacing 0.1)
-    (setq left-margin-width 2)
-    (setq right-margin-width 2)
-    (set-window-buffer nil (current-buffer)))
-  (add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-configuration)
-
-  (defun jh/find-or-create-today-datetree (pfx)
-    "Find or create today datetree entry under a heading with a tag journal in the current buffer. Call with prefix C-u to input DATE int the format (M D Y)."
-    (interactive "p")
-    (let ((cal-date))
-      (if (eq pfx 1)
-          (setq cal-date (calendar-current-date))
-        (setq cal-date (read)))
-      (counsel-org-goto)
-      (org-datetree-find-date-create cal-date 'subtree-at-point)))
-
-  (use-package org-indent
-    :ensure nil
-    :diminish org-indent-mode)
-
-  (use-package org-common-links
-    ;; define commonly used org-links
-    :load-path "lisp/org-common-links")
-
-  (use-package orglink-cursor
-    ;; echo url to minibuffer for orglink under cursor
-    :load-path "lisp/orglink-cursor"
-    :hook (org-mode . orglink-cursor-mode))
-
   (add-hook 'org-babel-after-execute-hook 'org-display-inline-images) ; auto-display generated image after org-src execution, especially useful for ob-jupyter, ob-ditaa, Graphviz and PlantUML
 
-  ;; Load all babel supported language
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((R . t)
-     (ditaa . t)
-     (dot . t)
-     (emacs-lisp . t)
-     (gnuplot . t)
-     (haskell . nil)
-     (latex . t)
-     (ledger . t)
-     (ocaml . nil)
-     (octave . t)
-     (plantuml . t)
-     (python . t)
-     (ruby . t)
-     (screen . nil)
-     (shell . t)
-     (sqlite . t)
-     (scheme . t)
-     (C . t))))
+  )
 #+END_SRC
 
 Extra:
