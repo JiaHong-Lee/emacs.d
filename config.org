@@ -1068,57 +1068,125 @@ Lisp mode deals a lot with parens.
   "All lisp modes.")
     (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)))
 #+END_SRC
+* Candies                       :layer1:
+This is a section to add enhancements to Emacs, e.g. performance, theme and assistance packages. These packages are ok to be absent, but their existence adds value to Emacs usability.
+#+BEGIN_SRC emacs-lisp
+;;; Eye Candy
+;; Use Overpass Mono as the default font
+(add-to-list 'default-frame-alist '(font . "Overpass Mono"))
 
 (defun jh/lisp-setup()
   "Enable features useful in all Lisp modes."
   (run-hooks 'jh/lispy-modes-hook))
+;; load theme
+(setq custom-theme-directory (concat user-emacs-directory "themes/"))
+(dolist (subdir (directory-files custom-theme-directory t ".*-theme"))
+  (add-to-list 'custom-theme-load-path subdir))
+(load-theme 'dracula t) ; night theme, but use theme leuven for day theme
 
 (require 'derived)
 (dolist (hook (mapcar #'derived-mode-hook-name jh/lispy-modes))
   (add-hook hook 'jh/lisp-setup))
+;; display ^L as a horizontal line. Useful for separating section in helps or codes.
+(use-package page-break-lines
+  :diminish page-break-lines-mode
+  :config (global-page-break-lines-mode))
 
 (use-package prism
   ;; Colour code expressions according to their depth level
   )
+;; remove mode indicator at the mode line, or redefine it
+(use-package diminish)
 
 (use-package elisp-lint
   ;; Basic linting for Emacs-Lisp.
   ;; See: flycheck-package, package-lint
   )
+;; add icon fonts and propertise them
+(use-package all-the-icons)
 
 (use-package ipretty
   ;; Pretty print the result of an elisp expression
   :hook (emacs-lisp-mode . ipretty-mode))
+;;; Performance
+(use-package gcmh
+  :diminish gcmh-mode
+  :config (gcmh-mode))
 
 (use-package elec-pair
   :ensure nil
   :hook ((prog-mode text-mode) . electric-pair-mode)
   :config (setq electric-pair-preserve-balance t))
+;;; Assistance
+;; open buffer into "full-screen" mode until closing it
+(use-package fullframe)
 
 (use-package paren
   :ensure nil
   :hook ((prog-mode text-mode) . show-paren-mode)
+(use-package mode-line-bell
+  ;; alert from the mode-line
+  :init (setq ring-bell-function 'ignore)
+  :hook (after-init . mode-line-bell-mode))
+
+;; display key-binding completion suggestions/hints
+;; this :replace which-key (newer)
+(use-package which-key
+  :diminish
+  :hook (after-init . which-key-mode)
   :config
   (setq show-paren-delay 0)
   (show-paren-mode)) ; activate globally to highlight matching parenthesis
+  (setq which-key-idle-delay 1.0)
+  (setq which-key-idle-secondary-delay 0.05)
+  (setq which-key-allow-evil-operators t))
+;; (use-package guide-key
+;;   :diminish guide-key-mode
+;;   :hook (after-init . guide-key-mode)
+;;   :config
+;;   (setq guide-key/guide-key-sequence t))
 
 (use-package paredit
   ;; enable AST transformation/editing
   :diminish (paredit . " Par"))
+;; provides a command which searches for unicode characters by name,
+;; and displays a list of matching characters with their names in a
+;; buffer.
+(use-package list-unicode-display)
 
 (use-package highlight-quoted
   ;; highlight Lisp quotes and quoted symbols
   :hook (emacs-lisp-mode . highlight-quoted-mode))
+;; a reminder of my mortality, a reflection of life
+(use-package memento-mori
+  :config
+  (setq memento-mori-birth-date (password-store-get-field "personal-info" "birthday"))
+  (memento-mori-mode))
 
 ;;; Common Lisp
 (use-package slime
+;; a package to watch for long pauses, good for debugging Emacs config
+(use-package explain-pause-mode
+  :load-path "lisp/explain-pause-mode"
+  :diminish
   :config
   (setq inferior-lisp-program "/usr/local/bin/sbcl")
+  (setq explain-pause-blocking-too-long-ms 40)
+  (setq explain-pause-profile-saved-profiles 10)
+  (explain-pause-mode 1))
 
   (use-package slime-company)
+;; a handy tool to restart Emacs, especially when using EXWM
+(use-package restart-emacs
+  :commands (restart-emacs))
 
   (require 'slime-autoloads)
   (slime-setup '(slime-fancy slime-company))
+;; allow access to emacsclient from terminal
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+#+END_SRC
 
   (setq slime-enable-evaluate-in-emacs t) ; for swank::eval-in-emacs
 
