@@ -21,9 +21,20 @@ synchronicity form as the boundaries between you and your Emacs
 wash away. You and your Emacs Live.
 
 M-x start-hacking.
-
-Source: https://github.com/overtone/emacs-live
 #+END_QUOTE
+
+A vanilla Emacs is like a class in Java -- it needs a config to instantiate itself. Thus, knowing how to write and organise an Emacs config is an essential skill of using Emacs. There are a few ways to organise Emacs config. I choose to organise it in a literate way to weave my codes with my flow of thoughts.
+
+My config can be separated into a few separated layers. Depending on my needs, I can choose to use one layer and disable another layer. All the components at one layer are assumed to be dependent on the layers under them.
+#+BEGIN_EXAMPLE
+------------------------------------------------------------------------------------
+basic lisp | ....
+------------------------------------------------------------------------------------
+basic coding  -|-   basic writing  | basic org-mode | candies
+------------------------------------------------------------------------------------
+  bootstrap (use-package, evil, ivy, org-mode)
+------------------------------------------------------------------------------------
+#+END_EXAMPLE
 
 Good config:
 1. https://github.com/ianpan870102/.personal-emacs.d
@@ -49,6 +60,10 @@ This is an attempt to put my Emacs config into an org file. By doing so, my init
 #+END_SRC
 * Bootstrap Config
 This section defines the minimum config that I cannot live without. There are three main packages that I use: use-package, ivy, and evil.
+
+References:
+1. https://github.com/overtone/emacs-live
+   For the good quote.
 * Bootstrap Config              :layer0:
 This section defines the minimum config that I cannot live without. There are four main packages that I use: org-mode, use-package, ivy, and evil.
 
