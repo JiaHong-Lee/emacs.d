@@ -402,6 +402,8 @@ References:
 7. https://www.emacswiki.org/emacs/FacesPerBuffer
    Custom font for prog-mode.
 8. https://editorconfig.org/
+* Basic File Content Editing    :layer1:
+This section contains configs of editing the content of a file, not including operations on the file itself, e.g. renaming, copying, or deleting.
 #+BEGIN_SRC emacs-lisp
 ;; UTF-8 everywhere
 (defun sanityinc/locale-var-encoding (v)
@@ -444,33 +446,72 @@ This is a section to add enhancements to Emacs, e.g. performance, theme and assi
 
 ;; remove mode indicator at the mode line, or redefine it
 (use-package diminish)
+;; Display visual line numbers
+(add-hook 'text-mode-hook #'jh/display-visual-line-numbers)
 
 ;; add icon fonts and propertise them
 (use-package all-the-icons)
+(defun jh/align-whitespace (start end)
+  "Align columns by whitespace. E.g.
+    >> the quick brown fox
+    >> jumped over the lazy
+    >> dogs the quick brown
+to
+    >> the     quick  brown  fox
+    >> jumped  over   the    lazy
+    >> dogs    the    quick  brown "
+  (interactive "r")
+  (align-regexp start end "\\(\\s-*\\)\\s-" 1 0 t))
 
 ;;; Performance
 (use-package gcmh
   :diminish gcmh-mode
   :config (gcmh-mode))
+(use-package yasnippet
+  ;; a templating tool
+  :diminish (yas-minor-mode . " Ⓨ")
+  :hook ((text-mode prog-mode) . yas-minor-mode)
+  :config
+  ;; workaround sideeffect function. see: https://emacs.stackexchange.com/a/24062
+  (defun yas/org-get-time-stamp (&rest args)
+    "Return the string that `org-insert-time-stamp' would insert."
+    (with-temp-buffer
+      (apply #'org-insert-time-stamp args)
+      (buffer-string)))
 
 ;;; Assistance
 ;; open buffer into "full-screen" mode until closing it
 (use-package fullframe)
+  (yas-reload-all))
 
 (use-package mode-line-bell
   ;; alert from the mode-line
   :init (setq ring-bell-function 'ignore)
   :hook (after-init . mode-line-bell-mode))
+(use-package whitespace-cleanup-mode
+  :diminish whitespace-cleanup-mode
+  :config
+  (setq-default show-trailing-whitespace t)
+  (global-whitespace-cleanup-mode 1)
+  (setq whitespace-action '(auto-cleanup)))
 
 ;; precise window switching
 (use-package ace-window
+(use-package undo-tree
+  ;; advance undo & redo
+  :diminish undo-tree-mode
   :config
   (ace-window-display-mode)             ; show keys in the modeline
   (global-set-key [remap other-window] 'ace-window)
   (setq aw-scope 'frame)) ; limits ace-window to the current frame
+  (global-undo-tree-mode 1)
+  (with-eval-after-load 'evil
+    (evil-set-initial-state 'undo-tree-visualize-mode 'emacs)))
 
 (use-package ibuffer
+(use-package simple
   :ensure nil
+  :diminish visual-line-mode
   :config
   (global-set-key (kbd "C-x C-b") 'ibuffer)
   (fullframe ibuffer ibuffer-quit)
@@ -479,6 +520,8 @@ This is a section to add enhancements to Emacs, e.g. performance, theme and assi
   (define-ibuffer-column size-h
     (:name "Size" :inline t)
     (file-size-human-readable (buffer-size)))
+  (global-visual-line-mode 1) ;; wrap line
+  (column-number-mode 1)) ;; display column number in the mode line
 
   ;; Modify the default ibuffer-formats (toggle with `)
   (setq ibuffer-formats
@@ -500,8 +543,17 @@ This is a section to add enhancements to Emacs, e.g. performance, theme and assi
                 (vc-status 12 12 :left)
                 " "
                 vc-relative-file)))
+(use-package subword
+  ;; treat CamelCase word as two words, such that "dw" in Evil mode only deletes the word 'Camel'
+  :ensure nil
+  :diminish subword-mode
+  :config (global-subword-mode 1))
 
   (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
+(use-package browse-kill-ring
+  ;; browse previously deleted or copied items
+  :commands browse-kill-ring)
+#+END_SRC
 
   (use-package ibuffer-vc
     ;; Group buffers by vc root directory
