@@ -972,6 +972,8 @@ Org-mode is important for me.
 References:
 1. https://emacs.stackexchange.com/questions/38841/counsel-m-x-always-shows
 2. https://github.com/purcell/emacs.d/blob/master/lisp/init-ivy.el
+* Basic Terminal
+This section is for enhancing terminal using experience from within Emacs.
 * Basic Buffers, Windows, Frames and Navigation
 This section contains config about windows, frames, and buffer switching.
 #+BEGIN_SRC emacs-lisp
