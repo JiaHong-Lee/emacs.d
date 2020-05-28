@@ -244,6 +244,164 @@ I use ~evil~ to emulate vim in Emacs.
 References:
 1. https://github.com/jwiegley/use-package
 * Basic File Editing
+* Basic Coding Config           :layer1:
+#+BEGIN_SRC emacs-lisp
+;; Custom font for programming buffer
+(defun jh/toggle-coding-face-mode ()
+  "Sets a fixed width (monospace) font in current buffer"
+  (interactive)
+  (buffer-face-set '(:family "IBM Plex Mono")))
+(add-hook 'prog-mode-hook 'jh/toggle-coding-face-mode)
+
+;; Prettify symbol, i.e. replace keywords with symbol. E.g. lambda -> λ
+(add-hook 'prog-mode-hook #'prettify-symbols-mode)
+
+(use-package smart-jump
+  :config
+  (smart-jump-setup-default-registers)
+  (define-key evil-normal-state-map (kbd "g d") 'smart-jump-go)
+
+  ;; smart-jump opens xref when there are more than one candidate.
+  (evil-set-initial-state 'xref--xref-buffer-mode 'emacs))
+
+(use-package magit
+  ;; a Git interface
+  :ensure-system-package (git diff)
+  :config
+  (with-eval-after-load 'fullframe
+    (fullframe magit-status magit-mode-quit-window))
+
+  (use-package forge
+    ;; work with Git forges, such as Github and Gitlab, from the comfort of Magit and the rest of Emacs.
+    ))
+
+(use-package display-line-numbers
+  :ensure nil
+  :config
+  (defun jh/display-visual-line-numbers ()
+    "Display line numbers interactively."
+    (interactive)
+    (display-line-numbers-mode 1)
+    (setq display-line-numbers 'visual
+          display-line-numbers-width 4))
+  (add-hook 'prog-mode-hook #'jh/display-visual-line-numbers)
+
+  (setq display-line-numbers-type 'visual)
+
+  ;; prettify line-number faces
+  (set-face-attribute 'line-number nil
+                      :font "Hack"
+                      :height 80)
+
+  (set-face-attribute 'line-number-current-line nil
+                      :font "Hack"
+                      :height 80
+                      :background "#ffdfaa"
+                      :foreground "#3a3a3a"))
+
+(use-package company
+  ;; defines a framework to complete anything
+  :diminish " ©"
+  :hook ((text-mode prog-mode) . company-mode)
+  :config
+  (setq tab-always-indent 'complete)
+  (setq company-require-match 'never) ; force out of selection by typing non-match characters
+  (setq company-dabbrev-downcase nil) ; disable the downcase that company does to the variables
+  (setq company-idle-delay 0) ; display company autocomplete immediately
+  (setq company-show-numbers t) ; use M-1, M-2 to select candidates
+  (define-key company-mode-map [remap indent-for-tab-command] 'company-indent-or-complete-common) ; use <TAB> to indent to popup company completion
+  (define-key company-active-map (kbd "\C-n") #'company-select-next)
+  (define-key company-active-map (kbd "\C-p") #'company-select-previous)
+  (define-key company-active-map (kbd "\C-d") #'company-show-doc-buffer)
+  (define-key company-active-map (kbd "M-.") #'company-show-location)
+
+  (use-package company-quickhelp
+    :hook (company-mode . company-quickhelp-mode)))
+
+(use-package aggressive-indent
+  ;; keep my codes always indent
+  ;; :replace electric-indent-mode
+  :diminish aggressive-indent-mode)
+
+(use-package highlight-numbers
+  :hook (prog-mode . highlight-numbers-mode))
+
+(use-package highlight-operators
+  :hook (prog-mode . highlight-operators-mode))
+
+(use-package symbol-overlay
+  ;; highlight symbols
+  ;; :replace highlight-symbol package
+  :diminish symbol-overlay-mode
+  :hook ((prog-mode html-mode yaml-mode conf-mode) . symbol-overlay-mode))
+
+(use-package highlight-escape-sequences
+  :hook (prog-mode . hes-mode))
+
+(use-package highlight-indent-guides
+  :diminish
+  :hook (prog-mode . highlight-indent-guides-mode)
+  :config
+  (setq highlight-indent-guides-method 'bitmap)
+  (setq highlight-indent-guides-responsive 'top)
+  (setq highlight-indent-guides-delay 0))
+
+;; no tabs. See: https://www.emacswiki.org/emacs/NoTabs
+(setq-default indent-tabs-mode nil
+              tab-width 4)
+
+(use-package flymake
+  ;; rewritten in Emacs 26.1
+  ;; :replace flycheck
+  :ensure nil
+  :config
+  (with-eval-after-load 'evil
+    (evil-set-initial-state 'flymake-diagnostics-buffer-mode 'emacs))
+
+  (use-package flymake-quickdef)
+
+  ;; Echo error under cursor in minibuffer
+  (use-package flymake-cursor
+    :load-path "lisp/flymake-cursor"
+    :hook (flymake-mode . flymake-cursor-mode)))
+
+(use-package hl-line
+  ;; Highlight current line.
+  :ensure nil
+  :hook (prog-mode . hl-line-mode))
+
+(use-package display-fill-column-indicator
+  ;; highlight column at position 80
+  :if (version<= "27.0" emacs-version)
+  :hook (prog-mode . display-fill-column-indicator-mode)
+  :config
+  (setq display-fill-column-indicator-column 80)
+  (setq display-fill-column-indicator-character '│))
+
+(use-package debug
+  :ensure nil
+  :config
+  (setq debugger-bury-or-kill 'kill)) ;; kill debugger windows on exit
+
+(use-package editorconfig
+  ;; Support common config file across IDEs
+  :config
+  (editorconfig-mode 1))
+#+END_SRC
+
+References:
+1. https://www.reddit.com/r/emacs/comments/6noyxa/customizing_the_new_native_line_numbers_in_emacs
+   Prettify line-number faces.
+2. https://github.com/company-mode/company-mode
+3. https://emacs.stackexchange.com/a/23937
+4. https://github.com/company-mode/company-mode/wiki/Switching-from-AC
+5. https://github.com/company-mode/company-mode/issues/526
+   YouCompleteMe-style tab completion.
+6. https://github.com/company-mode/company-mode/issues/94
+   Integrate company with 'ident-for-tab-command'.
+7. https://www.emacswiki.org/emacs/FacesPerBuffer
+   Custom font for prog-mode.
+8. https://editorconfig.org/
 #+BEGIN_SRC emacs-lisp
 ;; UTF-8 everywhere
 (defun sanityinc/locale-var-encoding (v)
@@ -1030,56 +1188,6 @@ to
 References:
 1. http://pragmaticemacs.com/emacs/aligning-text/
    Whitespace alignment
-* Code Writing Ergonomics
-#+BEGIN_SRC emacs-lisp
-;; Custom font for programming buffer
-(defun jh/toggle-coding-face-mode ()
-  "Sets a fixed width (monospace) font in current buffer"
-  (interactive)
-  (buffer-face-set '(:family "IBM Plex Mono")))
-(add-hook 'prog-mode-hook 'jh/toggle-coding-face-mode)
-
-;; Prettify symbol, i.e. replace keywords with symbol. E.g. lambda -> λ
-(add-hook 'prog-mode-hook #'prettify-symbols-mode)
-
-(use-package smart-jump
-  :config
-  (smart-jump-setup-default-registers)
-  (define-key evil-normal-state-map (kbd "g d") 'smart-jump-go)
-
-  ;; smart-jump opens xref when there are more than one candidate.
-  (evil-set-initial-state 'xref--xref-buffer-mode 'emacs))
-
-(use-package company
-  ;; defines a framework to complete anything
-  :diminish " ©"
-  :hook ((text-mode prog-mode) . company-mode)
-  :config
-  (setq tab-always-indent 'complete)
-  (setq company-require-match 'never) ; force out of selection by typing non-match characters
-  (setq company-dabbrev-downcase nil) ; disable the downcase that company does to the variables
-  (setq company-idle-delay 0) ; display company autocomplete immediately
-  (setq company-show-numbers t) ; use M-1, M-2 to select candidates
-  (define-key company-mode-map [remap indent-for-tab-command] 'company-indent-or-complete-common) ; use <TAB> to indent to popup company completion
-  (define-key company-active-map (kbd "\C-n") #'company-select-next)
-  (define-key company-active-map (kbd "\C-p") #'company-select-previous)
-  (define-key company-active-map (kbd "\C-d") #'company-show-doc-buffer)
-  (define-key company-active-map (kbd "M-.") #'company-show-location)
-
-  (use-package company-quickhelp
-    :hook (company-mode . company-quickhelp-mode)))
-
-(use-package display-line-numbers
-  :ensure nil
-  :config
-  (defun jh/display-visual-line-numbers ()
-    "Display line numbers interactively."
-    (interactive)
-    (display-line-numbers-mode 1)
-    (setq display-line-numbers 'visual
-          display-line-numbers-width 4))
-  (add-hook 'prog-mode-hook #'jh/display-visual-line-numbers)
-  (add-hook 'text-mode-hook #'jh/display-visual-line-numbers)
 
   (setq display-line-numbers-type 'visual)
 
@@ -1133,45 +1241,13 @@ References:
   :diminish subword-mode
   :config (global-subword-mode))
 
-(use-package aggressive-indent
-  ;; keep my codes always indent
-  ;; :replace electric-indent-mode
-  :diminish aggressive-indent-mode)
 
-(use-package highlight-numbers
-  :hook (prog-mode . highlight-numbers-mode))
 
-(use-package highlight-operators
-  :hook (prog-mode . highlight-operators-mode))
 
-(use-package symbol-overlay
-  ;; highlight symbols
-  ;; :replace highlight-symbol package
-  :diminish symbol-overlay-mode
-  :hook ((prog-mode html-mode yaml-mode conf-mode) . symbol-overlay-mode))
 
-(use-package highlight-escape-sequences
-  :hook (prog-mode . hes-mode))
 
-(use-package highlight-indent-guides
-  :diminish
-  :hook (prog-mode . highlight-indent-guides-mode)
-  :config
-  (setq highlight-indent-guides-method 'bitmap)
-  (setq highlight-indent-guides-responsive 'top)
-  (setq highlight-indent-guides-delay 0))
 
-;; no tabs. See: https://www.emacswiki.org/emacs/NoTabs
-(setq-default indent-tabs-mode nil
-              tab-width 4)
 
-(use-package flymake
-  ;; rewritten in Emacs 26.1
-  ;; :replace flycheck
-  :ensure nil
-  :config
-  (with-eval-after-load 'evil
-    (evil-set-initial-state 'flymake-diagnostics-buffer-mode 'emacs))
 
   (use-package flymake-quickdef)
 
