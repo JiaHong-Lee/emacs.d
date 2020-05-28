@@ -58,8 +58,6 @@ This is an attempt to put my Emacs config into an org file. By doing so, my init
 
 ;;; init.el ends here
 #+END_SRC
-* Bootstrap Config
-This section defines the minimum config that I cannot live without. There are three main packages that I use: use-package, ivy, and evil.
 
 References:
 1. https://github.com/overtone/emacs-live
@@ -258,7 +256,6 @@ I use ~evil~ to emulate vim in Emacs.
 
 References:
 1. https://github.com/jwiegley/use-package
-* Basic File Editing
 * Basic Coding Config           :layer1:
 #+BEGIN_SRC emacs-lisp
 ;; Custom font for programming buffer
@@ -440,32 +437,10 @@ This section contains configs of editing the content of a file, not including op
 (setq locale-coding-system 'utf-8)
 (unless (eq system-type 'windows-nt)
   (set-selection-coding-system 'utf-8))
-#+END_SRC
-* Candies
-This is a section to add enhancements to Emacs, e.g. performance, theme and assistance packages. These packages are ok to be absent, but their existence adds value to Emacs usability.
-#+BEGIN_SRC emacs-lisp
-;;; Eye Candy
-;; Use Overpass Mono as the default font
-(add-to-list 'default-frame-alist '(font . "Overpass Mono"))
 
-;; load theme
-(setq custom-theme-directory (concat user-emacs-directory "themes/"))
-(dolist (subdir (directory-files custom-theme-directory t ".*-theme"))
-  (add-to-list 'custom-theme-load-path subdir))
-(load-theme 'dracula t) ; night theme, but use theme leuven for day theme
-
-;; display ^L as a horizontal line. Useful for separating section in helps or codes.
-(use-package page-break-lines
-  :diminish page-break-lines-mode
-  :config (global-page-break-lines-mode))
-
-;; remove mode indicator at the mode line, or redefine it
-(use-package diminish)
 ;; Display visual line numbers
 (add-hook 'text-mode-hook #'jh/display-visual-line-numbers)
 
-;; add icon fonts and propertise them
-(use-package all-the-icons)
 (defun jh/align-whitespace (start end)
   "Align columns by whitespace. E.g.
     >> the quick brown fox
@@ -478,10 +453,6 @@ to
   (interactive "r")
   (align-regexp start end "\\(\\s-*\\)\\s-" 1 0 t))
 
-;;; Performance
-(use-package gcmh
-  :diminish gcmh-mode
-  :config (gcmh-mode))
 (use-package yasnippet
   ;; a templating tool
   :diminish (yas-minor-mode . " Ⓨ")
@@ -494,15 +465,8 @@ to
       (apply #'org-insert-time-stamp args)
       (buffer-string)))
 
-;;; Assistance
-;; open buffer into "full-screen" mode until closing it
-(use-package fullframe)
   (yas-reload-all))
 
-(use-package mode-line-bell
-  ;; alert from the mode-line
-  :init (setq ring-bell-function 'ignore)
-  :hook (after-init . mode-line-bell-mode))
 (use-package whitespace-cleanup-mode
   :diminish whitespace-cleanup-mode
   :config
@@ -510,23 +474,267 @@ to
   (global-whitespace-cleanup-mode 1)
   (setq whitespace-action '(auto-cleanup)))
 
-;; precise window switching
-(use-package ace-window
 (use-package undo-tree
   ;; advance undo & redo
   :diminish undo-tree-mode
   :config
-  (ace-window-display-mode)             ; show keys in the modeline
-  (global-set-key [remap other-window] 'ace-window)
-  (setq aw-scope 'frame)) ; limits ace-window to the current frame
   (global-undo-tree-mode 1)
   (with-eval-after-load 'evil
     (evil-set-initial-state 'undo-tree-visualize-mode 'emacs)))
 
-(use-package ibuffer
 (use-package simple
   :ensure nil
   :diminish visual-line-mode
+  :config
+  (global-visual-line-mode 1) ;; wrap line
+  (column-number-mode 1)) ;; display column number in the mode line
+
+(use-package subword
+  ;; treat CamelCase word as two words, such that "dw" in Evil mode only deletes the word 'Camel'
+  :ensure nil
+  :diminish subword-mode
+  :config (global-subword-mode 1))
+
+(use-package browse-kill-ring
+  ;; browse previously deleted or copied items
+  :commands browse-kill-ring)
+#+END_SRC
+* Basic File Editing            :layer1:
+This section contains configs of editing a file, not its content. By editing a file, it means renaming it or deleting it.
+#+BEGIN_SRC emacs-lisp
+;; using tramp to sudo edit the current file
+;; SOURCE: https://stackoverflow.com/a/33280376
+(defun jh/sudo-edit-this-file-buffer ()
+  "Edit the current file with superuser privilege."
+  (interactive)
+  (find-file (concat "/sudo::" buffer-file-name)))
+
+;; Source: https://emacsredux.com/blog/2013/05/04/rename-file-and-buffer/
+(defun jh/rename-this-file-buffer ()
+  "Rename the current buffer and file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (message "Buffer is not visiting a file!")
+      (let ((new-name (read-file-name "New name: " filename)))
+        (cond
+         ((vc-backend filename) (vc-rename-file filename new-name))
+         (t
+          (rename-file filename new-name t)
+          (set-visited-file-name new-name t t)))))))
+
+;; Delete the current file from the visiting buffer
+(defun jh/delete-this-file-buffer ()
+  "Delete the current file, and kill the buffer."
+  (interactive)
+  (unless (buffer-file-name)
+    (error "No file is currently being edited"))
+  (when (yes-or-no-p (format "Really delete '%s'?"
+                             (file-name-nondirectory buffer-file-name)))
+    (delete-file (buffer-file-name))
+    (kill-buffer)))
+
+(use-package autorevert
+  ;; auto refresh buffers when the file is changed on the disk
+  :ensure nil
+  :diminish auto-revert-mode
+  :config
+  (setq auto-revert-remote-files t)
+  (setq auto-revert-avoid-polling t))
+#+END_SRC
+
+References:
+1. http://pragmaticemacs.com/emacs/aligning-text/
+   Whitespace alignment
+* Basic File Navigation         :layer1:
+By file navigation, I mean moving from one file to another. Dired's config is included.
+#+BEGIN_SRC emacs-lisp
+;; go to the next/previous file (by name). use prefix c-u to go back.
+;; https://emacs.stackexchange.com/a/12164
+(defun jh/goto-next-file (&optional backward)
+  "Find the next file (by name) in the current directory.
+     With prefix arg, find the previous file."
+  (interactive "P")
+  (when buffer-file-name
+    (let* ((file (expand-file-name buffer-file-name))
+           (files (cl-remove-if (lambda (file) (cl-first (file-attributes file)))
+                                (sort (directory-files (file-name-directory file) t nil t) 'string<)))
+           (pos (mod (+ (cl-position file files :test 'equal) (if backward -1 1))
+                     (length files))))
+      (find-file (nth pos files)))))
+
+(defun jh/goto-previous-file ()
+  (interactive)
+  (goto-next-file t))
+
+(use-package dired
+  :ensure nil
+  :init
+  (setq delete-by-moving-to-trash t) ; unlike shell rm cmd
+  :config
+  (setq dired-dwim-target t) ; set the default dired target to an adjacent dired buffer location.
+  (setq dired-listing-switches "-alh --group-directories-first")
+  (setq delete-by-moving-to-trash t)
+  (define-key dired-mode-map (kbd "C-c C-q") 'wdired-change-to-wdired-mode))
+#+END_SRC
+
+References:
+1. https://web.archive.org/web/20141020081338/http://truongtx.me:80/2013/04/25/dired-as-default-file-manager-5-customize-ls-command/
+   Dired listing switches
+* Basic File Reading
+This section contains configs about reading a those "read-only" files.
+#+BEGIN_SRC emacs-lisp
+(use-package info
+  :ensure nil
+  :mode ("\\.info\\'" . Info-on-current-buffer)
+  :init
+  ;; add default Info-directory-list to the end of Info-directory-list in case $INFOPATH is set by program like GNU Guix
+  (dolist (dir Info-default-directory-list)
+    (unless (member dir Info-directory-list)
+      (setq Info-directory-list (append Info-directory-list (list dir)))))
+  :config
+  ;; add an info directory to load additional .info files
+  (add-to-list 'Info-directory-list "~/Info_Files_Manual"))
+
+(use-package pdf-tools
+  ;; :ensure-system-package (imagemagick pdftk)
+  :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
+  :config
+  (dolist (pkg '(pdf-annot pdf-cache pdf-dev pdf-history pdf-info
+                           pdf-isearch pdf-links pdf-misc pdf-occur
+                           pdf-outline pdf-sync pdf-util pdf-view
+                           pdf-virtual))
+    (require pkg))
+  (pdf-tools-install)
+
+  ;; Performance
+  (setq pdf-cache-image-limit 15)
+  ;; (setq pdf-cache-prefetch-delay X)
+  (setq image-cache-eviction-delay 15)
+
+  (define-key pdf-view-mode-map (kbd "j") #'pdf-view-next-line-or-next-page)
+  (define-key pdf-view-mode-map (kbd "k") #'pdf-view-previous-line-or-previous-page)
+  (define-key pdf-view-mode-map (kbd "h") #'image-backward-hscroll)
+  (define-key pdf-view-mode-map (kbd "l") #'image-forward-hscroll)
+  (define-key pdf-view-mode-map (kbd "C-f") #'pdf-view-scroll-up-or-next-page)
+  (define-key pdf-view-mode-map (kbd "C-b") #'pdf-view-scroll-down-or-previous-page)
+
+  (defun pdf-view--rotate (&optional counterclockwise-p page-p)
+    "Rotate PDF 90 degrees.  Requires pdftk to work.\n
+Clockwise rotation is the default; set COUNTERCLOCKWISE-P to
+non-nil for the other direction.  Rotate the whole document by
+default; set PAGE-P to non-nil to rotate only the current page.
+\nWARNING: overwrites the original file, so be careful!"
+    ;; error out when pdftk is not installed
+    (if (null (executable-find "pdftk"))
+        (error "Rotation requires pdftk")
+      ;; only rotate in pdf-view-mode
+      (when (eq major-mode 'pdf-view-mode)
+        (let* ((rotate (if counterclockwise-p "left" "right"))
+               (file   (format "\"%s\"" (pdf-view-buffer-file-name)))
+               (page   (pdf-view-current-page))
+               (pages  (cond ((not page-p) ; whole doc?
+                              (format "1-end%s" rotate))
+                             ((= page 1) ; first page?
+                              (format "%d%s %d-end"
+                                      page rotate (1+ page)))
+                             ((= page (pdf-info-number-of-pages)) ; last page?
+                              (format "1-%d %d%s"
+                                      (1- page) page rotate))
+                             (t         ; interior page?
+                              (format "1-%d %d%s %d-end"
+                                      (1- page) page rotate (1+ page))))))
+          ;; empty string if it worked
+          (if (string= "" (shell-command-to-string
+                           (format (concat "pdftk %s cat %s "
+                                           "output %s.NEW "
+                                           "&& mv %s.NEW %s")
+                                   file pages file file file)))
+              (pdf-view-revert-buffer nil t)
+            (error "Rotation error!"))))))
+
+  (defun pdf-view-rotate-clockwise (&optional arg)
+    "Rotate PDF page 90 degrees clockwise.  With prefix ARG, rotate
+entire document."
+    (interactive "P")
+    (pdf-view--rotate nil (not arg)))
+
+  (defun pdf-view-rotate-counterclockwise (&optional arg)
+    "Rotate PDF page 90 degrees counterclockwise.  With prefix ARG,
+rotate entire document."
+    (interactive "P")
+    (pdf-view--rotate :counterclockwise (not arg)))
+  )
+(use-package openwith
+  :hook (dired-mode . openwith-mode)
+  :config
+  (setq openwith-confirm-invocation nil)
+  (setq openwith-associations '(("\\.docx\\'" "xdg-open" (file))
+                                ("\\.mp3\\'" "mpv" ("--no-video" file)))))
+#+END_SRC
+
+References:
+1. https://stackoverflow.com/a/14230685 & https://www.whitman.edu/mathematics/emacs_doc/emacs_447.html
+   pdf vim-like control
+2. https://emacs.stackexchange.com/a/24766
+   rotate pdf.
+* Basic Org-Mode
+Org-mode is important for me.
+#+BEGIN_SRC emacs-lisp
+(use-package org
+  :ensure nil
+  :config
+  (defun jh/toggle-org-mode-writing-configuration ()
+    "Sets a special font for Org-mode writing and more. See: https://shreyas.ragavan.co/post/951004ce-add0-4e7e-b6e2-2932e0dee429/."
+    (interactive)
+    (buffer-face-set '(:family "IBM Plex Mono")) ; use font for large screen
+    (setq header-line-format " ")
+    (setq line-spacing 0.1)
+    (setq left-margin-width 2)
+    (setq right-margin-width 2)
+    (set-window-buffer nil (current-buffer)))
+  (add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-configuration)
+
+  (defun jh/find-or-create-today-datetree (pfx)
+    "Find or create today datetree entry under a heading with a tag journal in the current buffer. Call with prefix C-u to input DATE int the format (M D Y)."
+    (interactive "p")
+    (let ((cal-date))
+      (if (eq pfx 1)
+          (setq cal-date (calendar-current-date))
+        (setq cal-date (read)))
+      (counsel-org-goto)
+      (org-datetree-find-date-create cal-date 'subtree-at-point)))
+
+  (use-package org-indent
+    :ensure nil
+    :diminish org-indent-mode)
+
+  (use-package org-common-links
+    ;; define commonly used org-links
+    :load-path "lisp/org-common-links")
+
+  (use-package orglink-cursor
+    ;; echo url to minibuffer for orglink under cursor
+    :load-path "lisp/orglink-cursor"
+    :hook (org-mode . orglink-cursor-mode))
+
+  (org-babel-do-load-languages 'org-babel-load-languages '((emacs-lisp . t)
+                                                           (shell . t))))
+#+END_SRC
+* Basic Terminal
+This section is for enhancing terminal using experience from within Emacs.
+* Basic Buffers, Windows, Frames and Navigation
+This section contains config about windows, frames, and buffer switching.
+#+BEGIN_SRC emacs-lisp
+;; precise window switching
+(use-package ace-window
+  :config
+  (ace-window-display-mode)             ; show keys in the modeline
+  (global-set-key [remap other-window] 'ace-window)
+  (setq aw-scope 'frame)) ; limits ace-window to the current frame
+
+(use-package ibuffer
+  :ensure nil
   :config
   (global-set-key (kbd "C-x C-b") 'ibuffer)
   (fullframe ibuffer ibuffer-quit)
@@ -535,8 +743,6 @@ to
   (define-ibuffer-column size-h
     (:name "Size" :inline t)
     (file-size-human-readable (buffer-size)))
-  (global-visual-line-mode 1) ;; wrap line
-  (column-number-mode 1)) ;; display column number in the mode line
 
   ;; Modify the default ibuffer-formats (toggle with `)
   (setq ibuffer-formats
@@ -558,26 +764,8 @@ to
                 (vc-status 12 12 :left)
                 " "
                 vc-relative-file)))
-(use-package subword
-  ;; treat CamelCase word as two words, such that "dw" in Evil mode only deletes the word 'Camel'
-  :ensure nil
-  :diminish subword-mode
-  :config (global-subword-mode 1))
 
   (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
-(use-package browse-kill-ring
-  ;; browse previously deleted or copied items
-  :commands browse-kill-ring)
-#+END_SRC
-* Basic File Editing            :layer1:
-This section contains configs of editing a file, not its content. By editing a file, it means renaming it or deleting it.
-#+BEGIN_SRC emacs-lisp
-;; using tramp to sudo edit the current file
-;; SOURCE: https://stackoverflow.com/a/33280376
-(defun jh/sudo-edit-this-file-buffer ()
-  "Edit the current file with superuser privilege."
-  (interactive)
-  (find-file (concat "/sudo::" buffer-file-name)))
 
   (use-package ibuffer-vc
     ;; Group buffers by vc root directory
@@ -586,41 +774,52 @@ This section contains configs of editing a file, not its content. By editing a f
       (ibuffer-vc-set-filter-groups-by-vc-root)
       (unless (eq ibuffer-sorting-mode 'filename/process)
         (ibuffer-do-sort-by-filename/process)))
-;; Source: https://emacsredux.com/blog/2013/05/04/rename-file-and-buffer/
-(defun jh/rename-this-file-buffer ()
-  "Rename the current buffer and file it is visiting."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (message "Buffer is not visiting a file!")
-      (let ((new-name (read-file-name "New name: " filename)))
-        (cond
-         ((vc-backend filename) (vc-rename-file filename new-name))
-         (t
-          (rename-file filename new-name t)
-          (set-visited-file-name new-name t t)))))))
 
     (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)))
-;; Delete the current file from the visiting buffer
-(defun jh/delete-this-file-buffer ()
-  "Delete the current file, and kill the buffer."
-  (interactive)
-  (unless (buffer-file-name)
-    (error "No file is currently being edited"))
-  (when (yes-or-no-p (format "Really delete '%s'?"
-                             (file-name-nondirectory buffer-file-name)))
-    (delete-file (buffer-file-name))
-    (kill-buffer)))
+#+END_SRC
+* Candies                       :layer1:
+This is a section to add enhancements to Emacs, e.g. performance, theme and assistance packages. These packages are ok to be absent, but their existence adds value to Emacs usability.
+#+BEGIN_SRC emacs-lisp
+;;; Eye Candy
+;; Use Overpass Mono as the default font
+(add-to-list 'default-frame-alist '(font . "Overpass Mono"))
+
+;; load theme
+(setq custom-theme-directory (concat user-emacs-directory "themes/"))
+(dolist (subdir (directory-files custom-theme-directory t ".*-theme"))
+  (add-to-list 'custom-theme-load-path subdir))
+(load-theme 'dracula t) ; night theme, but use theme leuven for day theme
+
+;; display ^L as a horizontal line. Useful for separating section in helps or codes.
+(use-package page-break-lines
+  :diminish page-break-lines-mode
+  :config (global-page-break-lines-mode))
+
+;; remove mode indicator at the mode line, or redefine it
+(use-package diminish)
+
+;; add icon fonts and propertise them
+(use-package all-the-icons)
+
+;;; Performance
+(use-package gcmh
+  :diminish gcmh-mode
+  :config (gcmh-mode))
+
+;;; Assistance
+;; open buffer into "full-screen" mode until closing it
+(use-package fullframe)
+
+(use-package mode-line-bell
+  ;; alert from the mode-line
+  :init (setq ring-bell-function 'ignore)
+  :hook (after-init . mode-line-bell-mode))
 
 ;; display key-binding completion suggestions/hints
 ;; this :replace which-key (newer)
 (use-package which-key
   :diminish
   :hook (after-init . which-key-mode)
-(use-package autorevert
-  ;; auto refresh buffers when the file is changed on the disk
-  :ensure nil
-  :diminish auto-revert-mode
   :config
   (setq which-key-idle-delay 1.0)
   (setq which-key-idle-secondary-delay 0.05)
@@ -630,53 +829,25 @@ This section contains configs of editing a file, not its content. By editing a f
 ;;   :hook (after-init . guide-key-mode)
 ;;   :config
 ;;   (setq guide-key/guide-key-sequence t))
-  (setq auto-revert-remote-files t)
-  (setq auto-revert-avoid-polling t))
-#+END_SRC
 
 ;; provides a command which searches for unicode characters by name,
 ;; and displays a list of matching characters with their names in a
 ;; buffer.
 (use-package list-unicode-display)
-References:
-1. http://pragmaticemacs.com/emacs/aligning-text/
-   Whitespace alignment
-* Basic File Navigation         :layer1:
-By file navigation, I mean moving from one file to another. Dired's config is included.
-#+BEGIN_SRC emacs-lisp
-;; go to the next/previous file (by name). use prefix c-u to go back.
-;; https://emacs.stackexchange.com/a/12164
-(defun jh/goto-next-file (&optional backward)
-  "Find the next file (by name) in the current directory.
-     With prefix arg, find the previous file."
-  (interactive "P")
-  (when buffer-file-name
-    (let* ((file (expand-file-name buffer-file-name))
-           (files (cl-remove-if (lambda (file) (cl-first (file-attributes file)))
-                                (sort (directory-files (file-name-directory file) t nil t) 'string<)))
-           (pos (mod (+ (cl-position file files :test 'equal) (if backward -1 1))
-                     (length files))))
-      (find-file (nth pos files)))))
 
 ;; a reminder of my mortality, a reflection of life
 (use-package memento-mori
   :config
   (setq memento-mori-birth-date (password-store-get-field "personal-info" "birthday"))
   (memento-mori-mode))
-(defun jh/goto-previous-file ()
-  (interactive)
-  (goto-next-file t))
 
 ;; a package to watch for long pauses, good for debugging Emacs config
 (use-package explain-pause-mode
   :load-path "lisp/explain-pause-mode"
   :diminish
-(use-package dired
-  :ensure nil
-  :init
-  (setq delete-by-moving-to-trash t) ; unlike shell rm cmd
   :config
   (setq explain-pause-blocking-too-long-ms 40)
+  (setq explain-pause-profile-saved-profiles 10)
   (explain-pause-mode 1))
 
 ;; a handy tool to restart Emacs, especially when using EXWM
@@ -687,44 +858,24 @@ By file navigation, I mean moving from one file to another. Dired's config is in
 (require 'server)
 (unless (server-running-p)
   (server-start))
-  (setq dired-dwim-target t) ; set the default dired target to an adjacent dired buffer location.
-  (setq dired-listing-switches "-alh --group-directories-first")
-  (setq delete-by-moving-to-trash t)
-  (define-key dired-mode-map (kbd "C-c C-q") 'wdired-change-to-wdired-mode))
 #+END_SRC
 * Core Packages
 Evil and ivy are the core of my configs.
 ** Evil
-
-References:
-1. https://web.archive.org/web/20141020081338/http://truongtx.me:80/2013/04/25/dired-as-default-file-manager-5-customize-ls-command/
-   Dired listing switches
-* Basic File Reading
-This section contains configs about reading a those "read-only" files.
 #+BEGIN_SRC emacs-lisp
 (use-package evil
-  ;; evil is an extensible vi layer that emulate the main features of Vim in Emacs. 
-(use-package info
-  :ensure nil
-  :mode ("\\.info\\'" . Info-on-current-buffer)
-  :init
-  ;; add default Info-directory-list to the end of Info-directory-list in case $INFOPATH is set by program like GNU Guix
-  (dolist (dir Info-default-directory-list)
-    (unless (member dir Info-directory-list)
-      (setq Info-directory-list (append Info-directory-list (list dir)))))
+  ;; evil is an extensible vi layer that emulate the main features of Vim in Emacs.
   :config
-  ;; add an info directory to load additional .info files
-  (add-to-list 'Info-directory-list "~/Info_Files_Manual"))
 
   ;; Set some built-in modes to launch in evil emacs state (in addition to the default).
   (cl-loop for (mode . state) in
-	       '((image-mode . emacs)
-	         (eww-mode . emacs)
-	         (Info-mode . emacs)
-	         (calendar-mode . emacs)
-	         (process-menu-mode . emacs)
-	         (diff-mode . emacs))
-	       do (evil-set-initial-state mode state))
+           '((image-mode . emacs)
+             (eww-mode . emacs)
+             (Info-mode . emacs)
+             (calendar-mode . emacs)
+             (process-menu-mode . emacs)
+             (diff-mode . emacs))
+           do (evil-set-initial-state mode state))
 
   (evil-define-command jh/evil-save-modified-and-close-buffer (file &optional bang)
     "Saves the current buffer and closes the buffer."
@@ -736,16 +887,6 @@ This section contains configs about reading a those "read-only" files.
 
   ;; Ex :digraphs should show digraphs
   (evil-ex-define-cmd "digraphs" 'evil-ex-show-digraphs)
-(use-package pdf-tools
-  ;; :ensure-system-package (imagemagick pdftk)
-  :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
-  :config
-  (dolist (pkg '(pdf-annot pdf-cache pdf-dev pdf-history pdf-info
-                           pdf-isearch pdf-links pdf-misc pdf-occur
-                           pdf-outline pdf-sync pdf-util pdf-view
-                           pdf-virtual))
-    (require pkg))
-  (pdf-tools-install)
 
   ;; Make evil-search similar to Vim's search?
   (evil-select-search-module 'evil-search-module 'evil-search)
@@ -755,10 +896,6 @@ This section contains configs about reading a those "read-only" files.
   (use-package evil-anzu
     ;; Show (current match/total matches) info in the mode-line
     )
-  ;; Performance
-  (setq pdf-cache-image-limit 15)
-  ;; (setq pdf-cache-prefetch-delay X)
-  (setq image-cache-eviction-delay 15)
 
   (use-package evil-visual-mark-mode
     ;; Display mark at a point during evil-jump-to-mark
@@ -804,87 +941,26 @@ This section contains configs about reading a those "read-only" files.
     (defun jh/evil-args-switch-to-c-mode ()
       "Switch evil-args parameters to adapt to C-derivative modes"
       (setq evil-args-delimiters '(", " ";")))
-  (define-key pdf-view-mode-map (kbd "j") #'pdf-view-next-line-or-next-page)
-  (define-key pdf-view-mode-map (kbd "k") #'pdf-view-previous-line-or-previous-page)
-  (define-key pdf-view-mode-map (kbd "h") #'image-backward-hscroll)
-  (define-key pdf-view-mode-map (kbd "l") #'image-forward-hscroll)
-  (define-key pdf-view-mode-map (kbd "C-f") #'pdf-view-scroll-up-or-next-page)
-  (define-key pdf-view-mode-map (kbd "C-b") #'pdf-view-scroll-down-or-previous-page)
 
     (add-hook 'c-mode-hook #'jh/evil-args-switch-to-c-mode))
-  (defun pdf-view--rotate (&optional counterclockwise-p page-p)
-    "Rotate PDF 90 degrees.  Requires pdftk to work.\n
-Clockwise rotation is the default; set COUNTERCLOCKWISE-P to
-non-nil for the other direction.  Rotate the whole document by
-default; set PAGE-P to non-nil to rotate only the current page.
-\nWARNING: overwrites the original file, so be careful!"
-    ;; error out when pdftk is not installed
-    (if (null (executable-find "pdftk"))
-        (error "Rotation requires pdftk")
-      ;; only rotate in pdf-view-mode
-      (when (eq major-mode 'pdf-view-mode)
-        (let* ((rotate (if counterclockwise-p "left" "right"))
-               (file   (format "\"%s\"" (pdf-view-buffer-file-name)))
-               (page   (pdf-view-current-page))
-               (pages  (cond ((not page-p) ; whole doc?
-                              (format "1-end%s" rotate))
-                             ((= page 1) ; first page?
-                              (format "%d%s %d-end"
-                                      page rotate (1+ page)))
-                             ((= page (pdf-info-number-of-pages)) ; last page?
-                              (format "1-%d %d%s"
-                                      (1- page) page rotate))
-                             (t         ; interior page?
-                              (format "1-%d %d%s %d-end"
-                                      (1- page) page rotate (1+ page))))))
-          ;; empty string if it worked
-          (if (string= "" (shell-command-to-string
-                           (format (concat "pdftk %s cat %s "
-                                           "output %s.NEW "
-                                           "&& mv %s.NEW %s")
-                                   file pages file file file)))
-              (pdf-view-revert-buffer nil t)
-            (error "Rotation error!"))))))
 
   (use-package evil-numbers
     ;; Increment/decrement numbers. E.g. 1 to 2.
     :config
     (define-key evil-normal-state-map (kbd "<kp-add>") 'evil-numbers/inc-at-pt)
     (define-key evil-normal-state-map (kbd "<kp-subtract>") 'evil-numbers/dec-at-pt))
-  (defun pdf-view-rotate-clockwise (&optional arg)
-    "Rotate PDF page 90 degrees clockwise.  With prefix ARG, rotate
-entire document."
-    (interactive "P")
-    (pdf-view--rotate nil (not arg)))
 
   (use-package evil-exchange
     ;; Swap two regions of text
     :config
     (define-key evil-operator-state-map "x" 'evil-exchange/cx)
     (define-key evil-visual-state-map "X" 'evil-exchange))
-  (defun pdf-view-rotate-counterclockwise (&optional arg)
-    "Rotate PDF page 90 degrees counterclockwise.  With prefix ARG,
-rotate entire document."
-    (interactive "P")
-    (pdf-view--rotate :counterclockwise (not arg)))
   )
-(use-package openwith
-  :hook (dired-mode . openwith-mode)
-  :config
-  (setq openwith-confirm-invocation nil)
-  (setq openwith-associations '(("\\.docx\\'" "xdg-open" (file))
-                                ("\\.mp3\\'" "mpv" ("--no-video" file)))))
 #+END_SRC
 
 References:
 1. http://vimcasts.org/episodes/swapping-two-regions-of-text-with-exchange-vim
 ** Ivy
-1. https://stackoverflow.com/a/14230685 & https://www.whitman.edu/mathematics/emacs_doc/emacs_447.html
-   pdf vim-like control
-2. https://emacs.stackexchange.com/a/24766
-   rotate pdf.
-* Basic Org-Mode
-Org-mode is important for me.
 #+BEGIN_SRC emacs-lisp
 (use-package ivy
   :diminish
@@ -892,31 +968,9 @@ Org-mode is important for me.
   (use-package historian
     ;; store the results of completing-read and similar functions persistently to provide better completion candidates for recent or frequent used item.
     :config (historian-mode))
-(use-package org
-  :ensure nil
-  :config
-  (defun jh/toggle-org-mode-writing-configuration ()
-    "Sets a special font for Org-mode writing and more. See: https://shreyas.ragavan.co/post/951004ce-add0-4e7e-b6e2-2932e0dee429/."
-    (interactive)
-    (buffer-face-set '(:family "IBM Plex Mono")) ; use font for large screen
-    (setq header-line-format " ")
-    (setq line-spacing 0.1)
-    (setq left-margin-width 2)
-    (setq right-margin-width 2)
-    (set-window-buffer nil (current-buffer)))
-  (add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-configuration)
 
   (use-package ivy-historian
     :config (ivy-historian-mode))
-  (defun jh/find-or-create-today-datetree (pfx)
-    "Find or create today datetree entry under a heading with a tag journal in the current buffer. Call with prefix C-u to input DATE int the format (M D Y)."
-    (interactive "p")
-    (let ((cal-date))
-      (if (eq pfx 1)
-          (setq cal-date (calendar-current-date))
-        (setq cal-date (read)))
-      (counsel-org-goto)
-      (org-datetree-find-date-create cal-date 'subtree-at-point)))
 
   :config
   (use-package counsel
@@ -927,9 +981,6 @@ Org-mode is important for me.
     ;; counsel-search comes with counsel library. It queries the search engine and open the result page in web browser. Use a custom ddg search engine to use the familiar ddg search result page.
     (add-to-list 'counsel-search-engines-alist '(ddgz "https://duckduckgo.com/ac/" "https://duckduckgo.com/?q=" counsel--search-request-data-ddg))
     (setq counsel-search-engine 'ddgz)
-  (use-package org-indent
-    :ensure nil
-    :diminish org-indent-mode)
 
     ;; I want counsel-search to behave more like the browser omnibar which open the url directly when it is prefixed with http(s)://
     (defun jh/counsel-search-action (x)
@@ -949,43 +1000,37 @@ Org-mode is important for me.
                 :action #'jh/counsel-search-action
                 :dynamic-collection t
                 :caller 'counsel-search)))
-  (use-package org-common-links
-    ;; define commonly used org-links
-    :load-path "lisp/org-common-links")
 
   ;; Open file in dired from ivy-switch-buffer
   (defun open-file-directory-from-path (x)
     "Open the directory given a file path"
     (find-file (file-name-directory x)))
-  (use-package orglink-cursor
-    ;; echo url to minibuffer for orglink under cursor
-    :load-path "lisp/orglink-cursor"
-    :hook (org-mode . orglink-cursor-mode))
 
   ;; Add dispatch options jumping to the file/buffer directory.
   (ivy-set-actions 'counsel-file-jump '(("d" open-file-directory-from-path "directory")))
   (ivy-set-actions 'ivy-switch-buffer '(("d" open-file-directory-from-path "directory"))))
-  (org-babel-do-load-languages 'org-babel-load-languages '((emacs-lisp . t)
-                                                           (shell . t))))
 #+END_SRC
 
 References:
 1. https://emacs.stackexchange.com/questions/38841/counsel-m-x-always-shows
 2. https://github.com/purcell/emacs.d/blob/master/lisp/init-ivy.el
-* Basic Terminal
-This section is for enhancing terminal using experience from within Emacs.
-* Basic Buffers, Windows, Frames and Navigation
-This section contains config about windows, frames, and buffer switching.
-#+BEGIN_SRC emacs-lisp
-;; precise window switching
-(use-package ace-window
-  :config
-  (ace-window-display-mode)             ; show keys in the modeline
-  (global-set-key [remap other-window] 'ace-window)
-  (setq aw-scope 'frame)) ; limits ace-window to the current frame
-
-#+END_SRC
 * Temp
+#+BEGIN_SRC emacs-lisp
+;; Defining a sync directory for org uses
+(defconst jh/sync-directory "/home/zacque/Dropbox/DropSyncFiles")
+(setq initial-buffer-choice (expand-file-name "startup.org" jh/sync-directory))
+
+(with-eval-after-load 'fullframe
+  (fullframe list-packages quit-window))
+
+(use-package use-package-ensure-system-package
+  ;; Add keyword to ensure some system binaries alongside my package declarations.
+  :init (setq system-packages-use-sudo t))
+#+END_SRC
+References:
+2. https://github.com/waymondo/use-package-ensure-system-package
+3. https://gitlab.com/jabranham/system-packages
+
 #+BEGIN_SRC emacs-lisp
 (defun jh/get-all-subdirs (PATH DEPTH)
   "Get all subdirectories under the directory PATH. Does not include the directory itself in the result."
@@ -996,18 +1041,13 @@ This section contains config about windows, frames, and buffer switching.
 (defun jh/emacs-subdirectory (filepath)
   "Locate a file with FILEPATH in my emacs's directory."
   (expand-file-name filepath jh/emacs-directory))
-(use-package ibuffer
-  :ensure nil
-  :config
-  (global-set-key (kbd "C-x C-b") 'ibuffer)
-  (fullframe ibuffer ibuffer-quit)
 
 (defun require-package (package)
   "Require a PACKAGE. Install PACKAGE if not already installed. PACKAGE will be required immediately after installation."
   (if (package-installed-p package)
-	  (require package)
+      (require package)
     (unless package-archive-contents
-	  (package-refresh-contents))
+      (package-refresh-contents))
     (package-install package)
     (require package)))
 #+END_SRC
@@ -1027,10 +1067,6 @@ An IDE is a complex piece of software. Emacs is the best Lisp editor and I want 
 10. version control
 11. read docs
 12. code refactoring
-  ;; Use human readable Size column instead of original one
-  (define-ibuffer-column size-h
-    (:name "Size" :inline t)
-    (file-size-human-readable (buffer-size)))
 
 * Lisp Mode
 Lisp mode deals a lot with parens.
@@ -1038,31 +1074,10 @@ Lisp mode deals a lot with parens.
 (defun jh/enable-check-parens-on-save ()
   "Run `check-parens' when the current buffer is saved."
   (add-hook 'after-save-hook #'check-parens nil t))
-  ;; Modify the default ibuffer-formats (toggle with `)
-  (setq ibuffer-formats
-        '((mark modified read-only vc-status-mini " "
-                (name 22 22 :left :elide)
-                " "
-                (size-h 9 -1 :right)
-                " "
-                (mode 12 12 :left :elide)
-                " "
-                vc-relative-file)
-          (mark modified read-only vc-status-mini " "
-                (name 22 22 :left :elide)
-                " "
-                (size-h 9 -1 :right)
-                " "
-                (mode 14 14 :left :elide)
-                " "
-                (vc-status 12 12 :left)
-                " "
-                vc-relative-file)))
 
 (defun jh/evil-args-switch-to-lisp-mode ()
   "Adapt evil-args to lisp-mode"
   (setq evil-args-delimiters '(" ")))
-  (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
 
 (defvar jh/lispy-modes-hook
   '(jh/enable-check-parens-on-save
@@ -1071,139 +1086,62 @@ Lisp mode deals a lot with parens.
     prism-mode
     aggressive-indent-mode)
   "Define all hooks to run in all Lisp modes.")
-  (use-package ibuffer-vc
-    ;; Group buffers by vc root directory
-    :config
-    (defun ibuffer-set-up-preferred-filters ()
-      (ibuffer-vc-set-filter-groups-by-vc-root)
-      (unless (eq ibuffer-sorting-mode 'filename/process)
-        (ibuffer-do-sort-by-filename/process)))
 
 (defconst jh/lispy-modes
   '(lisp-mode lisp-interaction-mode inferior-lisp-mode
               emacs-lisp-mode common-lisp-mode geiser-mode)
   "All lisp modes.")
-    (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)))
-#+END_SRC
-* Candies                       :layer1:
-This is a section to add enhancements to Emacs, e.g. performance, theme and assistance packages. These packages are ok to be absent, but their existence adds value to Emacs usability.
-#+BEGIN_SRC emacs-lisp
-;;; Eye Candy
-;; Use Overpass Mono as the default font
-(add-to-list 'default-frame-alist '(font . "Overpass Mono"))
 
 (defun jh/lisp-setup()
   "Enable features useful in all Lisp modes."
   (run-hooks 'jh/lispy-modes-hook))
-;; load theme
-(setq custom-theme-directory (concat user-emacs-directory "themes/"))
-(dolist (subdir (directory-files custom-theme-directory t ".*-theme"))
-  (add-to-list 'custom-theme-load-path subdir))
-(load-theme 'dracula t) ; night theme, but use theme leuven for day theme
 
 (require 'derived)
 (dolist (hook (mapcar #'derived-mode-hook-name jh/lispy-modes))
   (add-hook hook 'jh/lisp-setup))
-;; display ^L as a horizontal line. Useful for separating section in helps or codes.
-(use-package page-break-lines
-  :diminish page-break-lines-mode
-  :config (global-page-break-lines-mode))
 
 (use-package prism
   ;; Colour code expressions according to their depth level
   )
-;; remove mode indicator at the mode line, or redefine it
-(use-package diminish)
 
 (use-package elisp-lint
   ;; Basic linting for Emacs-Lisp.
   ;; See: flycheck-package, package-lint
   )
-;; add icon fonts and propertise them
-(use-package all-the-icons)
 
 (use-package ipretty
   ;; Pretty print the result of an elisp expression
   :hook (emacs-lisp-mode . ipretty-mode))
-;;; Performance
-(use-package gcmh
-  :diminish gcmh-mode
-  :config (gcmh-mode))
 
 (use-package elec-pair
   :ensure nil
   :hook ((prog-mode text-mode) . electric-pair-mode)
   :config (setq electric-pair-preserve-balance t))
-;;; Assistance
-;; open buffer into "full-screen" mode until closing it
-(use-package fullframe)
 
 (use-package paren
   :ensure nil
   :hook ((prog-mode text-mode) . show-paren-mode)
-(use-package mode-line-bell
-  ;; alert from the mode-line
-  :init (setq ring-bell-function 'ignore)
-  :hook (after-init . mode-line-bell-mode))
-
-;; display key-binding completion suggestions/hints
-;; this :replace which-key (newer)
-(use-package which-key
-  :diminish
-  :hook (after-init . which-key-mode)
   :config
   (setq show-paren-delay 0)
   (show-paren-mode)) ; activate globally to highlight matching parenthesis
-  (setq which-key-idle-delay 1.0)
-  (setq which-key-idle-secondary-delay 0.05)
-  (setq which-key-allow-evil-operators t))
-;; (use-package guide-key
-;;   :diminish guide-key-mode
-;;   :hook (after-init . guide-key-mode)
-;;   :config
-;;   (setq guide-key/guide-key-sequence t))
 
 (use-package paredit
   ;; enable AST transformation/editing
   :diminish (paredit . " Par"))
-;; provides a command which searches for unicode characters by name,
-;; and displays a list of matching characters with their names in a
-;; buffer.
-(use-package list-unicode-display)
 
 (use-package highlight-quoted
   ;; highlight Lisp quotes and quoted symbols
   :hook (emacs-lisp-mode . highlight-quoted-mode))
-;; a reminder of my mortality, a reflection of life
-(use-package memento-mori
-  :config
-  (setq memento-mori-birth-date (password-store-get-field "personal-info" "birthday"))
-  (memento-mori-mode))
 
 ;;; Common Lisp
 (use-package slime
-;; a package to watch for long pauses, good for debugging Emacs config
-(use-package explain-pause-mode
-  :load-path "lisp/explain-pause-mode"
-  :diminish
   :config
   (setq inferior-lisp-program "/usr/local/bin/sbcl")
-  (setq explain-pause-blocking-too-long-ms 40)
-  (setq explain-pause-profile-saved-profiles 10)
-  (explain-pause-mode 1))
 
   (use-package slime-company)
-;; a handy tool to restart Emacs, especially when using EXWM
-(use-package restart-emacs
-  :commands (restart-emacs))
 
   (require 'slime-autoloads)
   (slime-setup '(slime-fancy slime-company))
-;; allow access to emacsclient from terminal
-(require 'server)
-(unless (server-running-p)
-  (server-start))
-#+END_SRC
 
   (setq slime-enable-evaluate-in-emacs t) ; for swank::eval-in-emacs
 
@@ -1230,6 +1168,9 @@ Use cases:
 4. Inline help for complex function calls.
 
 #+BEGIN_SRC emacs-lisp
+;; add Python integration to org-babel
+(org-babel-do-load-languages 'org-babel-load-languages '((python .t)))
+
 (use-package python
   :ensure nil
   :mode ("\\.py\\'" . python-mode)
@@ -1310,367 +1251,6 @@ References:
 #+BEGIN_SRC emacs-lisp
 (use-package toml-mode)
 #+END_SRC
-* File Editing
-#+BEGIN_SRC emacs-lisp
-;; go to the next/previous file (by name). use prefix c-u to go back.
-;; https://emacs.stackexchange.com/a/12164
-(defun jh/goto-next-file (&optional backward)
-  "Find the next file (by name) in the current directory.
-     With prefix arg, find the previous file."
-  (interactive "P")
-  (when buffer-file-name
-    (let* ((file (expand-file-name buffer-file-name))
-           (files (cl-remove-if (lambda (file) (cl-first (file-attributes file)))
-                                (sort (directory-files (file-name-directory file) t nil t) 'string<)))
-           (pos (mod (+ (cl-position file files :test 'equal) (if backward -1 1))
-                     (length files))))
-      (find-file (nth pos files)))))
-
-(defun jh/goto-previous-file ()
-  (interactive)
-  (goto-next-file t))
-
-;; using tramp to sudo edit the current file
-;; SOURCE: https://stackoverflow.com/a/33280376
-(defun jh/sudo-edit-this-file-buffer ()
-  "Edit the current file with superuser privilege."
-  (interactive)
-  (find-file (concat "/sudo::" buffer-file-name)))
-
-;; Source: https://emacsredux.com/blog/2013/05/04/rename-file-and-buffer/
-(defun jh/rename-this-file-buffer ()
-  "Rename the current buffer and file it is visiting."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (message "Buffer is not visiting a file!")
-      (let ((new-name (read-file-name "New name: " filename)))
-        (cond
-         ((vc-backend filename) (vc-rename-file filename new-name))
-         (t
-          (rename-file filename new-name t)
-          (set-visited-file-name new-name t t)))))))
-
-;; Delete the current file from the visiting buffer
-(defun jh/delete-this-file-buffer ()
-  "Delete the current file, and kill the buffer."
-  (interactive)
-  (unless (buffer-file-name)
-    (error "No file is currently being edited"))
-  (when (yes-or-no-p (format "Really delete '%s'?"
-                             (file-name-nondirectory buffer-file-name)))
-    (delete-file (buffer-file-name))
-    (kill-buffer)))
-
-(use-package dired
-  :ensure nil
-  :init
-  (setq delete-by-moving-to-trash t) ; unlike shell rm cmd
-  :config
-  (setq dired-dwim-target t) ; set the default dired target to an adjacent dired buffer location.
-  (setq dired-listing-switches "-alh --group-directories-first")
-  (setq delete-by-moving-to-trash t)
-  (define-key dired-mode-map (kbd "C-c C-q") 'wdired-change-to-wdired-mode))
-
-(use-package openwith
-  :hook (dired-mode . openwith-mode)
-  :config
-  (setq openwith-confirm-invocation nil)
-  (setq openwith-associations '(("\\.docx\\'" "xdg-open" (file))
-                                ("\\.mp3\\'" "mpv" ("--no-video" file)))))
-#+END_SRC
-
-References:
-1. https://web.archive.org/web/20141020081338/http://truongtx.me:80/2013/04/25/dired-as-default-file-manager-5-customize-ls-command/
-   Dired listing switches
-* File Reading
-#+BEGIN_SRC emacs-lisp
-(use-package info
-  :ensure nil
-  :mode ("\\.info\\'" . Info-on-current-buffer)
-  :init
-  ;; add default Info-directory-list to the end of Info-directory-list in case $INFOPATH is set by program like GNU Guix
-  (dolist (dir Info-default-directory-list)
-    (unless (member dir Info-directory-list)
-      (setq Info-directory-list (append Info-directory-list (list dir)))))
-  :config
-  ;; add an info directory to load additional .info files
-  (add-to-list 'Info-directory-list "~/Info_Files_Manual"))
-
-(use-package pdf-tools
-  ;; :ensure-system-package (imagemagick pdftk)
-  :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
-  :config
-  (dolist (pkg '(pdf-annot pdf-cache pdf-dev pdf-history pdf-info
-                           pdf-isearch pdf-links pdf-misc pdf-occur
-                           pdf-outline pdf-sync pdf-util pdf-view
-                           pdf-virtual))
-    (require pkg))
-  (pdf-tools-install)
-
-  ;; Performance
-  (setq pdf-cache-image-limit 15)
-  ;; (setq pdf-cache-prefetch-delay X)
-  (setq image-cache-eviction-delay 15)
-
-  (define-key pdf-view-mode-map (kbd "j") #'pdf-view-next-line-or-next-page)
-  (define-key pdf-view-mode-map (kbd "k") #'pdf-view-previous-line-or-previous-page)
-  (define-key pdf-view-mode-map (kbd "h") #'image-backward-hscroll)
-  (define-key pdf-view-mode-map (kbd "l") #'image-forward-hscroll)
-  (define-key pdf-view-mode-map (kbd "C-f") #'pdf-view-scroll-up-or-next-page)
-  (define-key pdf-view-mode-map (kbd "C-b") #'pdf-view-scroll-down-or-previous-page)
-
-  (defun pdf-view--rotate (&optional counterclockwise-p page-p)
-    "Rotate PDF 90 degrees.  Requires pdftk to work.\n
-Clockwise rotation is the default; set COUNTERCLOCKWISE-P to
-non-nil for the other direction.  Rotate the whole document by
-default; set PAGE-P to non-nil to rotate only the current page.
-\nWARNING: overwrites the original file, so be careful!"
-    ;; error out when pdftk is not installed
-    (if (null (executable-find "pdftk"))
-        (error "Rotation requires pdftk")
-      ;; only rotate in pdf-view-mode
-      (when (eq major-mode 'pdf-view-mode)
-        (let* ((rotate (if counterclockwise-p "left" "right"))
-               (file   (format "\"%s\"" (pdf-view-buffer-file-name)))
-               (page   (pdf-view-current-page))
-               (pages  (cond ((not page-p) ; whole doc?
-                              (format "1-end%s" rotate))
-                             ((= page 1) ; first page?
-                              (format "%d%s %d-end"
-                                      page rotate (1+ page)))
-                             ((= page (pdf-info-number-of-pages)) ; last page?
-                              (format "1-%d %d%s"
-                                      (1- page) page rotate))
-                             (t         ; interior page?
-                              (format "1-%d %d%s %d-end"
-                                      (1- page) page rotate (1+ page))))))
-          ;; empty string if it worked
-          (if (string= "" (shell-command-to-string
-                           (format (concat "pdftk %s cat %s "
-                                           "output %s.NEW "
-                                           "&& mv %s.NEW %s")
-                                   file pages file file file)))
-              (pdf-view-revert-buffer nil t)
-            (error "Rotation error!"))))))
-
-  (defun pdf-view-rotate-clockwise (&optional arg)
-    "Rotate PDF page 90 degrees clockwise.  With prefix ARG, rotate
-entire document."
-    (interactive "P")
-    (pdf-view--rotate nil (not arg)))
-* Basic Org-Mode
-Org-mode is important for me.
-#+BEGIN_SRC emacs-lisp
-(use-package org
-  :ensure nil
-  :config
-  (defun jh/toggle-org-mode-writing-configuration ()
-    "Sets a special font for Org-mode writing and more. See: https://shreyas.ragavan.co/post/951004ce-add0-4e7e-b6e2-2932e0dee429/."
-    (interactive)
-    (buffer-face-set '(:family "IBM Plex Mono")) ; use font for large screen
-    (setq header-line-format " ")
-    (setq line-spacing 0.1)
-    (setq left-margin-width 2)
-    (setq right-margin-width 2)
-    (set-window-buffer nil (current-buffer)))
-  (add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-configuration)
-
-  (defun jh/find-or-create-today-datetree (pfx)
-    "Find or create today datetree entry under a heading with a tag journal in the current buffer. Call with prefix C-u to input DATE int the format (M D Y)."
-    (interactive "p")
-    (let ((cal-date))
-      (if (eq pfx 1)
-          (setq cal-date (calendar-current-date))
-        (setq cal-date (read)))
-      (counsel-org-goto)
-      (org-datetree-find-date-create cal-date 'subtree-at-point)))
-
-  (use-package org-indent
-    :ensure nil
-    :diminish org-indent-mode)
-
-  (use-package org-common-links
-    ;; define commonly used org-links
-    :load-path "lisp/org-common-links")
-
-  (use-package orglink-cursor
-    ;; echo url to minibuffer for orglink under cursor
-    :load-path "lisp/orglink-cursor"
-    :hook (org-mode . orglink-cursor-mode))
-
-  (org-babel-do-load-languages 'org-babel-load-languages '((emacs-lisp . t)
-                                                           (shell . t))))
-#+END_SRC
-
-  (defun pdf-view-rotate-counterclockwise (&optional arg)
-    "Rotate PDF page 90 degrees counterclockwise.  With prefix ARG,
-rotate entire document."
-    (interactive "P")
-    (pdf-view--rotate :counterclockwise (not arg)))
-  )
-#+END_SRC
-
-References:
-1. https://stackoverflow.com/a/14230685 & https://www.whitman.edu/mathematics/emacs_doc/emacs_447.html
-   pdf vim-like control
-2. https://emacs.stackexchange.com/a/24766
-   rotate pdf.
-* General File Editing Ergonomics
-#+BEGIN_SRC emacs-lisp
-(defun jh/align-whitespace (start end)
-  "Align columns by whitespace. E.g.
-    >> the quick brown fox
-    >> jumped over the lazy
-    >> dogs the quick brown
-to
-    >> the     quick  brown  fox
-    >> jumped  over   the    lazy
-    >> dogs    the    quick  brown "
-  (interactive "r")
-  (align-regexp start end "\\(\\s-*\\)\\s-" 1 0 t))
-
-(use-package yasnippet
-  ;; a templating tool
-  :diminish (yas-minor-mode . " Ⓨ")
-  :hook ((text-mode prog-mode) . yas-minor-mode)
-  :config
-  ;; workaround sideeffect function. see: https://emacs.stackexchange.com/a/24062
-  (defun yas/org-get-time-stamp (&rest args)
-    "Return the string that `org-insert-time-stamp' would insert."
-    (with-temp-buffer
-      (apply #'org-insert-time-stamp args)
-      (buffer-string)))
-
-
-  (yas-reload-all))
-
-(use-package writeroom-mode
-  ;; distraction-free writing mode. Possibly useful for reading as well
-  :config
-  (setq writeroom-width 0.6))
-
-(use-package browse-kill-ring
-  ;; browse previously deleted or copied items
-  :commands browse-kill-ring)
-
-(use-package autorevert
-  ;; auto refresh buffers when the file is changed on the disk
-  :ensure nil
-  :diminish auto-revert-mode
-  :config
-  (setq auto-revert-remote-files t)
-  (setq auto-revert-avoid-polling t))
-#+END_SRC
-
-References:
-1. http://pragmaticemacs.com/emacs/aligning-text/
-   Whitespace alignment
-
-  (setq display-line-numbers-type 'visual)
-
-  ;; prettify line-number faces
-  (set-face-attribute 'line-number nil
-                      :font "Hack"
-                      :height 80)
-
-  (set-face-attribute 'line-number-current-line nil
-                      :font "Hack"
-                      :height 80
-                      :background "#ffdfaa"
-                      :foreground "#3a3a3a"))
-
-(use-package magit
-  ;; a Git interface
-  :ensure-system-package (git diff)
-  :config
-  (with-eval-after-load 'fullframe
-    (fullframe magit-status magit-mode-quit-window))
-
-  (use-package forge
-    ;; work with Git forges, such as Github and Gitlab, from the comfort of Magit and the rest of Emacs.
-    ))
-
-(use-package whitespace-cleanup-mode
-  :diminish whitespace-cleanup-mode
-  :config
-  (setq-default show-trailing-whitespace t)
-  (global-whitespace-cleanup-mode)
-  (setq whitespace-action '(auto-cleanup)))
-
-(use-package undo-tree
-  ;; advance undo & redo
-  :diminish undo-tree-mode
-  :config
-  (global-undo-tree-mode)
-  (with-eval-after-load 'evil
-    (evil-set-initial-state 'undo-tree-visualize-mode 'emacs)))
-
-(use-package simple
-  :ensure nil
-  :diminish visual-line-mode
-  :config
-  (global-visual-line-mode) ;; wrap line
-  (column-number-mode)) ;; display column number in the mode line
-
-(use-package subword
-  ;; treat CamelCase word as two words, such that "dw" in Evil mode only deletes the word 'Camel'
-  :ensure nil
-  :diminish subword-mode
-  :config (global-subword-mode))
-
-
-
-
-
-
-
-
-
-  (use-package flymake-quickdef)
-
-  ;; Echo error under cursor in minibuffer
-  (use-package flymake-cursor
-    :load-path "lisp/flymake-cursor"
-    :hook (flymake-mode . flymake-cursor-mode)))
-
-(use-package hl-line
-  ;; Highlight current line.
-  :ensure nil
-  :hook (prog-mode . hl-line-mode))
-
-(use-package display-fill-column-indicator
-  ;; highlight column at position 80
-  :if (version<= "27.0" emacs-version)
-  :hook (prog-mode . display-fill-column-indicator-mode)
-  :config
-  (setq display-fill-column-indicator-column 80)
-  (setq display-fill-column-indicator-character '│))
-
-(use-package debug
-  :ensure nil
-  :config
-  (setq debugger-bury-or-kill 'kill)) ;; kill debugger windows on exit
-
-(use-package editorconfig
-  ;; Support common config file across IDEs
-  :config
-  (editorconfig-mode 1))
-#+END_SRC
-
-References:
-1. https://www.reddit.com/r/emacs/comments/6noyxa/customizing_the_new_native_line_numbers_in_emacs
-   Prettify line-number faces.
-2. https://github.com/company-mode/company-mode
-3. https://emacs.stackexchange.com/a/23937
-4. https://github.com/company-mode/company-mode/wiki/Switching-from-AC
-5. https://github.com/company-mode/company-mode/issues/526
-   YouCompleteMe-style tab completion.
-6. https://github.com/company-mode/company-mode/issues/94
-   Integrate company with 'ident-for-tab-command'.
-7. https://www.emacswiki.org/emacs/FacesPerBuffer
-   Custom font for prog-mode.
-8. https://editorconfig.org/
 * Docs Reference Ergonomics
 #+BEGIN_SRC emacs-lisp
 (use-package help
@@ -1691,7 +1271,7 @@ References:
   :config
   (with-eval-after-load 'evil
     (evil-set-initial-state 'Man-mode 'emacs))
-  
+
   (define-key Man-mode-map (kbd "f") #'scroll-up-command)
   (define-key Man-mode-map (kbd "b") #'scroll-down-command))
 
@@ -1733,7 +1313,7 @@ References:
   (evil-set-initial-state 'pocket-reader-mode 'emacs)
 
   (defun jh/pocket-reader-add-link ()
-    "Add URL from user input to Pocket. 
+    "Add URL from user input to Pocket.
 TODO: Default to the first entry in kill-ring."
     (interactive)
     (let ((url (read-string "URL: ")))
@@ -1752,7 +1332,7 @@ TODO: Default to the first entry in kill-ring."
   (ivy-set-actions 'counsel-firefox-bookmarks '(("i" incognito-tab "incognito-tab"))))
 
 (use-package ecloud
-  ;; magit-like porcelain for accessing gcp, azure and aws 
+  ;; magit-like porcelain for accessing gcp, azure and aws
   ;; note: still in infancy
   :load-path "lisp/ecloud"
   :disabled)
@@ -1915,6 +1495,9 @@ Use the format year/month/day.
 (setq calendar-date-style 'iso)
 #+END_SRC
 * Org-Mode
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 #+BEGIN_SRC emacs-lisp
 (use-package org
   ;; The great org-mode
@@ -1935,6 +1518,9 @@ References:
 1. http://blog.lujun9972.win/emacs-document/blog/2018/10/22/ricing-up-org-mode/index.html
    Org mode ricing.
 * Org Export
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 #+BEGIN_SRC emacs-lisp
 (use-package ox
   ;; package for org export
@@ -1971,6 +1557,9 @@ References:
 3. https://emacs.stackexchange.com/a/45051
    Export LaTeX code with syntax highlighting.
 * Org Publish
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 #+BEGIN_SRC emacs-lisp
 (use-package ox-publish
   :ensure nil
@@ -2149,7 +1738,7 @@ Load all the .txt files into org-agenda.
 
 Assign "org" as my project directory, so that every project in the directory will be automatically added to org-agenda. This frees me from minute configuring every time I change my project working on.
 #+BEGIN_SRC emacs-lisp
-;; Need a function to return all the subdirectories + the directory itself 
+;; Need a function to return all the subdirectories + the directory itself
 (setq org-agenda-files (jh/get-dir-and-subdirs (jh/file-in-sync-directory "org") 2))
 (add-to-list 'org-agenda-files jh/sync-directory)
 #+END_SRC
@@ -2172,9 +1761,9 @@ Customise Org-agenda TODO view.
 #+BEGIN_SRC emacs-lisp :tangle no
 (setq org-agenda-prefix-format
       '((agenda . " %i %-12:c%?-12t% s")
-	(todo . " %i %-12:c %l")
-	(tags . " %i %-12:c")
-	(search . " %i %-12:c")))
+    (todo . " %i %-12:c %l")
+    (tags . " %i %-12:c")
+    (search . " %i %-12:c")))
 #+END_SRC
 
 References:
@@ -2595,15 +2184,15 @@ WAITING --> DONE
 
 (setq org-todo-keywords
       '((sequence "TODO(t!)" "NEXT(n)" "|" "DONE(d)")
-	    (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
+        (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
 
 (setq org-todo-keyword-faces
       '(("TODO" :foreground "red" :weight bold)
-	    ("NEXT" :foreground "blue" :weight bold)
-	    ("DONE" :foreground "forest green" :weight bold)
-	    ("WAITING" :foreground "DeepPink4" :weight bold)
-	    ("HOLD" :foreground "magenta" :weight bold)
-	    ("CANCELLED" :foreground "forest green" :weight bold)))
+        ("NEXT" :foreground "blue" :weight bold)
+        ("DONE" :foreground "forest green" :weight bold)
+        ("WAITING" :foreground "DeepPink4" :weight bold)
+        ("HOLD" :foreground "magenta" :weight bold)
+        ("CANCELLED" :foreground "forest green" :weight bold)))
 #+END_SRC
 
 For record purposes:
@@ -2616,7 +2205,7 @@ Log state change notes and timestamps into drawer. Avoid cluttering my org entri
 (setq org-log-into-drawer t)
 #+END_SRC
 
-Enforce TODO dependencies. To do A before B, before C, ... 
+Enforce TODO dependencies. To do A before B, before C, ...
 #+BEGIN_SRC emacs-lisp
 (setq org-enforce-todo-dependencies t)
 #+END_SRC
@@ -2651,13 +2240,13 @@ Tasks to archive are listed automatically at the end of agenda. They can have an
 (org-clock-persistence-insinuate)
 #+END_SRC
 
-Besides Bernt Hansen, Lee Hinman[fn:31] has good config on org-clocking. 
+Besides Bernt Hansen, Lee Hinman[fn:31] has good config on org-clocking.
 #+BEGIN_SRC emacs-lisp
 ;; Show lots of clocking history.
-(setq org-clock-history-length 23) 
+(setq org-clock-history-length 23)
 
 ;; Removes clocked tasks with 0:00 duration. I want to clock only deep works.
-(setq org-clock-out-remove-zero-time-clocks t) 
+(setq org-clock-out-remove-zero-time-clocks t)
 
 ;; Set task to a special todo state while clocking it
 (setq org-clock-in-switch-to-state "NEXT")
@@ -2689,9 +2278,9 @@ Use =org-mru-clock= package to clock into recent org-mode tasks. By default, org
 :header-args: :tangle no
 :END:
 
-Org sync with Google Calendar. 
+Org sync with Google Calendar.
 #+BEGIN_SRC emacs-lisp
-(require-package 'org-gcal) ;; https://github.com/kidd/org-gcal.el 
+(require-package 'org-gcal) ;; https://github.com/kidd/org-gcal.el
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -2755,7 +2344,7 @@ References:
 #+BEGIN_SRC emacs-lisp
 (defun jh/opened-buffer-files ()
   "Return the list of files currently opened in emacs"
- ) 
+ )
 #+END_SRC
 
 Refile to all org buffers, included current buffer and org-agenda-files.
@@ -2825,7 +2414,7 @@ Define an Evil's state for easy browsing, reading, and navigating in Org-mode. T
 Dependencies:
 1. ivy
 2. evil
-3. 
+3.
 
 #+BEGIN_SRC emacs-lisp
 (defun jh/org-goto-first-child ()
@@ -3025,7 +2614,7 @@ Not quite sure the differences between these and the =reftex-default-bibliograph
 
 To open org pdf link with Emacs pdf tools. Reference: https://github.com/jkitchin/org-ref/issues/184#issuecomment-303553448
 #+BEGIN_SRC emacs-lisp
-(setq org-file-apps 
+(setq org-file-apps
       '((auto-mode . emacs)
         ("\\.mm\\'" . default)
         ("\\.x?html?\\'" . default)
@@ -3394,7 +2983,7 @@ Referecences:
    #+BEGIN_SRC shell
    sudo apt-get install libvterm-dev
    #+END_SRC
-   
+
 2. Libtool-bin
    #+BEGIN_SRC shell
    sudo apt-get install libtool-bin
@@ -3428,7 +3017,7 @@ Fullfill the prerequisite. Clone the git repo. Build. And done.
   (setq vterm-kill-buffer-on-exit t))
 #+END_SRC
 
-References: 
+References:
 1. https://superuser.com/a/988843
 2. https://github.com/akermu/emacs-libvterm/issues/24#issuecomment-438048042
 * Handy Small Functions
@@ -3439,7 +3028,7 @@ Open the current file-buffer using system viewer [fn:32].
   (interactive)
   (let ((path (if (buffer-file-name) (buffer-file-name) default-directory)))
     (let ((process-connection-type nil)
-	  (cmd "/usr/bin/xdg-open"))
+      (cmd "/usr/bin/xdg-open"))
       (start-process "" nil cmd path))))
 #+END_SRC
 
@@ -3601,7 +3190,7 @@ Sending mail from mu4e.
       smtpmail-stream-type 'starttls)
 
 ;; Kill buffer after sending, instead of burying the buffer away
-(setq message-kill-buffer-on-exit t) 
+(setq message-kill-buffer-on-exit t)
 #+END_SRC
 
 Queuing email is useful for offline mode.
@@ -3629,10 +3218,10 @@ Display rich-text messages in HTML. Set =shr-color-visible-luminance-min= to 80 
 (setq mu4e-view-prefer-html t)
 
 (add-hook 'mu4e-view-mode-hook
-	  (lambda()
-	    ;; try to emulate some of the eww key-bindings
-	    (local-set-key (kbd "<tab>") 'shr-next-link)
-	    (local-set-key (kbd "<backtab>") 'shr-previous-link)))
+      (lambda()
+        ;; try to emulate some of the eww key-bindings
+        (local-set-key (kbd "<tab>") 'shr-next-link)
+        (local-set-key (kbd "<backtab>") 'shr-previous-link)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -3679,9 +3268,9 @@ Maildirs that I use frequently; access them with 'j' ('jump').
 #+BEGIN_SRC emacs-lisp
 (setq mu4e-maildir-shortcuts
       '(("/Inbox" . ?i)
-	("/Archives/2019" . ?a)
-	("/Deleted" . ?d)
-	("/Sent" . ?s)))
+    ("/Archives/2019" . ?a)
+    ("/Deleted" . ?d)
+    ("/Sent" . ?s)))
 #+END_SRC
 
 Defines mu4e search bookmarks.
@@ -3716,7 +3305,7 @@ Override the default directory for saving attachements.
 
 ** ob-ipython
 
-[Archived] 
+[Archived]
 1. There is no instruction on start using it. How to start using it?
 2. The package is out of maintenance. Replaced by package emacs-jupyter.
 #+BEGIN_EXAMPLE
@@ -3985,8 +3574,8 @@ Note: This function keeps giving out-of-range errors with pop-up windows.
   (interactive)
   (exwm-workspace-rename-buffer
    (concat exwm-class-name ": "
-	   (if (<= (length exwm-title) 16) exwm-title
-	     (concat (substring exwm-title 0 20) "...")))))
+       (if (<= (length exwm-title) 16) exwm-title
+         (concat (substring exwm-title 0 20) "...")))))
 (add-hook 'exwm-update-class-hook 'exwm-rename-buffer)
 (add-hook 'exwm-update-title-hook 'exwm-rename-buffer)
 #+END_SRC
@@ -4052,9 +3641,9 @@ Note: EXWM or X11 related key are defined with Super perfix key.
 ;; SOURCE: https://github.com/vbuaraujo/emacs-configs/blob/master/init-exwm.el
 (defun exwm-command-shortcut (key command)
   (exwm-input-set-key key
-		      `(lambda ()
-			 (interactive)
-			 (start-process "exwm-shortcut" nil "sh" "-c" ,command))))
+              `(lambda ()
+             (interactive)
+             (start-process "exwm-shortcut" nil "sh" "-c" ,command))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -4093,25 +3682,25 @@ Check out: Hydra + Ace-window. https://www.youtube.com/watch?v=_qZliI1BKzI
 ;; SOURCE: https://github.com/ch11ng/exwm/wiki/Configuration-Example
 (setq exwm-input-simulation-keys
       '(
-	;; ;; movement
-	;; ([?\C-b] . [left])
-	;; ([?\M-b] . [C-left])
-	;; ([?\C-f] . [right])
-	;; ([?\M-f] . [C-right])
-	;; ([?\C-p] . [up])
-	;; ([?\C-n] . [down])
-	;; ([?\C-a] . [home])
-	;; ([?\C-e] . [end])
-	;; ([?\M-v] . [prior])
-	;; ([?\C-v] . [next])
-	;; ([?\C-d] . [delete])
-	;; ([?\C-k] . [S-end delete])
+    ;; ;; movement
+    ;; ([?\C-b] . [left])
+    ;; ([?\M-b] . [C-left])
+    ;; ([?\C-f] . [right])
+    ;; ([?\M-f] . [C-right])
+    ;; ([?\C-p] . [up])
+    ;; ([?\C-n] . [down])
+    ;; ([?\C-a] . [home])
+    ;; ([?\C-e] . [end])
+    ;; ([?\M-v] . [prior])
+    ;; ([?\C-v] . [next])
+    ;; ([?\C-d] . [delete])
+    ;; ([?\C-k] . [S-end delete])
 
-	([?\C-c C-c] . [?\C-c])
+    ([?\C-c C-c] . [?\C-c])
 
-	;; cut/paste.
-	([?\M-w] . [?\C-c])
-	([?\C-y] . [?\C-v])))
+    ;; cut/paste.
+    ([?\M-w] . [?\C-c])
+    ([?\C-y] . [?\C-v])))
 #+END_SRC
 
 *** EXWM Enable
@@ -4427,7 +4016,7 @@ Printer at my dorm can only print black-and-white colours.
 
 Emacs GC optimisation.
 
-[Disabled] Knowing when the GC is running. 
+[Disabled] Knowing when the GC is running.
 [Reason] It's annoying to keep seeing the message popping up.
 #+BEGIN_SRC emacs-lisp :tangle no
 (setq garbage-collection-messages t)
@@ -4464,7 +4053,7 @@ Reason: Replace by dash docs.
 (require-package 'terraform-doc)
 #+END_SRC
 
-References: 
+References:
 1. https://github.com/TxGVNN/terraform-doc
 
 ** Elpy -- Emacs Python Development Environment
@@ -4473,7 +4062,7 @@ References:
 :END:
 [Archived] Elpy depends on the 'virtualenv' python package.
 
-Elpy turns Emacs into a Python IDE. Getting ideas from these sources. 
+Elpy turns Emacs into a Python IDE. Getting ideas from these sources.
 #+BEGIN_SRC emacs-lisp
 (use-package elpy
   :init
@@ -4551,12 +4140,12 @@ sudo apt install freetds-bin unixodbc
 #+END_SRC
 
 ** Enable Geiser Mode
-  
-The official website is here [fn:7]. 
+
+The official website is here [fn:7].
 #+BEGIN_SRC emacs-lisp
 (require-package 'geiser)
 #+END_SRC
-  
+
 Set guile as the default choice. No need to ask for confirmation everytime.
 #+BEGIN_SRC emacs-lisp
 (setq geiser-active-implementations '(guile))
@@ -4598,8 +4187,8 @@ This is useful to edit =docker-compose.yml= file.
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
 (add-hook 'yaml-mode-hook
-	  '(lambda ()
-	     (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+      '(lambda ()
+         (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 #+END_SRC
 
 *** Readable YAML
@@ -4779,7 +4368,7 @@ References:
 (require-package 'ob-restclient)
 #+END_SRC
 
-Load org-babel for restclient. 
+Load org-babel for restclient.
 #+BEGIN_SRC emacs-lisp
 (org-babel-do-load-languages 'org-babel-load-languages '((restclient . t)))
 #+END_SRC
@@ -4869,7 +4458,7 @@ Auto enable writeroom mode to centralise contents when I read Elfeed articles.
   (interactive)
   (let ((entry (if (eq major-mode 'elfeed-show-mode) elfeed-show-entry (elfeed-search-selected :single)))
         (quality-arg "")
-	(quality-val (completing-read "Max height resolution (0 for unlimited):" '("0" "480" "720") nil nil)))
+    (quality-val (completing-read "Max height resolution (0 for unlimited):" '("0" "480" "720") nil nil)))
     (setq quality-val (string-to-number quality-val))
     (message "Opening %s with height≤%s with mpv..." (elfeed-entry-link entry) quality-val)
     (when (< 0 quality-val)
