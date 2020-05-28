@@ -554,6 +554,15 @@ to
   ;; browse previously deleted or copied items
   :commands browse-kill-ring)
 #+END_SRC
+* Basic File Editing            :layer1:
+This section contains configs of editing a file, not its content. By editing a file, it means renaming it or deleting it.
+#+BEGIN_SRC emacs-lisp
+;; using tramp to sudo edit the current file
+;; SOURCE: https://stackoverflow.com/a/33280376
+(defun jh/sudo-edit-this-file-buffer ()
+  "Edit the current file with superuser privilege."
+  (interactive)
+  (find-file (concat "/sudo::" buffer-file-name)))
 
   (use-package ibuffer-vc
     ;; Group buffers by vc root directory
@@ -562,14 +571,41 @@ to
       (ibuffer-vc-set-filter-groups-by-vc-root)
       (unless (eq ibuffer-sorting-mode 'filename/process)
         (ibuffer-do-sort-by-filename/process)))
+;; Source: https://emacsredux.com/blog/2013/05/04/rename-file-and-buffer/
+(defun jh/rename-this-file-buffer ()
+  "Rename the current buffer and file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (message "Buffer is not visiting a file!")
+      (let ((new-name (read-file-name "New name: " filename)))
+        (cond
+         ((vc-backend filename) (vc-rename-file filename new-name))
+         (t
+          (rename-file filename new-name t)
+          (set-visited-file-name new-name t t)))))))
 
     (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)))
+;; Delete the current file from the visiting buffer
+(defun jh/delete-this-file-buffer ()
+  "Delete the current file, and kill the buffer."
+  (interactive)
+  (unless (buffer-file-name)
+    (error "No file is currently being edited"))
+  (when (yes-or-no-p (format "Really delete '%s'?"
+                             (file-name-nondirectory buffer-file-name)))
+    (delete-file (buffer-file-name))
+    (kill-buffer)))
 
 ;; display key-binding completion suggestions/hints
 ;; this :replace which-key (newer)
 (use-package which-key
   :diminish
   :hook (after-init . which-key-mode)
+(use-package autorevert
+  ;; auto refresh buffers when the file is changed on the disk
+  :ensure nil
+  :diminish auto-revert-mode
   :config
   (setq which-key-idle-delay 1.0)
   (setq which-key-idle-secondary-delay 0.05)
@@ -579,11 +615,17 @@ to
 ;;   :hook (after-init . guide-key-mode)
 ;;   :config
 ;;   (setq guide-key/guide-key-sequence t))
+  (setq auto-revert-remote-files t)
+  (setq auto-revert-avoid-polling t))
+#+END_SRC
 
 ;; provides a command which searches for unicode characters by name,
 ;; and displays a list of matching characters with their names in a
 ;; buffer.
 (use-package list-unicode-display)
+References:
+1. http://pragmaticemacs.com/emacs/aligning-text/
+   Whitespace alignment
 
 ;; a reminder of my mortality, a reflection of life
 (use-package memento-mori
