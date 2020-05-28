@@ -868,6 +868,8 @@ References:
    pdf vim-like control
 2. https://emacs.stackexchange.com/a/24766
    rotate pdf.
+* Basic Org-Mode
+Org-mode is important for me.
 #+BEGIN_SRC emacs-lisp
 (use-package ivy
   :diminish
@@ -875,9 +877,31 @@ References:
   (use-package historian
     ;; store the results of completing-read and similar functions persistently to provide better completion candidates for recent or frequent used item.
     :config (historian-mode))
+(use-package org
+  :ensure nil
+  :config
+  (defun jh/toggle-org-mode-writing-configuration ()
+    "Sets a special font for Org-mode writing and more. See: https://shreyas.ragavan.co/post/951004ce-add0-4e7e-b6e2-2932e0dee429/."
+    (interactive)
+    (buffer-face-set '(:family "IBM Plex Mono")) ; use font for large screen
+    (setq header-line-format " ")
+    (setq line-spacing 0.1)
+    (setq left-margin-width 2)
+    (setq right-margin-width 2)
+    (set-window-buffer nil (current-buffer)))
+  (add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-configuration)
 
   (use-package ivy-historian
     :config (ivy-historian-mode))
+  (defun jh/find-or-create-today-datetree (pfx)
+    "Find or create today datetree entry under a heading with a tag journal in the current buffer. Call with prefix C-u to input DATE int the format (M D Y)."
+    (interactive "p")
+    (let ((cal-date))
+      (if (eq pfx 1)
+          (setq cal-date (calendar-current-date))
+        (setq cal-date (read)))
+      (counsel-org-goto)
+      (org-datetree-find-date-create cal-date 'subtree-at-point)))
 
   :config
   (use-package counsel
@@ -888,6 +912,9 @@ References:
     ;; counsel-search comes with counsel library. It queries the search engine and open the result page in web browser. Use a custom ddg search engine to use the familiar ddg search result page.
     (add-to-list 'counsel-search-engines-alist '(ddgz "https://duckduckgo.com/ac/" "https://duckduckgo.com/?q=" counsel--search-request-data-ddg))
     (setq counsel-search-engine 'ddgz)
+  (use-package org-indent
+    :ensure nil
+    :diminish org-indent-mode)
 
     ;; I want counsel-search to behave more like the browser omnibar which open the url directly when it is prefixed with http(s)://
     (defun jh/counsel-search-action (x)
@@ -907,15 +934,24 @@ References:
                 :action #'jh/counsel-search-action
                 :dynamic-collection t
                 :caller 'counsel-search)))
+  (use-package org-common-links
+    ;; define commonly used org-links
+    :load-path "lisp/org-common-links")
 
   ;; Open file in dired from ivy-switch-buffer
   (defun open-file-directory-from-path (x)
     "Open the directory given a file path"
     (find-file (file-name-directory x)))
+  (use-package orglink-cursor
+    ;; echo url to minibuffer for orglink under cursor
+    :load-path "lisp/orglink-cursor"
+    :hook (org-mode . orglink-cursor-mode))
 
   ;; Add dispatch options jumping to the file/buffer directory.
   (ivy-set-actions 'counsel-file-jump '(("d" open-file-directory-from-path "directory")))
   (ivy-set-actions 'ivy-switch-buffer '(("d" open-file-directory-from-path "directory"))))
+  (org-babel-do-load-languages 'org-babel-load-languages '((emacs-lisp . t)
+                                                           (shell . t))))
 #+END_SRC
 
 References:
