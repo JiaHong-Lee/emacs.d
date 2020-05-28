@@ -684,10 +684,22 @@ Evil and ivy are the core of my configs.
 References:
 1. https://web.archive.org/web/20141020081338/http://truongtx.me:80/2013/04/25/dired-as-default-file-manager-5-customize-ls-command/
    Dired listing switches
+* Basic File Reading
+This section contains configs about reading a those "read-only" files.
 #+BEGIN_SRC emacs-lisp
 (use-package evil
   ;; evil is an extensible vi layer that emulate the main features of Vim in Emacs. 
+(use-package info
+  :ensure nil
+  :mode ("\\.info\\'" . Info-on-current-buffer)
+  :init
+  ;; add default Info-directory-list to the end of Info-directory-list in case $INFOPATH is set by program like GNU Guix
+  (dolist (dir Info-default-directory-list)
+    (unless (member dir Info-directory-list)
+      (setq Info-directory-list (append Info-directory-list (list dir)))))
   :config
+  ;; add an info directory to load additional .info files
+  (add-to-list 'Info-directory-list "~/Info_Files_Manual"))
 
   ;; Set some built-in modes to launch in evil emacs state (in addition to the default).
   (cl-loop for (mode . state) in
@@ -709,6 +721,16 @@ References:
 
   ;; Ex :digraphs should show digraphs
   (evil-ex-define-cmd "digraphs" 'evil-ex-show-digraphs)
+(use-package pdf-tools
+  ;; :ensure-system-package (imagemagick pdftk)
+  :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
+  :config
+  (dolist (pkg '(pdf-annot pdf-cache pdf-dev pdf-history pdf-info
+                           pdf-isearch pdf-links pdf-misc pdf-occur
+                           pdf-outline pdf-sync pdf-util pdf-view
+                           pdf-virtual))
+    (require pkg))
+  (pdf-tools-install)
 
   ;; Make evil-search similar to Vim's search?
   (evil-select-search-module 'evil-search-module 'evil-search)
@@ -718,6 +740,10 @@ References:
   (use-package evil-anzu
     ;; Show (current match/total matches) info in the mode-line
     )
+  ;; Performance
+  (setq pdf-cache-image-limit 15)
+  ;; (setq pdf-cache-prefetch-delay X)
+  (setq image-cache-eviction-delay 15)
 
   (use-package evil-visual-mark-mode
     ;; Display mark at a point during evil-jump-to-mark
@@ -763,26 +789,85 @@ References:
     (defun jh/evil-args-switch-to-c-mode ()
       "Switch evil-args parameters to adapt to C-derivative modes"
       (setq evil-args-delimiters '(", " ";")))
+  (define-key pdf-view-mode-map (kbd "j") #'pdf-view-next-line-or-next-page)
+  (define-key pdf-view-mode-map (kbd "k") #'pdf-view-previous-line-or-previous-page)
+  (define-key pdf-view-mode-map (kbd "h") #'image-backward-hscroll)
+  (define-key pdf-view-mode-map (kbd "l") #'image-forward-hscroll)
+  (define-key pdf-view-mode-map (kbd "C-f") #'pdf-view-scroll-up-or-next-page)
+  (define-key pdf-view-mode-map (kbd "C-b") #'pdf-view-scroll-down-or-previous-page)
 
     (add-hook 'c-mode-hook #'jh/evil-args-switch-to-c-mode))
+  (defun pdf-view--rotate (&optional counterclockwise-p page-p)
+    "Rotate PDF 90 degrees.  Requires pdftk to work.\n
+Clockwise rotation is the default; set COUNTERCLOCKWISE-P to
+non-nil for the other direction.  Rotate the whole document by
+default; set PAGE-P to non-nil to rotate only the current page.
+\nWARNING: overwrites the original file, so be careful!"
+    ;; error out when pdftk is not installed
+    (if (null (executable-find "pdftk"))
+        (error "Rotation requires pdftk")
+      ;; only rotate in pdf-view-mode
+      (when (eq major-mode 'pdf-view-mode)
+        (let* ((rotate (if counterclockwise-p "left" "right"))
+               (file   (format "\"%s\"" (pdf-view-buffer-file-name)))
+               (page   (pdf-view-current-page))
+               (pages  (cond ((not page-p) ; whole doc?
+                              (format "1-end%s" rotate))
+                             ((= page 1) ; first page?
+                              (format "%d%s %d-end"
+                                      page rotate (1+ page)))
+                             ((= page (pdf-info-number-of-pages)) ; last page?
+                              (format "1-%d %d%s"
+                                      (1- page) page rotate))
+                             (t         ; interior page?
+                              (format "1-%d %d%s %d-end"
+                                      (1- page) page rotate (1+ page))))))
+          ;; empty string if it worked
+          (if (string= "" (shell-command-to-string
+                           (format (concat "pdftk %s cat %s "
+                                           "output %s.NEW "
+                                           "&& mv %s.NEW %s")
+                                   file pages file file file)))
+              (pdf-view-revert-buffer nil t)
+            (error "Rotation error!"))))))
 
   (use-package evil-numbers
     ;; Increment/decrement numbers. E.g. 1 to 2.
     :config
     (define-key evil-normal-state-map (kbd "<kp-add>") 'evil-numbers/inc-at-pt)
     (define-key evil-normal-state-map (kbd "<kp-subtract>") 'evil-numbers/dec-at-pt))
+  (defun pdf-view-rotate-clockwise (&optional arg)
+    "Rotate PDF page 90 degrees clockwise.  With prefix ARG, rotate
+entire document."
+    (interactive "P")
+    (pdf-view--rotate nil (not arg)))
 
   (use-package evil-exchange
     ;; Swap two regions of text
     :config
     (define-key evil-operator-state-map "x" 'evil-exchange/cx)
     (define-key evil-visual-state-map "X" 'evil-exchange))
+  (defun pdf-view-rotate-counterclockwise (&optional arg)
+    "Rotate PDF page 90 degrees counterclockwise.  With prefix ARG,
+rotate entire document."
+    (interactive "P")
+    (pdf-view--rotate :counterclockwise (not arg)))
   )
+(use-package openwith
+  :hook (dired-mode . openwith-mode)
+  :config
+  (setq openwith-confirm-invocation nil)
+  (setq openwith-associations '(("\\.docx\\'" "xdg-open" (file))
+                                ("\\.mp3\\'" "mpv" ("--no-video" file)))))
 #+END_SRC
 
 References:
 1. http://vimcasts.org/episodes/swapping-two-regions-of-text-with-exchange-vim
 ** Ivy
+1. https://stackoverflow.com/a/14230685 & https://www.whitman.edu/mathematics/emacs_doc/emacs_447.html
+   pdf vim-like control
+2. https://emacs.stackexchange.com/a/24766
+   rotate pdf.
 #+BEGIN_SRC emacs-lisp
 (use-package ivy
   :diminish
