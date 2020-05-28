@@ -957,7 +957,15 @@ Org-mode is important for me.
 References:
 1. https://emacs.stackexchange.com/questions/38841/counsel-m-x-always-shows
 2. https://github.com/purcell/emacs.d/blob/master/lisp/init-ivy.el
+* Basic Buffers, Windows, Frames and Navigation
+This section contains config about windows, frames, and buffer switching.
 #+BEGIN_SRC emacs-lisp
+;; precise window switching
+(use-package ace-window
+  :config
+  (ace-window-display-mode)             ; show keys in the modeline
+  (global-set-key [remap other-window] 'ace-window)
+  (setq aw-scope 'frame)) ; limits ace-window to the current frame
 
 #+END_SRC
 * Temp
@@ -971,6 +979,11 @@ References:
 (defun jh/emacs-subdirectory (filepath)
   "Locate a file with FILEPATH in my emacs's directory."
   (expand-file-name filepath jh/emacs-directory))
+(use-package ibuffer
+  :ensure nil
+  :config
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (fullframe ibuffer ibuffer-quit)
 
 (defun require-package (package)
   "Require a PACKAGE. Install PACKAGE if not already installed. PACKAGE will be required immediately after installation."
@@ -997,6 +1010,10 @@ An IDE is a complex piece of software. Emacs is the best Lisp editor and I want 
 10. version control
 11. read docs
 12. code refactoring
+  ;; Use human readable Size column instead of original one
+  (define-ibuffer-column size-h
+    (:name "Size" :inline t)
+    (file-size-human-readable (buffer-size)))
 
 * Lisp Mode
 Lisp mode deals a lot with parens.
@@ -1004,10 +1021,31 @@ Lisp mode deals a lot with parens.
 (defun jh/enable-check-parens-on-save ()
   "Run `check-parens' when the current buffer is saved."
   (add-hook 'after-save-hook #'check-parens nil t))
+  ;; Modify the default ibuffer-formats (toggle with `)
+  (setq ibuffer-formats
+        '((mark modified read-only vc-status-mini " "
+                (name 22 22 :left :elide)
+                " "
+                (size-h 9 -1 :right)
+                " "
+                (mode 12 12 :left :elide)
+                " "
+                vc-relative-file)
+          (mark modified read-only vc-status-mini " "
+                (name 22 22 :left :elide)
+                " "
+                (size-h 9 -1 :right)
+                " "
+                (mode 14 14 :left :elide)
+                " "
+                (vc-status 12 12 :left)
+                " "
+                vc-relative-file)))
 
 (defun jh/evil-args-switch-to-lisp-mode ()
   "Adapt evil-args to lisp-mode"
   (setq evil-args-delimiters '(" ")))
+  (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
 
 (defvar jh/lispy-modes-hook
   '(jh/enable-check-parens-on-save
@@ -1016,11 +1054,20 @@ Lisp mode deals a lot with parens.
     prism-mode
     aggressive-indent-mode)
   "Define all hooks to run in all Lisp modes.")
+  (use-package ibuffer-vc
+    ;; Group buffers by vc root directory
+    :config
+    (defun ibuffer-set-up-preferred-filters ()
+      (ibuffer-vc-set-filter-groups-by-vc-root)
+      (unless (eq ibuffer-sorting-mode 'filename/process)
+        (ibuffer-do-sort-by-filename/process)))
 
 (defconst jh/lispy-modes
   '(lisp-mode lisp-interaction-mode inferior-lisp-mode
               emacs-lisp-mode common-lisp-mode geiser-mode)
   "All lisp modes.")
+    (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)))
+#+END_SRC
 
 (defun jh/lisp-setup()
   "Enable features useful in all Lisp modes."
