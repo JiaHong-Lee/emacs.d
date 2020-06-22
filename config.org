@@ -1299,7 +1299,11 @@ References:
   :config
   (emms-all)
   (emms-default-players)
-  (setq emms-source-file-default-directory "~/Music/"))
+  (setq emms-source-file-default-directory "~/Music/")
+
+  ;; load saved playlist
+  (require 'emms-history)
+  (emms-history-load))
 
 (use-package pocket-reader
   ;; interface to pocker-reader
