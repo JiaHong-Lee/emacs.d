@@ -2546,12 +2546,12 @@ Pressing <enter> triggers the "default action". This is the default behaviour --
 
 Specify the path to all .bib files.
 #+BEGIN_SRC emacs-lisp
-(setq bibtex-completion-bibliography (directory-files-recursively "~/Documents/papers" "\.bib$"))
+(setq bibtex-completion-bibliography (directory-files-recursively "~/Documents/academic-papers" "\.bib$"))
 #+END_SRC
 
 Specify the directories to search for PDFs.
 #+BEGIN_SRC emacs-lisp
-(setq bibtex-completion-library-path (jh/get-all-subdirs "~/Documents/papers" 5))
+(setq bibtex-completion-library-path (jh/get-all-subdirs "~/Documents/academic-papers" 5))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -2604,9 +2604,9 @@ This matches the APA citation style that I usually use.
 
 Not quite sure the differences between these and the =reftex-default-bibliography= variable.
 #+BEGIN_SRC emacs-lisp
-(setq org-ref-bibliography-notes "~/Documents/papers/notes.txt"
+(setq org-ref-bibliography-notes "~/Documents/academic-papers/notes.txt"
       org-ref-default-bibliography reftex-default-bibliography
-      org-ref-pdf-directory "~/Documents/papers/miscellaneous/")
+      org-ref-pdf-directory "~/Documents/academic-papers/miscellaneous/")
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
