@@ -1230,8 +1230,14 @@ References:
           (url "http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar"))
       (setq org-plantuml-jar-path (expand-file-name "plantuml.jar" user-emacs-directory))
       (unless (file-exists-p org-plantuml-jar-path)
-        (url-copy-file url org-plantuml-jar-path))))
-  )
+        (url-copy-file url org-plantuml-jar-path)))))
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((plantuml . t)))
 #+END_SRC
 * TLA+ Mode
 #+BEGIN_SRC emacs-lisp
