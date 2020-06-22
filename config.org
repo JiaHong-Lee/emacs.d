@@ -1257,6 +1257,18 @@ References:
 #+BEGIN_SRC emacs-lisp
 (use-package toml-mode)
 #+END_SRC
+* Emacs Restclient for Testing API
+#+BEGIN_SRC emacs-lisp
+(use-package restclient
+  :config
+  (use-package company-restclient
+    :config (add-to-list 'company-backends 'company-restclient))
+
+  ;; load org-babel for restclient
+  (use-package ob-restclient
+    :config
+    (org-babel-do-load-languages 'org-babel-load-languages '((restclient . t)))))
+#+END_SRC
 * Docs Reference Ergonomics
 #+BEGIN_SRC emacs-lisp
 (use-package help
@@ -4370,26 +4382,6 @@ References:
 
 References:
 1. https://github.com/Lindydancer/ini-mode
-
-** Restclient for Testing API
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'restclient)
-(require-package 'ob-restclient)
-#+END_SRC
-
-Load org-babel for restclient.
-#+BEGIN_SRC emacs-lisp
-(org-babel-do-load-languages 'org-babel-load-languages '((restclient . t)))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'company-restclient)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'company-backends 'company-restclient)
-#+END_SRC
 
 ** Managing System Services
 
