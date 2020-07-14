@@ -934,6 +934,7 @@ Evil and ivy are the core of my configs.
 
   (use-package evil-args
     ;; Edit function arguments as evil textobjects
+    :load-path "lisp/evil-args"
     :config
     (define-key evil-outer-text-objects-map "a" 'evil-inner-arg)
     (define-key evil-inner-text-objects-map "a" 'evil-outer-arg)
