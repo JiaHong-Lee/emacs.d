@@ -1216,9 +1216,11 @@ References:
 
   (use-package company-graphviz-dot
     ;; Company completion function for graphviz-dot-mode
-    :load-path "lisp/graphviz-dot-mode"
-    )
-  )
+    :load-path "lisp/graphviz-dot-mode")
+
+  ;; enable org-babel integration
+  (with-eval-after-load 'org
+    (org-babel-do-load-languages 'org-babel-load-languages '((dot . t)))))
 #+END_SRC
 * PlantUML Mode
 #+BEGIN_SRC emacs-lisp
