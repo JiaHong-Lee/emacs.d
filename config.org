@@ -1322,6 +1322,23 @@ For writing BDD files. There are three packages:
   :load-path "lisp/gherkin-mode")
 #+END_SRC
 
+* Shrface
+Extends shr/eww with org and analysis features. This package is meant to be loaded before eww/dash-docs/nov.el.
+#+BEGIN_SRC emacs-lisp
+(use-package shrface
+  :after shr
+  :config
+  (shrface-basic)
+  (shrface-trial)
+  (setq shrface-href-versatile t)
+  (setq shrface-toggle-bullets t)
+
+  (with-eval-after-load 'eww
+    (add-hook 'eww-after-render-hook 'shrface-mode)))
+#+END_SRC
+
+References:
+1. github:chenyanming/shrface
 * Emacs Restclient for Testing API
 #+BEGIN_SRC emacs-lisp
 (use-package restclient
