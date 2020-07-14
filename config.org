@@ -1339,6 +1339,15 @@ Extends shr/eww with org and analysis features. This package is meant to be load
 
 References:
 1. github:chenyanming/shrface
+* ActivityWatch
+ActivityWatch is a time tracking program, see: github:ActivityWatch/activitywatch. Installing this package will send emacs data to the ActivityWatch server to aggregate tracking time.
+#+BEGIN_SRC emacs-lisp
+(use-package activity-watch-mode
+  :diminish
+  :config
+  (setq activity-watch-api-host "http://localhost:5600")
+  (global-activity-watch-mode))
+#+END_SRC
 * Emacs Restclient for Testing API
 #+BEGIN_SRC emacs-lisp
 (use-package restclient
