@@ -1242,6 +1242,57 @@ References:
  'org-babel-load-languages
  '((plantuml . t)))
 #+END_SRC
+* Web Mode
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package web-mode
+  ;; Major mode for editing web templates
+  :load-path "lisp/web-mode"
+  :mode "\\.html?\\'"
+  :config
+  (setq web-mode-engines-alist '(("jinja2" . "\\.html\\'")))
+  (setq web-mode-auto-close-style 2)
+  (setq web-mode-enable-auto-quoting nil) ; I prefer writing the quotes for attributes myself
+  (setq web-mode-enable-current-column-highlight t)
+  (setq web-mode-enable-current-element-highlight t)
+  (setq web-mode-markup-indent-offset 4)
+
+  ;; org integration
+  (add-to-list 'org-src-lang-modes '("html" . web))
+  (defadvice org-edit-special (before org-edit-src-code activate)
+    (let ((lang (nth 0 (org-babel-get-src-block-info))))
+      (if (string= lang "html")
+          (web-mode-set-engine "jinja2")))))
+#+END_SRC
+
+Issue:
+Web mode does not work well with Org-mode.
+
+References:
+1. http://web-mode.org/
+2. https://github.com/fxbois/web-mode/issues/636#issue-116703389
+4. https://github.com/fxbois/web-mode/issues/678#issuecomment-185581972
+* Write HTML
+What I wanted:
+1. Autoclose tag.
+2. Format HTML buffer.
+3.
+
+#+BEGIN_SRC emacs-lisp
+(use-package sgml-mode
+  :ensure nil
+  :config
+  (setq sgml-quick-keys 'close) ; automatic close tag if I type </ which invoke sgml-slash
+  (defun delete-one-char (x)
+    (delete-char 1))
+  (advice-add 'sgml-slash :after #'delete-one-char) ; remove one extra </div>> introduced as I am using electric-pair-mode
+
+  (setq sgml-basic-offset 4) ; indent 4 spaces
+  )
+#+END_SRC
+
+References:
+1. github:magnars/tagedit
+2. https://emacs.stackexchange.com/questions/33240/html-mode-that-closes-tags
 * TLA+ Mode
 #+BEGIN_SRC emacs-lisp
 (use-package tla-mode
