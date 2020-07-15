@@ -696,6 +696,12 @@ Org-mode is important for me.
     (set-window-buffer nil (current-buffer)))
   (add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-configuration)
 
+  ;; Easy footnote refactoring
+  (setq org-footnote-define-inline nil)
+  (setq org-footnote-auto-label t)
+  (setq org-footnote-auto-adjust t)
+  (setq org-footnote-section nil)
+
   (defun jh/find-or-create-today-datetree (pfx)
     "Find or create today datetree entry under a heading with a tag journal in the current buffer. Call with prefix C-u to input DATE int the format (M D Y)."
     (interactive "p")
