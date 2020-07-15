@@ -1222,6 +1222,7 @@ References:
 
   ;; enable org-babel integration
   (with-eval-after-load 'org
+    (add-hook 'org-babel-after-execute-hook 'org-display-inline-images) ; auto-display generated image after org-src execution, especially useful for ob-jupyter, ob-ditaa, Graphviz and PlantUML
     (org-babel-do-load-languages 'org-babel-load-languages '((dot . t)))))
 #+END_SRC
 * PlantUML Mode
@@ -1619,7 +1620,6 @@ Use the format year/month/day.
   ;; The great org-mode
   :ensure nil
   :config
-  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images) ; auto-display generated image after org-src execution, especially useful for ob-jupyter, ob-ditaa, Graphviz and PlantUML
 
   )
 #+END_SRC
