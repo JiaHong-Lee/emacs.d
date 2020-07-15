@@ -1321,7 +1321,11 @@ For writing BDD files. There are three packages:
 (use-package gherkin-mode
   :load-path "lisp/gherkin-mode")
 #+END_SRC
-
+* Emacs Speaks Statistics (ESS)
+RStudio IDE is powerful, but I prefer working with Emacs. ESS package enables me to work with R-Lang in Emacs.
+#+BEGIN_SRC emacs-lisp
+(use-package ess)
+#+END_SRC
 * Shrface
 Extends shr/eww with org and analysis features. This package is meant to be loaded before eww/dash-docs/nov.el.
 #+BEGIN_SRC emacs-lisp
