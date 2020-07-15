@@ -682,6 +682,7 @@ References:
 Org-mode is important for me.
 #+BEGIN_SRC emacs-lisp
 (use-package org
+  ;; The great org-mode
   :ensure nil
   :config
   (defun jh/toggle-org-mode-writing-configuration ()
