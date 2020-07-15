@@ -173,7 +173,7 @@ I use ~evil~ to emulate vim in Emacs.
 
   (setq org-startup-indented t) ; open an org file with hard indentation
   (setq org-startup-folded 'content) ; open an org file by showing all children
-  (setq org-catch-invisible-edits 'smart-and-error) ; prevent deleting hidden texts
+  (setq org-catch-invisible-edits 'error) ; prevent deleting hidden texts
 
   (setq org-hide-emphasis-markers nil) ; do not hide the markup symbol, i.e. ~, =, *
   (setq org-use-sub-superscripts "{}") ; display texts as sub- and superscripts only with {}, e.g. i_{2}, not i_2.
