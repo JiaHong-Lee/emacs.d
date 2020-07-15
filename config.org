@@ -205,9 +205,6 @@ I use ~evil~ to emulate vim in Emacs.
   (define-key evil-motion-state-map [remap evil-next-line] 'evil-next-visual-line)
   (define-key evil-motion-state-map [remap evil-previous-line] 'evil-previous-visual-line)
 
-  ;; complements C-o which is evil-jump-backward
-  (define-key evil-motion-state-map (kbd "C-S-o") 'evil-jump-forward)
-
   ;; Ex :q should kill the current buffer rather than quitting emacs entirely
   (evil-ex-define-cmd "q" 'kill-this-buffer)
 
