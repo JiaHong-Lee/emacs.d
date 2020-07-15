@@ -2268,7 +2268,7 @@ References:
 
 ** Org Tasks
 
-Bernt Hansen[fn:30] has a good article on GTD. The following diagram shows the possible state transitions for a tasks:
+Bernt Hansen[fn:2] has a good article on GTD. The following diagram shows the possible state transitions for a tasks:
 #+begin_src plantuml :file normal_task_states.png :cache yes
 title Task States
 [*] -> TODO
@@ -2342,6 +2342,8 @@ References:
 2. [[info:org#TODO%20dependencies][info:org#TODO dependencies]]
 3. http://doc.norang.ca/org-mode.html#TasksAndStates
 
+[fn:2] http://doc.norang.ca/org-mode.html#Clocking
+
 ** Archiving Subtrees
 
 Archiving can keep my main working files clutter-free. It keeps my files contributing to the agenda fairly current. It cleans up my project trees and removes the old tasks that are no longer interesting.
@@ -2359,7 +2361,7 @@ Tasks to archive are listed automatically at the end of agenda. They can have an
 (org-clock-persistence-insinuate)
 #+END_SRC
 
-Besides Bernt Hansen, Lee Hinman[fn:31] has good config on org-clocking.
+Besides Bernt Hansen, Lee Hinman[fn:3] has good config on org-clocking.
 #+BEGIN_SRC emacs-lisp
 ;; Show lots of clocking history.
 (setq org-clock-history-length 23)
@@ -2391,6 +2393,8 @@ Use =org-mru-clock= package to clock into recent org-mode tasks. By default, org
 (setq org-mru-clock-how-many 20)
 (setq org-mru-clock-completing-read #'ivy-completing-read)
 #+END_SRC
+
+[fn:3] https://writequit.org/denver-emacs/presentations/2017-04-11-time-clocking-with-org.html
 
 ** Org-Gcal
 :PROPERTIES:
@@ -2769,7 +2773,7 @@ References:
 
 * Text Writing Ergonomics
 ** Writing in Chinese Pinyin
-Writing in Chinese pinyin [fn:18]. Use =set-input-method= to switch between languages. Use =toggle-input-method= to easily switch back.
+Writing in Chinese pinyin [fn:4]. Use =set-input-method= to switch between languages. Use =toggle-input-method= to easily switch back.
 #+BEGIN_SRC emacs-lisp
 (use-package pyim
   :config
@@ -2784,6 +2788,8 @@ Use "pyim" as default input method. Then I can invoke =toggle-input-method= anyw
 #+BEGIN_SRC emacs-lisp
 (setq default-input-method "pyim")
 #+END_SRC
+
+[fn:4] http://tumashu.github.io/pyim/
 
 ** Spelling Checker (Flyspell-mode)
 
@@ -3140,7 +3146,7 @@ References:
 1. https://superuser.com/a/988843
 2. https://github.com/akermu/emacs-libvterm/issues/24#issuecomment-438048042
 * Handy Small Functions
-Open the current file-buffer using system viewer [fn:32].
+Open the current file-buffer using system viewer [fn:5].
 #+BEGIN_SRC emacs-lisp
 (defun jh/open-buffer-in-system-viewer()
   "Open current file-buffer using default desktop viewer."
@@ -3151,7 +3157,7 @@ Open the current file-buffer using system viewer [fn:32].
       (start-process "" nil cmd path))))
 #+END_SRC
 
-Open terminal in current file directory [fn:32].
+Open terminal in current file directory [fn:5].
 #+BEGIN_SRC emacs-lisp
 (defun jh/open-dir-in-terminal-here()
   "Open a new terminal window in the current dir."
@@ -3175,6 +3181,8 @@ Directly search the contents of files in sync directory.
   (interactive)
   (counsel-rg nil jh/sync-directory nil))
 #+END_SRC
+
+[fn:5] http://ergoemacs.org/emacs/emacs_shell_vs_term_vs_ansi-term_vs_eshell.html
 ** Set Countdown Timer
 #+BEGIN_SRC emacs-lisp
 (defun jh/countdown-timer ()
@@ -3451,13 +3459,15 @@ References:
 
 [Archived] I don't think I really find it to be useful.
 
-Like VIM, make my Emacs files display tildes after EOF [fn:5].
+Like VIM, make my Emacs files display tildes after EOF [fn:6].
 #+BEGIN_SRC emacs-lisp
 (setq-default indicate-empty-lines t)
 (define-fringe-bitmap 'tilde [0 0 0 113 219 142 0 0] nil nil 'center)
 (setcdr (assq 'empty-line fringe-indicator-alist) 'tilde)
 (set-fringe-bitmap-face 'tilde 'font-lock-function-name-face)
 #+END_SRC
+
+[fn:6] https://www.reddit.com/r/emacs/comments/2kdztw/emacs_in_evil_mode_show_tildes_for_blank_lines/
 
 ** Org-Caldav
 
@@ -3514,11 +3524,13 @@ Org will evaluate code block on export. This will disable it to speed up export 
 
 ** Flycheck Mode
 
-Flycheck was once a superior alternative to Flymake. Since Emacs version 26.1, it introduces a new re-written Flymake. So the difference is now not so big. Feel free to check out the discussion here [fn:20].
+Flycheck was once a superior alternative to Flymake. Since Emacs version 26.1, it introduces a new re-written Flymake. So the difference is now not so big. Feel free to check out the discussion here [fn:7].
 #+BEGIN_SRC emacs-lisp
 (require-package 'flycheck)
 (global-flycheck-mode)
 #+END_SRC
+
+[fn:7] https://github.com/flycheck/flycheck/pull/1412
 
 ** KeyFreq
 
@@ -4260,7 +4272,7 @@ sudo apt install freetds-bin unixodbc
 
 ** Enable Geiser Mode
 
-The official website is here [fn:7].
+The official website is here [fn:8].
 #+BEGIN_SRC emacs-lisp
 (require-package 'geiser)
 #+END_SRC
@@ -4274,6 +4286,8 @@ Configure org-tangle to export scheme file to end with .scm. By default, it ends
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'org-babel-tangle-lang-exts '("scheme" . "scm"))
 #+END_SRC
+
+[fn:8] http://www.nongnu.org/geiser/
 
 ** Enable Web-Mode
 
@@ -4550,7 +4564,7 @@ Auto enable writeroom mode to centralise contents when I read Elfeed articles.
 (define-key elfeed-show-mode-map (kbd "o") 'elfeed-show-visit)
 #+END_SRC
 
-[Disable] Play video directly from the URL of a feed [fn:12]. (With a little modification to play "unlimited" resolution by default.
+[Disable] Play video directly from the URL of a feed [fn:9]. (With a little modification to play "unlimited" resolution by default.
 #+BEGIN_SRC emacs-lisp :tangle no
 (defun elfeed-play-with-mpv ()
   "Play entry link with mpv."
@@ -4633,6 +4647,16 @@ Define the org file used to store all the RSS links.
 (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))
 #+END_SRC
 
+[fn:9] https://github.com/skeeto/elfeed/issues/267 OR https://gitlab.com/ambrevar/dotfiles/blob/master/.emacs.d/lisp/init-elfeed.el
+
+[fn:13] https://github.com/politza/pdf-tools
+
+[fn:12] https://github.com/purcell/emacs.d/blob/master/lisp/init-ivy.el
+
+[fn:11] https://github.com/PythonNut/historian.el
+
+[fn:10] https://emacs.stackexchange.com/questions/38841/counsel-m-x-always-shows
+
 ** Ledger
 
 #+BEGIN_SRC emacs-lisp
@@ -4652,29 +4676,3 @@ Works for packages on =package-archives= and also any elisp file from the Web.
 
 References:
 1. https://github.com/larstvei/try
-
-* Footnotes
-
-[fn:32] http://ergoemacs.org/emacs/emacs_shell_vs_term_vs_ansi-term_vs_eshell.html
-
-[fn:31] https://writequit.org/denver-emacs/presentations/2017-04-11-time-clocking-with-org.html
-
-[fn:30] http://doc.norang.ca/org-mode.html#Clocking
-
-[fn:20] https://github.com/flycheck/flycheck/pull/1412
-
-[fn:19] https://emacs.stackexchange.com/questions/38841/counsel-m-x-always-shows
-
-[fn:18] http://tumashu.github.io/pyim/
-
-[fn:14] https://github.com/PythonNut/historian.el
-
-[fn:13] https://github.com/purcell/emacs.d/blob/master/lisp/init-ivy.el
-
-[fn:12] https://github.com/skeeto/elfeed/issues/267 OR https://gitlab.com/ambrevar/dotfiles/blob/master/.emacs.d/lisp/init-elfeed.el
-
-[fn:7] http://www.nongnu.org/geiser/
-
-[fn:6] https://github.com/politza/pdf-tools
-
-[fn:5] https://www.reddit.com/r/emacs/comments/2kdztw/emacs_in_evil_mode_show_tildes_for_blank_lines/
