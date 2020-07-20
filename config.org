@@ -794,6 +794,9 @@ This is a section to add enhancements to Emacs, e.g. performance, theme and assi
   (add-to-list 'custom-theme-load-path subdir))
 (load-theme 'dracula t) ; night theme, but use theme leuven for day theme
 
+;; remove the black border around Emacs, see: https://old.reddit.com/r/emacs/comments/hsszos/how_to_get_rid_of_black_border_around_emacsmacosx/
+(setq frame-resize-pixelwise t)
+
 ;; display ^L as a horizontal line. Useful for separating section in helps or codes.
 (use-package page-break-lines
   :diminish page-break-lines-mode
