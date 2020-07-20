@@ -3148,6 +3148,20 @@ Fullfill the prerequisite. Clone the git repo. Build. And done.
 References:
 1. https://superuser.com/a/988843
 2. https://github.com/akermu/emacs-libvterm/issues/24#issuecomment-438048042
+** Shell-Mode
+Provide exact same completions in =shell-mode= as I get in a terminal emulator with a TAB key [fn:4].
+#+BEGIN_SRC emacs-lisp
+(use-package native-complete
+  :config
+  (with-eval-after-load 'shell
+    (native-complete-setup-bash)))
+#+END_SRC
+
+Possible useful config from Redguardtoo [fn:5].
+
+[fn:4] github:CeleritasCelery/emacs-native-shell-complete and the accompanying [[https://coredumped.dev/2020/01/04/native-shell-completion-in-emacs/][article]].
+
+[fn:5] https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-term-mode.el#L1
 * Handy Small Functions
 Open the current file-buffer using system viewer [fn:5].
 #+BEGIN_SRC emacs-lisp
