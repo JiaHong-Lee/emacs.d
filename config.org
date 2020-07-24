@@ -676,7 +676,7 @@ References:
 2. https://emacs.stackexchange.com/a/24766
    rotate pdf.
 * Basic Org-Mode
-Org-mode is important for me.
+Org-mode is important for me. And it is more important it works well with Evil mode.
 #+BEGIN_SRC emacs-lisp
 (use-package org
   ;; The great org-mode
