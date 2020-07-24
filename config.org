@@ -21,6 +21,8 @@ synchronicity form as the boundaries between you and your Emacs
 wash away. You and your Emacs Live.
 
 M-x start-hacking.
+
+-- taken from [fn:1]
 #+END_QUOTE
 
 A vanilla Emacs is like a class in Java -- it needs a config to instantiate itself. Thus, knowing how to write and organise an Emacs config is an essential skill of using Emacs. There are a few ways to organise Emacs config. I choose to organise it in a literate way to weave my codes with my flow of thoughts.
@@ -59,9 +61,7 @@ This is an attempt to put my Emacs config into an org file. By doing so, my init
 ;;; init.el ends here
 #+END_SRC
 
-References:
-1. https://github.com/overtone/emacs-live
-   For the good quote.
+[fn:1] github:overtone/emacs-live
 * Bootstrap Config              :layer0:
 This section defines the minimum config that I cannot live without. There are four main packages that I use: org-mode, use-package, ivy, and evil.
 
@@ -2271,7 +2271,7 @@ References:
 
 ** Org Tasks
 
-Bernt Hansen[fn:1] has a good article on GTD. The following diagram shows the possible state transitions for a tasks:
+Bernt Hansen[fn:2] has a good article on GTD. The following diagram shows the possible state transitions for a tasks:
 #+begin_src plantuml :file normal_task_states.png :cache yes
 title Task States
 [*] -> TODO
@@ -2345,7 +2345,7 @@ References:
 2. [[info:org#TODO%20dependencies][info:org#TODO dependencies]]
 3. http://doc.norang.ca/org-mode.html#TasksAndStates
 
-[fn:1] http://doc.norang.ca/org-mode.html#Clocking
+[fn:2] http://doc.norang.ca/org-mode.html#Clocking
 
 ** Archiving Subtrees
 
@@ -2364,7 +2364,7 @@ Tasks to archive are listed automatically at the end of agenda. They can have an
 (org-clock-persistence-insinuate)
 #+END_SRC
 
-Besides Bernt Hansen, Lee Hinman[fn:2] has good config on org-clocking.
+Besides Bernt Hansen, Lee Hinman[fn:3] has good config on org-clocking.
 #+BEGIN_SRC emacs-lisp
 ;; Show lots of clocking history.
 (setq org-clock-history-length 23)
@@ -2397,7 +2397,7 @@ Use =org-mru-clock= package to clock into recent org-mode tasks. By default, org
 (setq org-mru-clock-completing-read #'ivy-completing-read)
 #+END_SRC
 
-[fn:2] https://writequit.org/denver-emacs/presentations/2017-04-11-time-clocking-with-org.html
+[fn:3] https://writequit.org/denver-emacs/presentations/2017-04-11-time-clocking-with-org.html
 
 ** Org-Gcal
 :PROPERTIES:
@@ -2776,7 +2776,7 @@ References:
 
 * Text Writing Ergonomics
 ** Writing in Chinese Pinyin
-Writing in Chinese pinyin [fn:3]. Use =set-input-method= to switch between languages. Use =toggle-input-method= to easily switch back.
+Writing in Chinese pinyin [fn:4]. Use =set-input-method= to switch between languages. Use =toggle-input-method= to easily switch back.
 #+BEGIN_SRC emacs-lisp
 (use-package pyim
   :config
@@ -2792,7 +2792,7 @@ Use "pyim" as default input method. Then I can invoke =toggle-input-method= anyw
 (setq default-input-method "pyim")
 #+END_SRC
 
-[fn:3] http://tumashu.github.io/pyim/
+[fn:4] http://tumashu.github.io/pyim/
 
 ** Spelling Checker (Flyspell-mode)
 
@@ -3149,7 +3149,7 @@ References:
 1. https://superuser.com/a/988843
 2. https://github.com/akermu/emacs-libvterm/issues/24#issuecomment-438048042
 ** Shell-Mode
-Provide exact same completions in =shell-mode= as I get in a terminal emulator with a TAB key [fn:4].
+Provide exact same completions in =shell-mode= as I get in a terminal emulator with a TAB key [fn:5].
 #+BEGIN_SRC emacs-lisp
 (use-package native-complete
   :config
@@ -3157,13 +3157,13 @@ Provide exact same completions in =shell-mode= as I get in a terminal emulator w
     (native-complete-setup-bash)))
 #+END_SRC
 
-Possible useful config from Redguardtoo [fn:5].
+Possible useful config from Redguardtoo [fn:6].
 
-[fn:4] github:CeleritasCelery/emacs-native-shell-complete and the accompanying [[https://coredumped.dev/2020/01/04/native-shell-completion-in-emacs/][article]].
+[fn:5] github:CeleritasCelery/emacs-native-shell-complete and the accompanying [[https://coredumped.dev/2020/01/04/native-shell-completion-in-emacs/][article]].
 
-[fn:5] https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-term-mode.el#L1
+[fn:6] https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-term-mode.el#L1
 * Handy Small Functions
-Open the current file-buffer using system viewer [fn:6].
+Open the current file-buffer using system viewer [fn:7].
 #+BEGIN_SRC emacs-lisp
 (defun jh/open-buffer-in-system-viewer()
   "Open current file-buffer using default desktop viewer."
@@ -3174,7 +3174,7 @@ Open the current file-buffer using system viewer [fn:6].
       (start-process "" nil cmd path))))
 #+END_SRC
 
-Open terminal in current file directory [fn:6].
+Open terminal in current file directory [fn:7].
 #+BEGIN_SRC emacs-lisp
 (defun jh/open-dir-in-terminal-here()
   "Open a new terminal window in the current dir."
@@ -3199,7 +3199,7 @@ Directly search the contents of files in sync directory.
   (counsel-rg nil jh/sync-directory nil))
 #+END_SRC
 
-[fn:6] http://ergoemacs.org/emacs/emacs_shell_vs_term_vs_ansi-term_vs_eshell.html
+[fn:7] http://ergoemacs.org/emacs/emacs_shell_vs_term_vs_ansi-term_vs_eshell.html
 ** Set Countdown Timer
 #+BEGIN_SRC emacs-lisp
 (defun jh/countdown-timer ()
@@ -3476,7 +3476,7 @@ References:
 
 [Archived] I don't think I really find it to be useful.
 
-Like VIM, make my Emacs files display tildes after EOF [fn:7].
+Like VIM, make my Emacs files display tildes after EOF [fn:8].
 #+BEGIN_SRC emacs-lisp
 (setq-default indicate-empty-lines t)
 (define-fringe-bitmap 'tilde [0 0 0 113 219 142 0 0] nil nil 'center)
@@ -3484,7 +3484,7 @@ Like VIM, make my Emacs files display tildes after EOF [fn:7].
 (set-fringe-bitmap-face 'tilde 'font-lock-function-name-face)
 #+END_SRC
 
-[fn:7] https://www.reddit.com/r/emacs/comments/2kdztw/emacs_in_evil_mode_show_tildes_for_blank_lines/
+[fn:8] https://www.reddit.com/r/emacs/comments/2kdztw/emacs_in_evil_mode_show_tildes_for_blank_lines/
 
 ** Org-Caldav
 
@@ -3541,13 +3541,13 @@ Org will evaluate code block on export. This will disable it to speed up export 
 
 ** Flycheck Mode
 
-Flycheck was once a superior alternative to Flymake. Since Emacs version 26.1, it introduces a new re-written Flymake. So the difference is now not so big. Feel free to check out the discussion here [fn:8].
+Flycheck was once a superior alternative to Flymake. Since Emacs version 26.1, it introduces a new re-written Flymake. So the difference is now not so big. Feel free to check out the discussion here [fn:9].
 #+BEGIN_SRC emacs-lisp
 (require-package 'flycheck)
 (global-flycheck-mode)
 #+END_SRC
 
-[fn:8] https://github.com/flycheck/flycheck/pull/1412
+[fn:9] https://github.com/flycheck/flycheck/pull/1412
 
 ** KeyFreq
 
@@ -4289,7 +4289,7 @@ sudo apt install freetds-bin unixodbc
 
 ** Enable Geiser Mode
 
-The official website is here [fn:9].
+The official website is here [fn:10].
 #+BEGIN_SRC emacs-lisp
 (require-package 'geiser)
 #+END_SRC
@@ -4304,7 +4304,7 @@ Configure org-tangle to export scheme file to end with .scm. By default, it ends
 (add-to-list 'org-babel-tangle-lang-exts '("scheme" . "scm"))
 #+END_SRC
 
-[fn:9] http://www.nongnu.org/geiser/
+[fn:10] http://www.nongnu.org/geiser/
 
 ** Enable Web-Mode
 
@@ -4581,7 +4581,7 @@ Auto enable writeroom mode to centralise contents when I read Elfeed articles.
 (define-key elfeed-show-mode-map (kbd "o") 'elfeed-show-visit)
 #+END_SRC
 
-[Disable] Play video directly from the URL of a feed [fn:10]. (With a little modification to play "unlimited" resolution by default.
+[Disable] Play video directly from the URL of a feed [fn:11]. (With a little modification to play "unlimited" resolution by default.
 #+BEGIN_SRC emacs-lisp :tangle no
 (defun elfeed-play-with-mpv ()
   "Play entry link with mpv."
@@ -4664,15 +4664,15 @@ Define the org file used to store all the RSS links.
 (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))
 #+END_SRC
 
-[fn:10] https://github.com/skeeto/elfeed/issues/267 OR https://gitlab.com/ambrevar/dotfiles/blob/master/.emacs.d/lisp/init-elfeed.el
+[fn:11] https://github.com/skeeto/elfeed/issues/267 OR https://gitlab.com/ambrevar/dotfiles/blob/master/.emacs.d/lisp/init-elfeed.el
 
-[fn:14] https://github.com/politza/pdf-tools
+[fn:15] https://emacs.stackexchange.com/questions/38841/counsel-m-x-always-shows
+
+[fn:14] https://github.com/PythonNut/historian.el
 
 [fn:13] https://github.com/purcell/emacs.d/blob/master/lisp/init-ivy.el
 
-[fn:12] https://github.com/PythonNut/historian.el
-
-[fn:11] https://emacs.stackexchange.com/questions/38841/counsel-m-x-always-shows
+[fn:12] https://github.com/politza/pdf-tools
 
 ** Ledger
 
