@@ -283,7 +283,7 @@ It does basic beautification, some behavioural settings, and install ~use-packag
 (use-package company
   ;; defines a framework to complete anything
   :diminish " ©"
-  :hook ((text-mode prog-mode) . company-mode)
+  :hook (prog-mode . company-mode)
   :config
   (setq tab-always-indent 'complete)
   (setq company-require-match 'never) ; force out of selection by typing non-match characters
