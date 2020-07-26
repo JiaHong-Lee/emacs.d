@@ -550,7 +550,7 @@ By file navigation, I mean moving from one file to another. Dired's config is in
 References:
 1. https://web.archive.org/web/20141020081338/http://truongtx.me:80/2013/04/25/dired-as-default-file-manager-5-customize-ls-command/
    Dired listing switches
-* Basic File Reading
+* Basic File Reading            :layer1:
 This section contains configs about reading a those "read-only" files.
 #+BEGIN_SRC emacs-lisp
 (use-package info
@@ -647,7 +647,7 @@ References:
    pdf vim-like control
 2. https://emacs.stackexchange.com/a/24766
    rotate pdf.
-* Basic Org-Mode
+* Basic Org-Mode                :layer1:
 Org-mode is important for me. And it is more important it works well with Evil mode.
 #+BEGIN_SRC emacs-lisp
 (use-package org
