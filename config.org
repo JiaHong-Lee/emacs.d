@@ -63,15 +63,12 @@ This is an attempt to put my Emacs config into an org file. By doing so, my init
 
 [fn:1] github:overtone/emacs-live
 * Bootstrap Config              :layer0:
-This section defines the minimum config that I cannot live without. There are four main packages that I use: org-mode, use-package, ivy, and evil.
+This section defines the minimum config that:
+1. gives me joy on fresh Emacs installation
+2. I will use for package debugging purposes.
 
-Org-mode comes with Emacs. But it is at the core of my config.
+It does basic beautification, some behavioural settings, and install ~use-package~[fn:2] package for config organisation. Then, I will install ~evil~[fn:3] for navigation within a buffer; and ~ivy~[fn:4] and friends for easy navigation around Emacs (switching buffers, looking up for helps, and so on).
 
-I use ~use-package~ to organise my Emacs config, to speed up my Emacs init time, and to make sure that a package is installed if it does not already installed. I suspect that previously there were too many packages loaded on startup.
-
-I use ~ivy~ and ~counsel~ for easy navigation around Emacs.
-
-I use ~evil~ to emulate vim in Emacs.
 #+BEGIN_SRC emacs-lisp
 ;;; config.el --- a file tangled from config.org -*- lexical-binding: t; -*-
 
