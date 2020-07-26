@@ -138,6 +138,7 @@ It does basic beautification, some behavioural settings, and install ~use-packag
 (setq load-prefer-newer t) ; load .el if it's newer than corresponding .elc
 (package-refresh-contents t) ; auto download package info asynchronously on Emacs startup
 
+;; Install use-package
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -147,6 +148,7 @@ It does basic beautification, some behavioural settings, and install ~use-packag
 (setq use-package-always-ensure t) ; always install packages that are not installed
 (setq use-package-expand-minimally t)
 
+;;; Basics
 (use-package evil
   ;; emulates Vim within Emacs
   :config
@@ -202,11 +204,8 @@ It does basic beautification, some behavioural settings, and install ~use-packag
                                    (woman . "^"))))
 #+END_SRC
 
-[fn:2] github:jwiegley/use-package
-
-[fn:3] github:emacs-evil/evil
-
-[fn:4] github:abo-abo/swiper
+References:
+1. https://github.com/jwiegley/use-package
 * General Settings              :layer1:
 #+BEGIN_SRC emacs-lisp
 ;; track recent files
