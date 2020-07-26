@@ -829,7 +829,7 @@ This is a section to add enhancements to Emacs, e.g. performance, theme and assi
   :hook (after-init . mode-line-bell-mode))
 
 ;; display key-binding completion suggestions/hints
-;; this :replace which-key (newer)
+;; this :replace guide-key
 (use-package which-key
   :diminish
   :hook (after-init . which-key-mode)
@@ -837,11 +837,6 @@ This is a section to add enhancements to Emacs, e.g. performance, theme and assi
   (setq which-key-idle-delay 1.0)
   (setq which-key-idle-secondary-delay 0.05)
   (setq which-key-allow-evil-operators t))
-;; (use-package guide-key
-;;   :diminish guide-key-mode
-;;   :hook (after-init . guide-key-mode)
-;;   :config
-;;   (setq guide-key/guide-key-sequence t))
 
 ;; provides a command which searches for unicode characters by name,
 ;; and displays a list of matching characters with their names in a
