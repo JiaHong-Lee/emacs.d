@@ -693,6 +693,9 @@ Org-mode is important for me. And it is more important it works well with Evil m
     (set-window-buffer nil (current-buffer)))
   (add-hook 'org-mode-hook 'jh/toggle-org-mode-writing-configuration)
 
+  ;; Don't split the current line and make rest of the line under the new heading, item or row.
+  (setq org-M-RET-may-split-line '((default . nil)))
+
   ;; Easy footnote refactoring
   (setq org-footnote-define-inline nil)
   (setq org-footnote-auto-label t)
