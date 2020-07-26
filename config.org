@@ -132,20 +132,6 @@ It does basic beautification, some behavioural settings, and install ~use-packag
 (setq load-prefer-newer t) ; load .el if it's newer than corresponding .elc
 (package-refresh-contents t) ; auto download package info asynchronously on Emacs startup
 
-;; track recent files
-(add-hook 'after-init-hook 'recentf-mode)
-(setq-default recentf-max-menu-items 1000
-              recentf-max-saved-items nil ;; save the entire list
-              recentf-exclude '("/tmp/" "/ssh:"))
-
-(setq backup-directory-alist `(("." . ,(expand-file-name "backups" user-emacs-directory)))
-      backup-by-copying t       ; Don't delink hardlinks
-      version-control t         ; Use version numbers on backups
-      delete-old-versions t     ; Automatically delete excess backups
-      kept-new-versions 20      ; Number of newest versions to keep
-      kept-old-versions 5       ; Number of the old versions to keep
-      vc-make-backup-files t)   ; Make backups file even from a version controlled dir
-
 ;; resolve buffer name conflicts
 (setq uniquify-buffer-name-style 'reverse
       uniquify-separator " • "
@@ -161,37 +147,6 @@ It does basic beautification, some behavioural settings, and install ~use-packag
 
 (setq use-package-always-ensure t) ; always install packages that are not installed
 (setq use-package-expand-minimally t)
-
-(use-package org
-  :ensure nil
-  :mode ("\\.txt\\'" . org-mode) ; associates txt file with org-mode
-  :config
-  (global-set-key (kbd "C-c l") 'org-store-link)
-
-  (setq org-startup-indented t) ; open an org file with hard indentation
-  (setq org-startup-folded 'content) ; open an org file by showing all children
-  (setq org-catch-invisible-edits 'error) ; prevent deleting hidden texts
-
-  (setq org-hide-emphasis-markers nil) ; do not hide the markup symbol, i.e. ~, =, *
-  (setq org-use-sub-superscripts "{}") ; display texts as sub- and superscripts only with {}, e.g. i_{2}, not i_2.
-  (setq org-tags-column -40) ; set the placement of tags at org headings
-
-  ;;; Org Literate Programming/ Org-babel/ Ox-babel
-  (setq org-confirm-babel-evaluate nil)
-  (setq org-src-fontify-natively t)
-  (setq org-src-tab-acts-natively t)
-  (setq org-edit-src-content-indentation 0) ; don't indent source code relative to the #+BEGIN_SRC org-src block
-  (setq org-src-window-setup 'other-window) ; edit org-src block in the other window instead of force organising all the windows side-by-side
-
-  ;; org template for commonly used language
-  (add-to-list 'org-structure-template-alist '("el" "#+BEGIN_SRC emacs-lisp?\n#+END_SRC"))
-  (add-to-list 'org-structure-template-alist '("py" "#+BEGIN_SRC python\n?\n#+END_SRC"))
-  (add-to-list 'org-structure-template-alist '("sh" "#+BEGIN_SRC shell\n?\n#+END_SRC"))
-  (add-to-list 'org-structure-template-alist '("jp" "#+BEGIN_SRC jupyter-python\n?\n#+END_SRC"))
-  (add-to-list 'org-structure-template-alist '("di" "#+BEGIN_SRC ditaa :file ?.png :cmdline -r -s 0.8\n\n#+END_SRC"))
-  (add-to-list 'org-structure-template-alist '("dot" "#+BEGIN_SRC dot :file ?.png :cmdline -Kdot -Tpng\n\n#+END_SRC"))
-  (add-to-list 'org-structure-template-alist '("pl" "#+BEGIN_SRC plantuml :file ?.png \n\n#+END_SRC"))
-  (add-to-list 'org-structure-template-alist '("cl" "#+BEGIN_SRC lisp\n?\n#+END_SRC")))
 
 (use-package evil
   ;; emulates Vim within Emacs
@@ -250,6 +205,22 @@ It does basic beautification, some behavioural settings, and install ~use-packag
 
 References:
 1. https://github.com/jwiegley/use-package
+* General Settings              :layer1:
+#+BEGIN_SRC emacs-lisp
+;; track recent files
+(add-hook 'after-init-hook 'recentf-mode)
+(setq-default recentf-max-menu-items 1000
+              recentf-max-saved-items nil ;; save the entire list
+              recentf-exclude '("/tmp/" "/ssh:"))
+
+(setq backup-directory-alist `(("." . ,(expand-file-name "backups" user-emacs-directory)))
+      backup-by-copying t       ; Don't delink hardlinks
+      version-control t         ; Use version numbers on backups
+      delete-old-versions t     ; Automatically delete excess backups
+      kept-new-versions 20      ; Number of newest versions to keep
+      kept-old-versions 5       ; Number of the old versions to keep
+      vc-make-backup-files t)   ; Make backups file even from a version controlled dir
+#+END_SRC
 * Basic Coding Config           :layer1:
 #+BEGIN_SRC emacs-lisp
 ;; Custom font for programming buffer
@@ -678,7 +649,34 @@ Org-mode is important for me. And it is more important it works well with Evil m
 (use-package org
   ;; The great org-mode
   :ensure nil
+  :mode ("\\.txt\\'" . org-mode) ; associates txt file with org-mode
   :config
+  (global-set-key (kbd "C-c l") 'org-store-link)
+
+  (setq org-startup-indented t) ; open an org file with hard indentation
+  (setq org-startup-folded 'content) ; open an org file by showing all children
+  (setq org-use-sub-superscripts "{}") ; display texts as sub- and superscripts only with {}, e.g. i_{2}, not i_2.
+  (setq org-tags-column -40) ; set the placement of tags at org headings
+  (setq org-hide-emphasis-markers nil) ; do not hide the markup symbol, i.e. ~, =, *
+  (setq org-catch-invisible-edits 'error) ; prevent deleting hidden texts
+
+  ;;; Org Literate Programming/ Org-babel/ Ox-babel
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
+  (setq org-edit-src-content-indentation 0) ; don't indent source code relative to the #+BEGIN_SRC org-src block
+  (setq org-src-window-setup 'other-window) ; edit org-src block in the other window instead of force organising all the windows side-by-side
+
+  ;; org template for commonly used language
+  (add-to-list 'org-structure-template-alist '("el" "#+BEGIN_SRC emacs-lisp?\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("py" "#+BEGIN_SRC python\n?\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("sh" "#+BEGIN_SRC shell\n?\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("jp" "#+BEGIN_SRC jupyter-python\n?\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("di" "#+BEGIN_SRC ditaa :file ?.png :cmdline -r -s 0.8\n\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("dot" "#+BEGIN_SRC dot :file ?.png :cmdline -Kdot -Tpng\n\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("pl" "#+BEGIN_SRC plantuml :file ?.png \n\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("cl" "#+BEGIN_SRC lisp\n?\n#+END_SRC"))
+
   (defun jh/toggle-org-mode-writing-configuration ()
     "Sets a special font for Org-mode writing and more. See: https://shreyas.ragavan.co/post/951004ce-add0-4e7e-b6e2-2932e0dee429/."
     (interactive)
