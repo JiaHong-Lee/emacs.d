@@ -116,6 +116,12 @@ It does basic beautification, some behavioural settings, and install ~use-packag
 ;; Make sure that C-v and M-v returns cursor to the same position.
 (setq scroll-preserve-screen-position 'always)
 
+;; resolve buffer name conflicts
+(setq uniquify-buffer-name-style 'reverse
+      uniquify-separator " • "
+      uniquify-after-kill-buffer-p t
+      uniquify-ignore-buffers-re "^\\*")
+
 ;; Prevent variables from clustering the init.el
 (defconst custom-file (expand-file-name "custom.el" user-emacs-directory))
 (unless (file-exists-p custom-file)
@@ -132,13 +138,6 @@ It does basic beautification, some behavioural settings, and install ~use-packag
 (setq load-prefer-newer t) ; load .el if it's newer than corresponding .elc
 (package-refresh-contents t) ; auto download package info asynchronously on Emacs startup
 
-;; resolve buffer name conflicts
-(setq uniquify-buffer-name-style 'reverse
-      uniquify-separator " • "
-      uniquify-after-kill-buffer-p t
-      uniquify-ignore-buffers-re "^\\*")
-
-;;; Basics
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -203,8 +202,11 @@ It does basic beautification, some behavioural settings, and install ~use-packag
                                    (woman . "^"))))
 #+END_SRC
 
-References:
-1. https://github.com/jwiegley/use-package
+[fn:2] github:jwiegley/use-package
+
+[fn:3] github:emacs-evil/evil
+
+[fn:4] github:abo-abo/swiper
 * General Settings              :layer1:
 #+BEGIN_SRC emacs-lisp
 ;; track recent files
