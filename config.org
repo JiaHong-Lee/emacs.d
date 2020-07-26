@@ -335,8 +335,7 @@ Layer1 will probably be the largest layer of all. How should I structure this se
   :diminish
   :config
   (setq explain-pause-blocking-too-long-ms 40)
-  (setq explain-pause-profile-saved-profiles 10)
-  (explain-pause-mode 1))
+  (setq explain-pause-profile-saved-profiles 10))
 
 ;; a handy tool to restart Emacs, especially when using EXWM
 (use-package restart-emacs
