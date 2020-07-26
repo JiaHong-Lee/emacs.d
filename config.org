@@ -704,6 +704,7 @@ Org-mode is important for me. And it is more important it works well with Evil m
 
   ;; Enable me to evil-jump back after following a footnote
   (evil-add-command-properties #'org-open-at-point :jump t)
+  (advice-add 'org-footnote-new :before #'evil-set-jump)
 
   (defun jh/find-or-create-today-datetree (pfx)
     "Find or create today datetree entry under a heading with a tag journal in the current buffer. Call with prefix C-u to input DATE int the format (M D Y)."
