@@ -1310,6 +1310,17 @@ Layer2:
            "* %u ")
           ("t" "Technical Journal" entry (file ,(concat jh/technical-journal-directory (jh/generate-journal-filename)))
            "* %u "))))
+
+(use-package org-agenda
+  :ensure nil
+  :config
+  (global-set-key (kbd "C-c a") 'org-agenda)
+  (setq org-agenda-span 'day) ; show only today's view, use weekly view for weekly review
+  (setq org-agenda-start-on-weekday 0) ; start a new week on Sunday
+
+  ;; add all files matching regexp in org-agenda-files directory
+  (setq org-agenda-files `(,(jh/file-in-sync-directory "gtd")))
+  (setq org-agenda-file-regexp "\\`[^.].*\\(\\.org\\|\\.txt\\)\\'"))
 #+END_SRC
 * IDE Framework
 An IDE is a complex piece of software. Emacs is the best Lisp editor and I want it to be the best editor completing with features to rival the best IDE in the market. Here I define the framework to declare the framework of a programming language. Components of an IDE:
@@ -2037,32 +2048,6 @@ Callers of this function already widen the buffer view."
 References:
 1. http://doc.norang.ca/org-mode.html
 ** Org Agenda Views
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "<f12>") 'org-agenda)
-#+END_SRC
-
-Show only today's view. Use the weekly view for weekly review.
-#+BEGIN_SRC emacs-lisp
-(setq org-agenda-span 'day)
-#+END_SRC
-
-Override the default to begin a week on Sunday. Source: https://stackoverflow.com/a/32426234
-#+BEGIN_SRC emacs-lisp
-(setq org-agenda-start-on-weekday 0)
-#+END_SRC
-
-Load all the .txt files into org-agenda.
-#+BEGIN_SRC emacs-lisp
-(setq org-agenda-file-regexp "\\`[^.].*\\(\\.org\\|\\.txt\\)\\'")
-#+END_SRC
-
-Assign "org" as my project directory, so that every project in the directory will be automatically added to org-agenda. This frees me from minute configuring every time I change my project working on.
-#+BEGIN_SRC emacs-lisp
-;; Need a function to return all the subdirectories + the directory itself
-(setq org-agenda-files (jh/get-dir-and-subdirs (jh/file-in-sync-directory "org") 2))
-(add-to-list 'org-agenda-files jh/sync-directory)
-#+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (setq org-tags-match-list-sublevels 'indented)
