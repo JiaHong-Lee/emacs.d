@@ -1024,20 +1024,6 @@ This section contains config about windows, frames, and buffer switching.
 
     (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)))
 #+END_SRC
-* Temp
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun require-package (package)
-  "Require a PACKAGE. Install PACKAGE if not already installed. PACKAGE will be required immediately after installation."
-  (if (package-installed-p package)
-      (require package)
-    (unless package-archive-contents
-      (package-refresh-contents))
-    (package-install package)
-    (require package)))
-#+END_SRC
 * IDE Framework
 An IDE is a complex piece of software. Emacs is the best Lisp editor and I want it to be the best editor completing with features to rival the best IDE in the market. Here I define the framework to declare the framework of a programming language. Components of an IDE:
 1. console, shell
@@ -2368,7 +2354,7 @@ Open prompt to resolve clock if I idle more than 120 minutes.
 
 Use =org-mru-clock= package to clock into recent org-mode tasks. By default, org can clock into the last task. But sometimes I would like to clock into recent tasks.
 #+BEGIN_SRC emacs-lisp
-(require-package 'org-mru-clock)
+(use-package org-mru-clock)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -2385,7 +2371,7 @@ Use =org-mru-clock= package to clock into recent org-mode tasks. By default, org
 
 Org sync with Google Calendar.
 #+BEGIN_SRC emacs-lisp
-(require-package 'org-gcal) ;; https://github.com/kidd/org-gcal.el
+(use-package org-gcal) ;; https://github.com/kidd/org-gcal.el
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -2631,7 +2617,7 @@ References:
 
 A bibliography manager based on Ivy.
 #+BEGIN_SRC emacs-lisp
-(require-package 'ivy-bibtex)
+(use-package ivy-bibtex)
 #+END_SRC
 
 Pressing <enter> triggers the "default action". This is the default behaviour -- search for PDF to open, if not, its URL or DOI.
@@ -2660,7 +2646,7 @@ References:
 
 I discover that ~ivy-bibtex~ works with ~ebib~.
 #+BEGIN_SRC emacs-lisp
-(require-package 'ebib)
+(use-package ebib)
 #+END_SRC
 
 Launch ~ebib~ in evil-emacs-state.
@@ -2705,7 +2691,7 @@ Not quite sure the differences between these and the =reftex-default-bibliograph
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'org-ref)
+(use-package org-ref)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -2808,7 +2794,7 @@ References:
 1.  https://www.reddit.com/r/emacs/comments/ev7igv/why_is_auctex_loaded_using_usepackage_tex_instead/
 * Alert
 #+BEGIN_SRC emacs-lisp
-(require-package 'alert)
+(use-package alert)
 #+END_SRC
 
 Pop up desktop notification on Linux.
@@ -3443,7 +3429,7 @@ OSError: Could not find 'emacs-mtpltlib' in ['.', '/run/user/1000/jupyter']
 #+END_EXAMPLE
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'ob-ipython)
+(use-package ob-ipython)
 #+END_SRC
 
 References:
@@ -3469,8 +3455,8 @@ Like VIM, make my Emacs files display tildes after EOF [fn:11].
 
 Note: Package oauth2 is needed for sync to Google cal.
 #+BEGIN_SRC emacs-lisp
-(require-package 'org-caldav)
-(require-package 'oauth2)
+(use-package org-caldav)
+(use-package oauth2)
 #+END_SRC
 
 Because Org-caldav uses iCalendar under the hood.
@@ -3522,7 +3508,7 @@ Org will evaluate code block on export. This will disable it to speed up export 
 
 Flycheck was once a superior alternative to Flymake. Since Emacs version 26.1, it introduces a new re-written Flymake. So the difference is now not so big. Feel free to check out the discussion here [fn:12].
 #+BEGIN_SRC emacs-lisp
-(require-package 'flycheck)
+(use-package flycheck)
 (global-flycheck-mode)
 #+END_SRC
 
@@ -3592,11 +3578,11 @@ Enable logging in ERC.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'erc-hl-nicks)
+(use-package erc-hl-nicks)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'erc-image)
+(use-package erc-image)
 (add-to-list 'erc-modules 'image)
 (erc-update-modules)
 #+END_SRC
@@ -3620,7 +3606,7 @@ Trying it out <2019-06-06 Thu>.
 
 ** Org-sticky-header
 #+BEGIN_SRC emacs-lisp
-(require-package 'org-sticky-header)
+(use-package org-sticky-header)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -3629,7 +3615,7 @@ Trying it out <2019-06-06 Thu>.
 
 ** Org-make-toc
 #+BEGIN_SRC emacs-lisp
-(require-package 'org-make-toc)
+(use-package org-make-toc)
 #+END_SRC
 
 #+RESULTS:
@@ -3644,7 +3630,7 @@ Trying it out <2019-06-06 Thu>.
 *** Basic Setup
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'exwm)
+(use-package exwm)
 (require 'exwm-config)
 #+END_SRC
 
@@ -3973,7 +3959,7 @@ I couldn't remember which key is for which line/char-mode in term. Simply turn i
 
 My ansi-term is black and white. This should make it more colourful.
 #+BEGIN_SRC emacs-lisp
-(require-package 'eterm-256color)
+(use-package eterm-256color)
 (add-hook 'term-mode-hook #'eterm-256color-mode)
 #+END_SRC
 
@@ -4056,7 +4042,7 @@ Version 2018-07-03"
 ** Immortal Scratch
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'immortal-scratch)
+(use-package immortal-scratch)
 (add-hook 'after-init-hook 'immortal-scratch-mode)
 #+END_SRC
 
@@ -4102,19 +4088,19 @@ Check if an executable is installed.
 ** Org Sidebar
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'org-sidebar)
+(use-package org-sidebar)
 #+END_SRC
 
 ** Hydra
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'hydra)
+(use-package hydra)
 #+END_SRC
 
 ** Multiple-cursors
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'multiple-cursors)
+(use-package multiple-cursors)
 #+END_SRC
 
 ** Company-Jedi
@@ -4177,7 +4163,7 @@ References:
 [Archived] Lookup docs from Terraform homepage.
 Reason: Replace by dash docs.
 #+BEGIN_SRC emacs-lisp
-(require-package 'terraform-doc)
+(use-package terraform-doc)
 #+END_SRC
 
 References:
@@ -4228,7 +4214,7 @@ These are packages that work well with Elpy:
 
 2. py-autopep8
    #+BEGIN_SRC emacs-lisp
-   (require-package 'py-autopep8)
+   (use-package py-autopep8)
    (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
    #+END_SRC
 
@@ -4263,14 +4249,14 @@ sudo apt install freetds-bin unixodbc
 ** GNU Global
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'ggtags)
+(use-package ggtags)
 #+END_SRC
 
 ** Enable Geiser Mode
 
 The official website is here [fn:13].
 #+BEGIN_SRC emacs-lisp
-(require-package 'geiser)
+(use-package geiser)
 #+END_SRC
 
 Set guile as the default choice. No need to ask for confirmation everytime.
@@ -4288,7 +4274,7 @@ Configure org-tangle to export scheme file to end with .scm. By default, it ends
 ** Enable Web-Mode
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'web-mode)
+(use-package web-mode)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -4304,7 +4290,7 @@ This web-mode uses =evil-matchit= package to jump between closing and opening HT
 ** Enable PHP-Mode
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'php-mode)
+(use-package php-mode)
 #+END_SRC
 
 ** Enable YAML Mode
@@ -4312,7 +4298,7 @@ This web-mode uses =evil-matchit= package to jump between closing and opening HT
 This is useful to edit =docker-compose.yml= file.
 #+BEGIN_SRC emacs-lisp
 ;; YAML Mode
-(require-package 'yaml-mode)
+(use-package yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
 (add-hook 'yaml-mode-hook
@@ -4358,7 +4344,7 @@ References:
 ** Enable Rust-Mode
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'rust-mode)
+(use-package rust-mode)
 #+END_SRC
 
 Automatic runs =rust-format-buffer= during saves. By default, it is bound to =C-c C-f=.
@@ -4367,7 +4353,7 @@ Automatic runs =rust-format-buffer= during saves. By default, it is bound to =C-
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'flycheck-rust)
+(use-package flycheck-rust)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -4382,7 +4368,7 @@ cargo install cargo-script
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'ob-rust)
+(use-package ob-rust)
 #+END_SRC
 
 *** Elpy
@@ -4401,7 +4387,7 @@ References:
 Gradle is Groovy DSL.
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'groovy-mode)
+(use-package groovy-mode)
 #+END_SRC
 
 *** Define a derived gradle-mode
@@ -4474,7 +4460,7 @@ Derive and define gradle-mode from groovy-mode. Note: This code will be tangled 
 
 For editing BNF grammars.
 #+BEGIN_SRC emacs-lisp
-(require-package 'bnf-mode)
+(use-package bnf-mode)
 #+END_SRC
 
 References:
@@ -4494,7 +4480,7 @@ References:
 
 Managing system services through Emacs.
 #+BEGIN_SRC emacs-lisp
-(require-package 'daemons)
+(use-package daemons)
 
 (evil-set-initial-state 'daemons-mode 'emacs)
 (evil-set-initial-state 'daemons-output-mode 'emacs)
@@ -4520,7 +4506,7 @@ References:
 ** Elfeed -- RSS Reader
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'elfeed)
+(use-package elfeed)
 #+END_SRC
 
 Open elfeed in fullframe.
@@ -4630,7 +4616,7 @@ Use curl to fetch feed. This will be faster.
 
 Use elfeed-org to load feeds from an org file.
 #+BEGIN_SRC emacs-lisp
-(require-package 'elfeed-org)
+(use-package elfeed-org)
 #+END_SRC
 
 Initialise elfeed-org to read the configuration file.
@@ -4656,7 +4642,7 @@ Define the org file used to store all the RSS links.
 ** Ledger
 
 #+BEGIN_SRC emacs-lisp
-(require-package 'ledger-mode)
+(use-package ledger-mode)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -4667,7 +4653,7 @@ Define the org file used to store all the RSS links.
 
 Works for packages on =package-archives= and also any elisp file from the Web.
 #+BEGIN_SRC emacs-lisp
-(require-package 'try)
+(use-package try)
 #+END_SRC
 
 References:
