@@ -2475,7 +2475,7 @@ References:
 
 ** Org Tasks
 
-Bernt Hansen[fn:5] has a good article on GTD. The following diagram shows the possible state transitions for a tasks:
+Bernt Hansen[fn:7] has a good article on GTD. The following diagram shows the possible state transitions for a tasks:
 #+begin_src plantuml :file normal_task_states.png :cache yes
 title Task States
 [*] -> TODO
@@ -2549,7 +2549,7 @@ References:
 2. [[info:org#TODO%20dependencies][info:org#TODO dependencies]]
 3. http://doc.norang.ca/org-mode.html#TasksAndStates
 
-[fn:5] http://doc.norang.ca/org-mode.html#Clocking
+[fn:7] http://doc.norang.ca/org-mode.html#Clocking
 
 ** Archiving Subtrees
 
@@ -2568,7 +2568,7 @@ Tasks to archive are listed automatically at the end of agenda. They can have an
 (org-clock-persistence-insinuate)
 #+END_SRC
 
-Besides Bernt Hansen, Lee Hinman[fn:6] has good config on org-clocking.
+Besides Bernt Hansen, Lee Hinman[fn:8] has good config on org-clocking.
 #+BEGIN_SRC emacs-lisp
 ;; Show lots of clocking history.
 (setq org-clock-history-length 23)
@@ -2601,7 +2601,7 @@ Use =org-mru-clock= package to clock into recent org-mode tasks. By default, org
 (setq org-mru-clock-completing-read #'ivy-completing-read)
 #+END_SRC
 
-[fn:6] https://writequit.org/denver-emacs/presentations/2017-04-11-time-clocking-with-org.html
+[fn:8] https://writequit.org/denver-emacs/presentations/2017-04-11-time-clocking-with-org.html
 
 ** Org-Gcal
 :PROPERTIES:
@@ -2980,7 +2980,7 @@ References:
 
 * Text Writing Ergonomics
 ** Writing in Chinese Pinyin
-Writing in Chinese pinyin [fn:7]. Use =set-input-method= to switch between languages. Use =toggle-input-method= to easily switch back.
+Writing in Chinese pinyin [fn:9]. Use =set-input-method= to switch between languages. Use =toggle-input-method= to easily switch back.
 #+BEGIN_SRC emacs-lisp
 (use-package pyim
   :config
@@ -2996,7 +2996,7 @@ Use "pyim" as default input method. Then I can invoke =toggle-input-method= anyw
 (setq default-input-method "pyim")
 #+END_SRC
 
-[fn:7] http://tumashu.github.io/pyim/
+[fn:9] http://tumashu.github.io/pyim/
 
 ** Spelling Checker (Flyspell-mode)
 
@@ -4607,14 +4607,6 @@ Define the org file used to store all the RSS links.
 #+END_SRC
 
 [fn:14] https://github.com/skeeto/elfeed/issues/267 OR https://gitlab.com/ambrevar/dotfiles/blob/master/.emacs.d/lisp/init-elfeed.el
-
-[fn:18] https://github.com/politza/pdf-tools
-
-[fn:17] https://github.com/purcell/emacs.d/blob/master/lisp/init-ivy.el
-
-[fn:16] https://github.com/PythonNut/historian.el
-
-[fn:15] https://emacs.stackexchange.com/questions/38841/counsel-m-x-always-shows
 
 ** Ledger
 
