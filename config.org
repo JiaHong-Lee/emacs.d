@@ -673,6 +673,19 @@ References:
 ;; Prettify symbol, i.e. replace keywords with symbol. E.g. lambda -> λ
 (add-hook 'prog-mode-hook #'prettify-symbols-mode)
 
+(use-package projectile
+  ;; project navigation and interaction library
+  :config
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (setq-default projectile-mode-line-prefix " Proj") ;; Shorter modeline
+  (setq projectile-completion-system 'ivy)
+  (setq projectile-project-search-path '("~/playground" "~/work" "~/projects"))
+
+  (setq projectile-indexing-method 'hybrid) ; use hybrid for sorting
+  (setq projectile-sort-order 'recently-active) ; sort by recently active buffers then recently opened files
+
+  (projectile-mode 1))
+
 (use-package smart-jump
   :config
   (smart-jump-setup-default-registers)
@@ -3033,22 +3046,6 @@ Pop up desktop notification on Linux.
 
 References:
 1. https://github.com/jwiegley/alert
-* Projectile Mode
-A package for project management and navigation.
-#+BEGIN_SRC emacs-lisp
-(use-package projectile
-  ;; project navigation and interaction library
-  :config
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (setq-default projectile-mode-line-prefix " Proj") ;; Shorter modeline
-  (setq projectile-completion-system 'ivy)
-  (setq projectile-project-search-path '("~/playground" "~/work" "~/projects"))
-
-  (setq projectile-indexing-method 'hybrid) ; use hybrid for sorting
-  (setq projectile-sort-order 'recently-active) ; sort by recently active buffers then recently opened files
-
-  (projectile-mode 1))
-#+END_SRC
 * Eglot -- LSP Client
 Eglot is a Language Server Protocol(LSP) server client. It has default integration with flymake and is aiming to be integrated into Emacs.
 #+BEGIN_SRC emacs-lisp :noweb yes
