@@ -600,8 +600,7 @@ Layer1 will probably be the largest layer of all. How should I structure this se
     ;; Swap two regions of text
     :config
     (define-key evil-operator-state-map "x" 'evil-exchange/cx)
-    (define-key evil-visual-state-map "X" 'evil-exchange))
-  )
+    (define-key evil-visual-state-map "X" 'evil-exchange)))
 #+END_SRC
 
 References:
