@@ -696,6 +696,7 @@ References:
 (use-package magit
   ;; a Git interface
   :ensure-system-package (git diff)
+  :commands magit
   :init
   (global-set-key (kbd "C-c m") 'magit)
   :config
