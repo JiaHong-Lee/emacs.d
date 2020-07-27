@@ -1205,7 +1205,7 @@ References:
 #+END_SRC
 Referecences:
 1. https://github.com/andrejlamov/dotfiles/commit/17a716cbe4c8fd589212f319b9cca268c6e69eb9
-* Basic Buffers, Windows, Frames and Navigation
+** Basic Buffers, Windows, Frames and Navigation
 This section contains config about windows, frames, and buffer switching.
 #+BEGIN_SRC emacs-lisp
 ;; precise window switching
