@@ -3082,6 +3082,13 @@ Note: default-directory is a buffer-local variable that changes with buffers.
   (counsel-file-jump nil jh/sync-directory)) ;; using counsel-file-jump instead of find file
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(defun jh/open-sync-directory ()
+  "Open directory as specified by `jh/sync-directory'. A convenient function."
+  (interactive)
+  (find-file jh/sync-directory))
+#+END_SRC
+
 Directly search the contents of files in sync directory.
 #+BEGIN_SRC emacs-lisp
 (defun jh/search-sync-contents()
