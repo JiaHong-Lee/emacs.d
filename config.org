@@ -3097,6 +3097,21 @@ Directly search the contents of files in sync directory.
   (counsel-rg nil jh/sync-directory nil))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(defun jh/get-all-subdirs-hardcoded (PATH)
+  "This is based on `jh/get-all-subdirs' with hardcoded regexp to exclude .git and .venv directories."
+  (delete (expand-file-name PATH)
+          (split-string (shell-command-to-string (concat "find " PATH " -type d" " ! -regex \".*\.git.*\" ! -regex  \".*\.venv.\"")) "\n" t)))
+
+(defun jh/search-sync-directories ()
+  "Search for directories in `jh/sync-directory' and open it. A convenient function."
+  (interactive)
+  (ivy-read "Directory name:"
+            (jh/get-all-subdirs-hardcoded jh/sync-directory)
+            :require-match t
+            :action 'find-file))
+#+END_SRC
+
 [fn:10] http://ergoemacs.org/emacs/emacs_shell_vs_term_vs_ansi-term_vs_eshell.html
 ** Set Countdown Timer
 #+BEGIN_SRC emacs-lisp
