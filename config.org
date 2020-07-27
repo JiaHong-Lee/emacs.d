@@ -3037,22 +3037,18 @@ References:
 A package for project management and navigation.
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
-  :bind ("s-p" . projectile-command-map)
+  ;; project navigation and interaction library
   :config
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (setq-default projectile-mode-line-prefix " Proj") ;; Shorter modeline
   (setq projectile-completion-system 'ivy)
-  (projectile-mode +1))
+  (setq projectile-project-search-path '("~/playground" "~/work" "~/projects"))
+
+  (setq projectile-indexing-method 'hybrid) ; use hybrid for sorting
+  (setq projectile-sort-order 'recently-active) ; sort by recently active buffers then recently opened files
+
+  (projectile-mode 1))
 #+END_SRC
-
-Extra:
-1. [[Ripgrep Package][Integration with Ripgrep Package]]
-   Install the ripgrep package.
-
-Note:
-1. Check out counsel-projectile package for customisation code guidance.
-
-Customisation idea:
-1. Use rg search by default, coupled with ivy completing system.
 * Eglot -- LSP Client
 Eglot is a Language Server Protocol(LSP) server client. It has default integration with flymake and is aiming to be integrated into Emacs.
 #+BEGIN_SRC emacs-lisp :noweb yes
