@@ -539,9 +539,8 @@ Layer1 will probably be the largest layer of all. How should I structure this se
   (setq evil-search-wrap t
         evil-regexp-search t)
 
-  (use-package evil-anzu
-    ;; Show (current match/total matches) info in the mode-line
-    )
+  ;; Show (current match/total matches) info in the mode-line
+  (use-package evil-anzu)
 
   (use-package evil-visual-mark-mode
     ;; Display mark at a point during evil-jump-to-mark
@@ -701,9 +700,8 @@ References:
   (with-eval-after-load 'fullframe
     (fullframe magit-status magit-mode-quit-window))
 
-  (use-package forge
-    ;; work with Git forges, such as Github and Gitlab, from the comfort of Magit and the rest of Emacs.
-    ))
+  ;; work with Git forges, such as Github and Gitlab, from the comfort of Magit and the rest of Emacs.
+  (use-package forge))
 
 (use-package company
   ;; defines a framework to complete anything
@@ -1425,14 +1423,12 @@ Lisp mode deals a lot with parens.
 (dolist (hook (mapcar #'derived-mode-hook-name jh/lispy-modes))
   (add-hook hook 'jh/lisp-setup))
 
-(use-package prism
-  ;; Colour code expressions according to their depth level
-  )
+;; Colour code expressions according to their depth level
+(use-package prism)
 
-(use-package elisp-lint
-  ;; Basic linting for Emacs-Lisp.
-  ;; See: flycheck-package, package-lint
-  )
+;; Basic linting for Emacs-Lisp.
+;; See: flycheck-package, package-lint
+(use-package elisp-lint)
 
 (use-package ipretty
   ;; Pretty print the result of an elisp expression
@@ -1626,9 +1622,8 @@ References:
 1. https://github.com/ratish-punnoose/tla-mode
 * JSON Mode
 #+BEGIN_SRC emacs-lisp
-(use-package json-mode
-  ;; A major mode for editing JSON files
-  )
+;; A major mode for editing JSON files
+(use-package json-mode)
 #+END_SRC
 * TOML Mode
 #+BEGIN_SRC emacs-lisp
