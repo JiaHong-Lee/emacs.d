@@ -212,6 +212,10 @@ It does basic beautification, some behavioural settings, and install ~use-packag
 * General Settings              :layer1:
 Layer1 will probably be the largest layer of all. How should I structure this section? Should I put everything together or should I put them into subheadings?
 #+BEGIN_SRC emacs-lisp
+;; Defining a sync directory for org uses
+(defconst jh/sync-directory "/home/zacque/Dropbox/DropSyncFiles")
+(setq initial-buffer-choice (expand-file-name "startup.org" jh/sync-directory))
+
 ;; UTF-8 everywhere
 (defun sanityinc/locale-var-encoding (v)
   "Return the encoding portion of the locale string V, or nil if missing."
@@ -259,6 +263,9 @@ Layer1 will probably be the largest layer of all. How should I structure this se
 ;; remove the black border around Emacs, see: https://old.reddit.com/r/emacs/comments/hsszos/how_to_get_rid_of_black_border_around_emacsmacosx/
 (setq frame-resize-pixelwise t)
 
+(with-eval-after-load 'fullframe
+  (fullframe list-packages quit-window))
+
 (use-package display-line-numbers
   :ensure nil
   :config
@@ -283,6 +290,13 @@ Layer1 will probably be the largest layer of all. How should I structure this se
                       :height 80
                       :background "#ffdfaa"
                       :foreground "#3a3a3a"))
+
+(use-package use-package-ensure-system-package
+  ;; Add keyword to ensure some system binaries alongside my package declarations.
+  ;; Source: http://github.com/waymondo/use-package-ensure-system-package
+  :init
+  (setq system-packages-package-manager 'apt)
+  (setq system-packages-use-sudo t))
 
 (use-package page-break-lines
   ;; display ^L as a horizontal line. Useful for separating section in helps or codes.
@@ -879,8 +893,18 @@ References:
    pdf vim-like control
 2. https://emacs.stackexchange.com/a/24766
    rotate pdf.
-** My Functions
+** My Functions/APIs
 #+BEGIN_SRC emacs-lisp
+(defun jh/get-all-subdirs (PATH DEPTH)
+  "Get all subdirectories under the directory PATH. Does not include the directory itself in the result."
+  (delete (expand-file-name PATH)
+          (split-string (shell-command-to-string (concat "find " PATH " -type d" " -maxdepth " (number-to-string DEPTH))) "\n" t)))
+
+(defconst jh/emacs-directory (concat (getenv "HOME") "/.emacs.d/"))
+(defun jh/emacs-subdirectory (filepath)
+  "Locate a file with FILEPATH in my emacs's directory."
+  (expand-file-name filepath jh/emacs-directory))
+
 (defun jh/align-whitespace (start end)
   "Align columns by whitespace. E.g.
     >> the quick brown fox
@@ -1002,34 +1026,9 @@ This section contains config about windows, frames, and buffer switching.
 #+END_SRC
 * Temp
 #+BEGIN_SRC emacs-lisp
-;; Defining a sync directory for org uses
-(defconst jh/sync-directory "/home/zacque/Dropbox/DropSyncFiles")
-(setq initial-buffer-choice (expand-file-name "startup.org" jh/sync-directory))
-
-(with-eval-after-load 'fullframe
-  (fullframe list-packages quit-window))
-
-(use-package use-package-ensure-system-package
-  ;; Add keyword to ensure some system binaries alongside my package declarations.
-  :init
-  (setq system-packages-package-manager 'apt)
-  (setq system-packages-use-sudo t))
 #+END_SRC
-References:
-2. https://github.com/waymondo/use-package-ensure-system-package
-3. https://gitlab.com/jabranham/system-packages
 
 #+BEGIN_SRC emacs-lisp
-(defun jh/get-all-subdirs (PATH DEPTH)
-  "Get all subdirectories under the directory PATH. Does not include the directory itself in the result."
-  (delete (expand-file-name PATH)
-          (split-string (shell-command-to-string (concat "find " PATH " -type d" " -maxdepth " (number-to-string DEPTH))) "\n" t)))
-
-(defconst jh/emacs-directory (concat (getenv "HOME") "/.emacs.d/"))
-(defun jh/emacs-subdirectory (filepath)
-  "Locate a file with FILEPATH in my emacs's directory."
-  (expand-file-name filepath jh/emacs-directory))
-
 (defun require-package (package)
   "Require a PACKAGE. Install PACKAGE if not already installed. PACKAGE will be required immediately after installation."
   (if (package-installed-p package)
