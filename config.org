@@ -1286,8 +1286,8 @@ Referecences:
 ** Basic Buffers, Windows, Frames and Navigation
 This section contains config about windows, frames, and buffer switching.
 #+BEGIN_SRC emacs-lisp
-;; precise window switching
 (use-package ace-window
+  ;; precise window switching
   :config
   (ace-window-display-mode)             ; show keys in the modeline
   (global-set-key [remap other-window] 'ace-window)
@@ -1454,8 +1454,8 @@ Lisp mode deals a lot with parens.
   ;; highlight Lisp quotes and quoted symbols
   :hook (emacs-lisp-mode . highlight-quoted-mode))
 
-;;; Common Lisp
 (use-package slime
+  ;; The superior (common) lisp interaction mode
   :config
   (setq inferior-lisp-program "/usr/local/bin/sbcl")
 
