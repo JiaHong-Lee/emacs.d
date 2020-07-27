@@ -3103,25 +3103,6 @@ Directly search the contents of files in sync directory.
 #+END_SRC
 
 [fn:10] http://ergoemacs.org/emacs/emacs_shell_vs_term_vs_ansi-term_vs_eshell.html
-** Set Countdown Timer
-#+BEGIN_SRC emacs-lisp
-(defun jh/countdown-timer ()
-  "Show a message after timer expires. Based on run-at-time and can understand time like it can."
-  (interactive)
-  (let* ((msg-to-show (read-string "Enter msg to show: "))
-         (time-duration (read-string "Time? ")))
-    (run-at-time time-duration nil #'alert msg-to-show)
-    (message "Your timer is set.")))
-#+END_SRC
-Future ideas:
-1. List timers.
-2. Display timers content -- how many seconds left and strings.
-3. Cancel timers.
-
-References:
-1. https://www.reddit.com/r/emacs/comments/7wsnoi/using_countdown_timers_for_alerts/du3h11l/
-2. github:dakra/tea-timer.el
-   For timer tracking functionalities.
 * Config File Ending
 #+BEGIN_SRC emacs-lisp
 (defun jh/find-config()
