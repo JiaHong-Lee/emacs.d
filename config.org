@@ -1011,7 +1011,9 @@ This section contains config about windows, frames, and buffer switching.
 
 (use-package use-package-ensure-system-package
   ;; Add keyword to ensure some system binaries alongside my package declarations.
-  :init (setq system-packages-use-sudo t))
+  :init
+  (setq system-packages-package-manager 'apt)
+  (setq system-packages-use-sudo t))
 #+END_SRC
 References:
 2. https://github.com/waymondo/use-package-ensure-system-package
