@@ -696,6 +696,8 @@ References:
 (use-package magit
   ;; a Git interface
   :ensure-system-package (git diff)
+  :init
+  (global-set-key (kbd "C-c m") 'magit)
   :config
   (with-eval-after-load 'fullframe
     (fullframe magit-status magit-mode-quit-window))
