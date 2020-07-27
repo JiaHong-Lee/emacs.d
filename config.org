@@ -3065,16 +3065,6 @@ Open the current file-buffer using system viewer [fn:10].
       (start-process "" nil cmd path))))
 #+END_SRC
 
-Open terminal in current file directory [fn:10].
-#+BEGIN_SRC emacs-lisp
-(defun jh/open-dir-in-terminal-here()
-  "Open a new terminal window in the current dir."
-  (interactive)
-  (let ((process-connection-type nil))
-    (start-process "" nil "x-terminal-emulator" (concat "--working-directory=" default-directory))))
-#+END_SRC
-Note: default-directory is a buffer-local variable that changes with buffers.
-
 #+BEGIN_SRC emacs-lisp
 (defun jh/search-sync-files()
   "Search from all files listed recursively in the sync dir."
