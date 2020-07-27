@@ -900,6 +900,29 @@ References:
   (delete (expand-file-name PATH)
           (split-string (shell-command-to-string (concat "find " PATH " -type d" " -maxdepth " (number-to-string DEPTH))) "\n" t)))
 
+(defun jh/get-dir-and-subdirs (PATH DEPTH)
+  "Get all subdirectories under the directory PATH."
+  (split-string
+   (shell-command-to-string
+    (concat "find " PATH " -type d" " -maxdepth " (number-to-string DEPTH))) "\n" t))
+
+;; A helper function
+;; Source: https://stackoverflow.com/a/17165074
+(defun jh/get-dir-files-and-subdirs (directory &optional full match nosort)
+  "Retrieve the list of files and sub-directory in the DIRECTORY. Does not recurse into sub-directories. Like `directory-files' or ls command, but excluding \".\" and \"..\"."
+  (let* ((files (directory-files directory full match nosort))
+         (result files))
+    (if full
+        (progn
+          (setq result (delete (concat directory "/.") result))
+          (setq result (delete (concat directory "/..") result))
+          result)
+      (delete "." (delete ".." result)))))
+
+(defun jh/file-in-sync-directory (&rest SEQUENCES)
+  "Return full path to FILE in the sync-directory as defined by jh/sync-directory. Extra arguments are concatenated to the path. E.g. (jh/file-in-sync-directory SUB-DIR \"file.org\") returns path to jh/sync-directory+SUB-DIR+file.org."
+  (mapconcat 'identity (push jh/sync-directory SEQUENCES) "/"))
+
 (defconst jh/emacs-directory (concat (getenv "HOME") "/.emacs.d/"))
 (defun jh/emacs-subdirectory (filepath)
   "Locate a file with FILEPATH in my emacs's directory."
@@ -1699,37 +1722,6 @@ References:
    With private-browsing.
 3. https://github.com/Silex/docker.el/pull/73 && https://github.com/Silex/docker.el/issues/76
    Docker package to Podman.
-* Zacque's Utility Function
-Here are utility functions that I wrote. I'm putting it here to load it at the beginning.
-#+BEGIN_SRC emacs-lisp
-(defun jh/get-all-subdirs (PATH DEPTH)
-  "Get all subdirectories under the directory PATH. Does not include the directory itself in the result."
-  (delete (expand-file-name PATH)
-          (split-string (shell-command-to-string (concat "find " PATH " -type d" " -maxdepth " (number-to-string DEPTH))) "\n" t)))
-
-(defun jh/get-dir-and-subdirs (PATH DEPTH)
-  "Get all subdirectories under the directory PATH."
-  (split-string
-   (shell-command-to-string
-    (concat "find " PATH " -type d" " -maxdepth " (number-to-string DEPTH))) "\n" t))
-
-;; A helper function
-;; Source: https://stackoverflow.com/a/17165074
-(defun jh/get-dir-files-and-subdirs (directory &optional full match nosort)
-  "Retrieve the list of files and sub-directory in the DIRECTORY. Does not recurse into sub-directories. Like `directory-files' or ls command, but excluding \".\" and \"..\"."
-  (let* ((files (directory-files directory full match nosort))
-         (result files))
-    (if full
-        (progn
-          (setq result (delete (concat directory "/.") result))
-          (setq result (delete (concat directory "/..") result))
-          result)
-      (delete "." (delete ".." result)))))
-
-(defun jh/file-in-sync-directory (&rest SEQUENCES)
-  "Return full path to FILE in the sync-directory as defined by jh/sync-directory. Extra arguments are concatenated to the path. E.g. (jh/file-in-sync-directory SUB-DIR \"file.org\") returns path to jh/sync-directory+SUB-DIR+file.org."
-  (mapconcat 'identity (push jh/sync-directory SEQUENCES) "/"))
-#+END_SRC
 * Utility Third Library
 ** Wgrep
 #+BEGIN_SRC emacs-lisp
