@@ -993,6 +993,42 @@ Source: http://pragmaticemacs.com/emacs/aligning-text/"
 (defun jh/goto-previous-file ()
   (interactive)
   (goto-next-file t))
+
+(defun jh/open-buffer-in-system-viewer()
+  "Open current file-buffer using default desktop viewer."
+  (interactive)
+  (let ((path (if (buffer-file-name) (buffer-file-name) default-directory)))
+    (let ((process-connection-type nil)
+      (cmd "/usr/bin/xdg-open"))
+      (start-process "" nil cmd path))))
+
+(defun jh/search-sync-files()
+  "Search from all files listed recursively in the sync dir."
+  (interactive)
+  (counsel-file-jump nil jh/sync-directory)) ;; using counsel-file-jump instead of find file
+
+(defun jh/open-sync-directory ()
+  "Open directory as specified by `jh/sync-directory'. A convenient function."
+  (interactive)
+  (find-file jh/sync-directory))
+
+(defun jh/search-sync-contents()
+  "Search for sync contents."
+  (interactive)
+  (counsel-rg nil jh/sync-directory nil))
+
+(defun jh/get-all-subdirs-hardcoded (PATH)
+  "This is based on `jh/get-all-subdirs' with hardcoded regexp to exclude .git and .venv directories."
+  (delete (expand-file-name PATH)
+          (split-string (shell-command-to-string (concat "find " PATH " -type d" " ! -regex \".*\.git.*\" ! -regex  \".*\.venv.\"")) "\n" t)))
+
+(defun jh/search-sync-directories ()
+  "Search for directories in `jh/sync-directory' and open it. A convenient function."
+  (interactive)
+  (ivy-read "Directory name:"
+            (jh/get-all-subdirs-hardcoded jh/sync-directory)
+            :require-match t
+            :action 'find-file))
 #+END_SRC
 ** Shell and Terminals
 This section is for enhancing shells and terminal UX from within Emacs.
@@ -3053,56 +3089,6 @@ Major mode for terraform configuration file.
 References:
 1. https://github.com/syohex/emacs-terraform-mode
 2. https://github.com/rafalcieslak/emacs-company-terraform
-* Handy Small Functions
-Open the current file-buffer using system viewer [fn:10].
-#+BEGIN_SRC emacs-lisp
-(defun jh/open-buffer-in-system-viewer()
-  "Open current file-buffer using default desktop viewer."
-  (interactive)
-  (let ((path (if (buffer-file-name) (buffer-file-name) default-directory)))
-    (let ((process-connection-type nil)
-      (cmd "/usr/bin/xdg-open"))
-      (start-process "" nil cmd path))))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun jh/search-sync-files()
-  "Search from all files listed recursively in the sync dir."
-  (interactive)
-  (counsel-file-jump nil jh/sync-directory)) ;; using counsel-file-jump instead of find file
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun jh/open-sync-directory ()
-  "Open directory as specified by `jh/sync-directory'. A convenient function."
-  (interactive)
-  (find-file jh/sync-directory))
-#+END_SRC
-
-Directly search the contents of files in sync directory.
-#+BEGIN_SRC emacs-lisp
-(defun jh/search-sync-contents()
-  "Search for sync contents."
-  (interactive)
-  (counsel-rg nil jh/sync-directory nil))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun jh/get-all-subdirs-hardcoded (PATH)
-  "This is based on `jh/get-all-subdirs' with hardcoded regexp to exclude .git and .venv directories."
-  (delete (expand-file-name PATH)
-          (split-string (shell-command-to-string (concat "find " PATH " -type d" " ! -regex \".*\.git.*\" ! -regex  \".*\.venv.\"")) "\n" t)))
-
-(defun jh/search-sync-directories ()
-  "Search for directories in `jh/sync-directory' and open it. A convenient function."
-  (interactive)
-  (ivy-read "Directory name:"
-            (jh/get-all-subdirs-hardcoded jh/sync-directory)
-            :require-match t
-            :action 'find-file))
-#+END_SRC
-
-[fn:10] http://ergoemacs.org/emacs/emacs_shell_vs_term_vs_ansi-term_vs_eshell.html
 * Config File Ending
 #+BEGIN_SRC emacs-lisp
 (defun jh/find-config()
