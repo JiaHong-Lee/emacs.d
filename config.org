@@ -263,6 +263,9 @@ Layer1 will probably be the largest layer of all. How should I structure this se
 ;; remove the black border around Emacs, see: https://old.reddit.com/r/emacs/comments/hsszos/how_to_get_rid_of_black_border_around_emacsmacosx/
 (setq frame-resize-pixelwise t)
 
+;; when lines are so long that Emacs becomes laggy
+(global-so-long-mode 1)
+
 (with-eval-after-load 'fullframe
   (fullframe list-packages quit-window))
 
