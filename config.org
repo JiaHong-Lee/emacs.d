@@ -1029,6 +1029,11 @@ Source: http://pragmaticemacs.com/emacs/aligning-text/"
             (jh/get-all-subdirs-hardcoded jh/sync-directory)
             :require-match t
             :action 'find-file))
+
+(defun jh/find-config()
+  "A convenient function to edit this file: config.org."
+  (interactive)
+  (find-file (concat user-emacs-directory "config.org")))
 #+END_SRC
 ** Shell and Terminals
 This section is for enhancing shells and terminal UX from within Emacs.
@@ -3091,11 +3096,6 @@ References:
 2. https://github.com/rafalcieslak/emacs-company-terraform
 * Config File Ending
 #+BEGIN_SRC emacs-lisp
-(defun jh/find-config()
-  "A convenient function to edit this file: config.org."
-  (interactive)
-  (find-file "~/.emacs.d/config.org"))
-
 (provide 'init-config)
 ;; Local Variables:
 ;; coding: utf-8
