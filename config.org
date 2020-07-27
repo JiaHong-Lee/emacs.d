@@ -828,7 +828,7 @@ This section contains configs about reading a those "read-only" files.
   (add-to-list 'Info-directory-list "~/Info_Files_Manual"))
 
 (use-package pdf-tools
-  :ensure-system-package (imagemagick pdftk)
+  ;; :ensure-system-package (imagemagick pdftk)
   :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
   :config
   (dolist (pkg '(pdf-annot pdf-cache pdf-dev pdf-history pdf-info
