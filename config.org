@@ -284,8 +284,8 @@ Layer1 will probably be the largest layer of all. How should I structure this se
                       :background "#ffdfaa"
                       :foreground "#3a3a3a"))
 
-;; display ^L as a horizontal line. Useful for separating section in helps or codes.
 (use-package page-break-lines
+  ;; display ^L as a horizontal line. Useful for separating section in helps or codes.
   :diminish page-break-lines-mode
   :config (global-page-break-lines-mode))
 
@@ -308,9 +308,9 @@ Layer1 will probably be the largest layer of all. How should I structure this se
   :init (setq ring-bell-function 'ignore)
   :hook (after-init . mode-line-bell-mode))
 
-;; display key-binding completion suggestions/hints
-;; this :replace guide-key
 (use-package which-key
+  ;; display key-binding completion suggestions/hints
+  ;; this :replace guide-key
   :diminish
   :hook (after-init . which-key-mode)
   :config
@@ -323,22 +323,22 @@ Layer1 will probably be the largest layer of all. How should I structure this se
 ;; buffer.
 (use-package list-unicode-display)
 
-;; a reminder of my mortality, a reflection of life
 (use-package memento-mori
+  ;; a reminder of my mortality, a reflection of life
   :config
   (setq memento-mori-birth-date (password-store-get-field "personal-info" "birthday"))
   (memento-mori-mode))
 
-;; a package to watch for long pauses, good for debugging Emacs config
 (use-package explain-pause-mode
+  ;; a package to watch for long pauses, good for debugging Emacs config
   :load-path "lisp/explain-pause-mode"
   :diminish
   :config
   (setq explain-pause-blocking-too-long-ms 40)
   (setq explain-pause-profile-saved-profiles 10))
 
-;; a handy tool to restart Emacs, especially when using EXWM
 (use-package restart-emacs
+  ;; a handy tool to restart Emacs, especially when using EXWM
   :commands (restart-emacs))
 
 (use-package yasnippet
