@@ -1282,6 +1282,32 @@ This section contains config about windows, frames, and buffer switching.
 
     (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)))
 #+END_SRC
+* Layer2                        :layer2:
+Layer2:
+1. org-capture, org-agenda...
+2. Programming major mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-capture
+  :ensure nil
+  :config
+  (global-set-key (kbd "C-c c") 'org-capture)
+
+  (defun jh/generate-journal-filename ()
+    "Generate the correct journal filename dynamically. Currently, it's in the form YYYYMM.txt."
+    (let ((month (nth 0 (calendar-current-date)))
+          (year (nth 2 (calendar-current-date))))
+      (format "%d%02d.txt" year month)))
+
+  (defconst jh/personal-journal-directory (concat jh/sync-directory "/writing/personal_journal/"))
+  (defconst jh/technical-journal-directory (concat jh/sync-directory "/writing/technical_journal/"))
+
+  (setq org-capture-templates
+        `(("p" "Personal Journal" entry (file ,(concat jh/personal-journal-directory (jh/generate-journal-filename)))
+           "* %u ")
+          ("t" "Technical Journal" entry (file ,(concat jh/technical-journal-directory (jh/generate-journal-filename)))
+           "* %u "))))
+#+END_SRC
 * IDE Framework
 An IDE is a complex piece of software. Emacs is the best Lisp editor and I want it to be the best editor completing with features to rival the best IDE in the market. Here I define the framework to declare the framework of a programming language. Components of an IDE:
 1. console, shell
@@ -1809,28 +1835,6 @@ Use the format year/month/day.
 #+BEGIN_SRC emacs-lisp
 (setq calendar-date-style 'iso)
 #+END_SRC
-* Org-Mode
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-#+BEGIN_SRC emacs-lisp
-(use-package org
-  ;; The great org-mode
-  :ensure nil
-  :config
-
-  )
-#+END_SRC
-
-Extra:
-1. github:abo-abo/org-download
-   Drag and drop images to Emacs org-mode.
-2. om.el
-   Function library for Org hacker.
-
-References:
-1. http://blog.lujun9972.win/emacs-document/blog/2018/10/22/ricing-up-org-mode/index.html
-   Org mode ricing.
 * Org Export
 :PROPERTIES:
 :header-args: :tangle no
@@ -2625,37 +2629,6 @@ References:
 :PROPERTIES:
 :header-args: :tangle no
 :END:
-
-*** Org Capture
-
-Set the default destination for notes captured.
-#+BEGIN_SRC emacs-lisp
-(setq org-default-notes-file (jh/file-in-sync-directory "org" "orgcapture.txt"))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-c c") 'org-capture)
-#+END_SRC
-
-Define org-capture-templates.
-#+BEGIN_SRC emacs-lisp
-(setq org-capture-templates
-      `(("t" "Org-capture for GTD")
-        ("to" "Todo" entry (file+headline "" "Tasks")
-         "* TODO %?\nCREATED: %U\n%i\n\n  " :prepend t :empty-lines 1)
-        ("tt" "Task" entry (file+headline "" "Tasks")
-         "* NEXT %?\n%t\n%i\n\n " :prepend t :clock-in t :clock-keep t)
-        ("i" "An Idea to Explore" entry (file+headline "" "Ideas")
-         "* %?\n%t\n%i\n\n ")
-        ("j" "Journal" item (file+olp+datetree ,(jh/file-in-sync-directory "journal.txt")) "(%<%R>) %?\n%i\n" :empty-lines 1)
-        ("e" "Engineering Journal" item (file+olp+datetree ,(jh/file-in-sync-directory "engineering_journal.txt")) "(%<%R>) %?\n%i\n" :empty-lines 1)
-        ("p" "Punch In" entry (file+olp+datetree ,(jh/file-in-sync-directory "org" "gtd.org")) "* Daily Punch In" :clock-in t :clock-keep t :immediate-finish t)))
-#+END_SRC
-
-References:
-1. https://orgmode.org/manual/Capture-templates.html
-   Official docs. Taking it as a starting point.
-2. https://www.reddit.com/r/emacs/comments/7zqc7b/share_your_org_capture_templates/duq0nnr
 
 *** Org Refile
 
