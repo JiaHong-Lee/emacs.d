@@ -180,7 +180,7 @@ It does basic beautification, some behavioural settings, and install ~use-packag
   (use-package smex) ; sort the result of counsel-M-x
   :config
   (ivy-mode)
-  (setq ivy-use-virtual-buffers t) ;; includes recentf and bookmarks
+  (setq ivy-use-virtual-buffers t) ; includes recentf and bookmarks
   (setq enable-recursive-minibuffers t)
   (setq ivy-count-format "")
   (setq ivy-virtual-abbreviate 'fullpath)
@@ -200,7 +200,7 @@ It does basic beautification, some behavioural settings, and install ~use-packag
 
   ;; note: this has to be placed after counsel package because the
   ;; package redefines this variable
-  (setq ivy-initial-inputs-alist '((Man-completion-table . "^") ;; or (man. "^")?
+  (setq ivy-initial-inputs-alist '((Man-completion-table . "^") ; or (man. "^")?
                                    (woman . "^"))))
 #+END_SRC
 
@@ -240,7 +240,7 @@ Layer1 will probably be the largest layer of all. How should I structure this se
 ;; track recent files
 (add-hook 'after-init-hook 'recentf-mode)
 (setq-default recentf-max-menu-items 1000
-              recentf-max-saved-items nil ;; save the entire list
+              recentf-max-saved-items nil ; save the entire list
               recentf-exclude '("/tmp/" "/ssh:"))
 
 (setq backup-directory-alist `(("." . ,(expand-file-name "backups" user-emacs-directory)))
@@ -388,8 +388,8 @@ Layer1 will probably be the largest layer of all. How should I structure this se
   :ensure nil
   :diminish visual-line-mode
   :config
-  (global-visual-line-mode 1) ;; wrap line
-  (column-number-mode 1)) ;; display column number in the mode line
+  (global-visual-line-mode 1) ; wrap line
+  (column-number-mode 1)) ; display column number in the mode line
 
 (use-package subword
   ;; treat CamelCase word as two words, such that "dw" in Evil mode only deletes the word 'Camel'
@@ -676,7 +676,7 @@ References:
   ;; project navigation and interaction library
   :config
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (setq-default projectile-mode-line-prefix " Proj") ;; Shorter modeline
+  (setq-default projectile-mode-line-prefix " Proj") ; Shorter modeline
   (setq projectile-completion-system 'ivy)
   (setq projectile-project-search-path '("~/playground" "~/work" "~/projects"))
 
@@ -1016,7 +1016,7 @@ Source: http://pragmaticemacs.com/emacs/aligning-text/"
 (defun jh/search-sync-files()
   "Search from all files listed recursively in the sync dir."
   (interactive)
-  (counsel-file-jump nil jh/sync-directory)) ;; using counsel-file-jump instead of find file
+  (counsel-file-jump nil jh/sync-directory)) ; using counsel-file-jump instead of find file
 
 (defun jh/open-sync-directory ()
   "Open directory as specified by `jh/sync-directory'. A convenient function."
@@ -1131,7 +1131,7 @@ Eshell is a shell, not a terminal emulator. It plays well with CLI, but not TUI.
   (setq eshell-prefer-lisp-functions t)
   (setq eshell-prefer-lisp-variables t)
   (setq password-cache t)
-  (setq password-cache-expiry 600) ;; seconds
+  (setq password-cache-expiry 600) ; seconds
 
   ;; C-r to search previous history using ivy/counsel
   (define-key eshell-mode-map (kbd "C-r") #'counsel-esh-history)
@@ -1708,7 +1708,7 @@ ActivityWatch is a time tracking program, see: github:ActivityWatch/activitywatc
 
 (use-package dash-docs
   :config
-  (setq dash-docs-docsets-path (expand-file-name "docsets" user-emacs-directory)) ;; use absolute path
+  (setq dash-docs-docsets-path (expand-file-name "docsets" user-emacs-directory)) ; use absolute path
   (setq dash-docs-common-docsets '("python3" "NumPy" "Pandas" "scikit-learn" "matplotlib"))
 
   ;; change the default doc browser to using eww
@@ -2535,7 +2535,7 @@ WAITING --> DONE
 [[file:images/org_task_states.png][Org TODO task states]]
 
 #+BEGIN_SRC emacs-lisp
-(setq org-treat-insert-todo-heading-as-state-change t)  ;; to invoke timestamp log
+(setq org-treat-insert-todo-heading-as-state-change t)  ; to invoke timestamp log
 
 (setq org-todo-keywords
       '((sequence "TODO(t!)" "NEXT(n)" "|" "DONE(d)")
@@ -2617,7 +2617,7 @@ Besides Bernt Hansen, Lee Hinman[fn:8] has good config on org-clocking.
 
 Open prompt to resolve clock if I idle more than 120 minutes.
 #+BEGIN_SRC emacs-lisp
-(setq org-clock-idea-time 120) ;; minutes
+(setq org-clock-idea-time 120) ; minutes
 #+END_SRC
 
 Use =org-mru-clock= package to clock into recent org-mode tasks. By default, org can clock into the last task. But sometimes I would like to clock into recent tasks.
@@ -2639,7 +2639,7 @@ Use =org-mru-clock= package to clock into recent org-mode tasks. By default, org
 
 Org sync with Google Calendar.
 #+BEGIN_SRC emacs-lisp
-(use-package org-gcal) ;; https://github.com/kidd/org-gcal.el
+(use-package org-gcal) ; https://github.com/kidd/org-gcal.el
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -2736,7 +2736,7 @@ Define an Evil's state for easy browsing, reading, and navigating in Org-mode. T
    ((evil-reading-state-p)
     (evil-echo "-- READING --"))
    (t
-    (evil-echo "-- NORMAL --")))) ;; original theme color for cursor
+    (evil-echo "-- NORMAL --")))) ; original theme color for cursor
 #+END_SRC
 
 Dependencies:
@@ -2748,7 +2748,7 @@ Dependencies:
 (defun jh/org-goto-first-child ()
   "Wrapper function for the original function."
   (interactive)
-  (org-show-children) ;; expand tree
+  (org-show-children) ; expand tree
   (org-goto-first-child))
 #+END_SRC
 
@@ -2774,14 +2774,14 @@ Dependencies:
 (defun jh/org-insert-heading-into-insert-state (&optional count)
   "Add a new sibling heading at the position of the current heading, and go into insert state."
   (interactive "p")
-  (org-beginning-of-line) ;; force to the beginning of line.
+  (org-beginning-of-line) ; force to the beginning of line.
   (org-insert-heading)
   (evil-insert-state))
 
 (defun jh/org-insert-heading-after-current-into-insert-state (&optional count)
   "Add a new sibling heading and go into insert state."
   (interactive "p")
-  (org-beginning-of-line) ;; force to the beginning of line.
+  (org-beginning-of-line) ; force to the beginning of line.
   (org-insert-heading-after-current)
   (evil-insert-state))
 #+END_SRC
@@ -3138,17 +3138,17 @@ Open in full frame.
 
 Use mu4e as the default Emacs program to send email for =C-x m (compose-mail)= or =report-emacs-bug=.
 #+BEGIN_SRC emacs-lisp
-(setq mail-user-agent 'mu4e-user-agent) ;; use a the default client on emacs
+(setq mail-user-agent 'mu4e-user-agent) ; use a the default client on emacs
 #+END_SRC
 
 Overrides the default folders to store messages. Note: The folder can be defined dynamically at runtime and changes according to the attributes of an email.
 #+BEGIN_SRC emacs-lisp
-(setq mu4e-maildir	 "~/Mail/outlook") ;; top-level Maildir
+(setq mu4e-maildir	 "~/Mail/outlook") ; top-level Maildir
 
-(setq mu4e-sent-folder "/Sent" ;; sent messages
-      mu4e-drafts-folder "/Drafts" ;; unfinished messages
-      mu4e-trash-folder "/Deleted" ;; trashed messages
-      mu4e-refile-folder "/Archives") ;; saved messages
+(setq mu4e-sent-folder "/Sent" ; sent messages
+      mu4e-drafts-folder "/Drafts" ; unfinished messages
+      mu4e-trash-folder "/Deleted" ; trashed messages
+      mu4e-refile-folder "/Archives") ; saved messages
 #+END_SRC
 
 Override default to show both sender name and address. This makes me easier to filter sender using search query.
@@ -3166,7 +3166,7 @@ Override default to show both sender name and address. This makes me easier to f
 Defines the shell command to retrieve mails. Updates mail and index periodically for every N seconds.
 #+BEGIN_SRC emacs-lisp :tangle no
 (setq mu4e-get-mail-command "mbsync -a"
-      mu4e-update-interval (* 10 60)) ;; re-index every 10 minutes
+      mu4e-update-interval (* 10 60)) ; re-index every 10 minutes
 #+END_SRC
 
 Update using systemd in the background.
@@ -3177,8 +3177,8 @@ Update using systemd in the background.
 
 Speeds up mu4e updates.
 #+BEGIN_SRC emacs-lisp
-(setq mu4e-index-cleanup nil  ;; don't do a full cleanup check
-      mu4e-index-lazy-check t) ;; don't consider up-to-date dirs
+(setq mu4e-index-cleanup nil  ; don't do a full cleanup check
+      mu4e-index-lazy-check t) ; don't consider up-to-date dirs
 #+END_SRC
 
 Sending mail from mu4e.
@@ -3816,7 +3816,7 @@ References:
 
 Remove the prompt.
 #+BEGIN_SRC emacs-lisp
-(setq explicit-shell-file-name "/bin/bash") ;; use bash by default
+(setq explicit-shell-file-name "/bin/bash") ; use bash by default
 #+END_SRC
 
 Kill the buffer after exiting the term.
