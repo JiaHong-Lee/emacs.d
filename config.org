@@ -968,8 +968,247 @@ Source: http://pragmaticemacs.com/emacs/aligning-text/"
   (interactive)
   (goto-next-file t))
 #+END_SRC
-* Basic Terminal
-This section is for enhancing terminal using experience from within Emacs.
+** Shell and Terminals
+This section is for enhancing shells and terminal UX from within Emacs.
+
+Provide exact same completions in =shell-mode= as I get in a terminal emulator with a TAB key [fn:5].
+#+BEGIN_SRC emacs-lisp
+(use-package native-complete
+  :config
+  (with-eval-after-load 'shell
+    (native-complete-setup-bash)))
+#+END_SRC
+
+For full fledged terminal experience, use vterm[fn:6]. Libvterm is the library used in Neovim.
+#+BEGIN_SRC emacs-lisp
+(use-package vterm
+  :load-path "lisp/emacs-libvterm"
+  :config
+  (defun jh/--customise-vterm-display ()
+    "Customise font face to make looks like a typical terminal emulator."
+    ;; (buffer-face-set '(:family "Hack" :height 103))
+    (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch)
+    (buffer-face-mode t)
+    (buffer-face-set '(:family "Hack"))
+    (setq header-line-format " "))
+  (add-hook 'vterm-mode-hook #'jh/--customise-vterm-display)
+
+  (defun jh/--truncate-lines ()
+    "To make the line wrapping works normally. Reference: https://superuser.com/a/988843"
+    (setq truncate-lines t))
+  (add-hook 'vterm-mode-hook #'jh/--truncate-lines)
+
+  (evil-set-initial-state 'vterm-mode 'emacs)
+
+
+  ;; Exit buffer after exiting Vterm
+  (setq vterm-kill-buffer-on-exit t))
+#+END_SRC
+
+[fn:5] github:CeleritasCelery/emacs-native-shell-complete and the accompanying [[https://coredumped.dev/2020/01/04/native-shell-completion-in-emacs/][article]], possible useful config from Redguardtoo https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-term-mode.el#L1
+
+[fn:6] github:akermu/emacs-libvterm
+*** Eshell as my Terminal
+Eshell is a shell, not a terminal emulator. It plays well with CLI, but not TUI. However, since Emacs has UI, some commands might have a replacement in Emacs. E.g. top -> proced, alsomixer -> volume.
+#+BEGIN_SRC emacs-lisp
+(use-package eshell
+  :ensure nil
+  :config
+  (use-package esh-mode
+    :ensure nil)
+
+  (evil-set-initial-state 'eshell-mode 'emacs)
+
+  ;; enable Plan9 smart shell display.
+  (require 'em-smart)
+  (setq eshell-where-to-jump 'begin)
+  (setq eshell-review-quick-commands nil)
+  (setq eshell-smart-space-goes-to-end t)
+
+  ;; use ~/.bash_history for eshell
+  (setenv "HISTFILE" (expand-file-name "~/.bash_history"))
+  (setq eshell-history-file-name nil) ; use HISTFILE value
+  (setq eshell-history-size 9999999) ; note: eshell does not support unbounded history length
+  (setq eshell-save-history-on-exit t)
+
+  (setq eshell-buffer-maximum-lines 4096)
+  (setq eshell-scroll-to-bottom-on-input t)
+  (setq eshell-cmpl-ignore-case t)
+  (setq eshell-hist-ignoredups t)
+
+  (setq eshell-destroy-buffer-when-process-dies t) ; to kill *top* buffer on exit
+
+  ;; makes eshell prompt similar to Bash
+  ;; reference: https://www.emacswiki.org/emacs/EshellPrompt#toc6
+  (defun jh/--eshell-prompt ()
+    (let* ((home (getenv "HOME"))
+           (login-info (concat (user-login-name) "@" (system-name) ":"))
+           (pwd (replace-regexp-in-string "/home/zacque" "~" (eshell/pwd))))
+      (concat
+       (propertize login-info 'face `(:foreground "green"))
+       (propertize pwd 'face `(:foreground "gold"))
+       (if (= (user-uid) 0) "# " "$ "))))
+
+  (setq eshell-prompt-function 'jh/--eshell-prompt)
+  (setq eshell-prompt-regexp "^[^#$\n]*[#$] ")
+
+  ;; cache sudo password in eshell
+  (require 'em-tramp)
+  (setq eshell-prefer-lisp-functions t)
+  (setq eshell-prefer-lisp-variables t)
+  (setq password-cache t)
+  (setq password-cache-expiry 600) ;; seconds
+
+  ;; C-r to search previous history using ivy/counsel
+  (define-key eshell-mode-map (kbd "C-r") #'counsel-esh-history)
+
+  ;; Use C-d to exit eshell
+  (defun jh/eshell-quit-or-delete-char (arg)
+    (interactive "p")
+    (if (and (eolp)
+             (looking-back eshell-prompt-regexp))
+        (eshell-life-is-too-much) ; Why not? (eshell/exit)
+      (delete-forward-char arg)))
+  (define-key eshell-mode-map (kbd "C-d") 'jh/eshell-quit-or-delete-char)
+
+  (use-package xterm-color)
+
+  ;; makes ls output colourful
+  (defun jh/--eshell-set-term ()
+    (setenv "TERM" "xterm-256color"))
+
+  (add-hook 'eshell-mode-hook 'jh/--eshell-set-term)
+
+  ;; not sure what this does
+  (defun jh/--eshell-enable-xterm-preserve-properties ()
+    (setq xterm-color-preserve-properties t))
+
+  (add-hook 'eshell-mode-hook 'jh/--eshell-enable-xterm-preserve-properties)
+
+  (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+  (setq eshell-output-filter-functions (delete 'eshell-handle-ansi-color eshell-output-filter-functions))
+
+  ;; remove the default "Welcome to the Emacs shell\n\n" message on Eshell startup.
+  (setq eshell-banner-message "")
+
+  (setq eshell-highlight-prompt t)
+
+  (defun jh/--customise-eshell-display ()
+    "Sets a special font for Org-mode writing and more."
+    (buffer-face-set '(:family "Hack" :height 103))
+    ;; (buffer-face-set '(:family "Hack"))
+    (setq header-line-format " "))
+
+  (add-hook 'eshell-mode-hook #'jh/--customise-eshell-display)
+
+  (use-package eshell-up)
+  (use-package eshell-z)
+  (use-package eshell-did-you-mean
+    :config
+    (eshell-did-you-mean-setup)))
+#+END_SRC
+
+References:
+1. https://emacs.stackexchange.com/questions/5608/how-to-let-eshell-remember-sudo-password-for-two-minutes
+   Cache sudo password.
+2. https://oremacs.com/2019/03/24/shell-apt/
+   Progress bar
+3. https://github.com/peterwvj/emacs.d/blob/master/lisp/eshell-config-pvj.el
+4. https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org
+5. https://github.com/peterwvj/emacs.d/blob/master/lisp/eshell-config-pvj.el
+6. https://github.com/xuchunyang/eshell-did-you-mean
+**** Subcommand Completions
+Eshell uses pcomplete package for programmable completion. Completions are defined as functions named =pcomplete/COMMAND=, where COMMAND is the name of the command for which this function provides completions.
+
+References:
+1. https://www.emacswiki.org/emacs/EshellCompletion#toc3
+2. https://masteringemacs.org/article/pcomplete-context-sensitive-completion-emacs
+***** Systemctl subcommand completion.
+#+BEGIN_SRC emacs-lisp
+(defcustom pcomplete-systemctl-commands
+  '("disable" "enable" "status" "start" "restart" "stop" "reenable"
+    "list-units" "list-unit-files")
+  "p-completion candiates for `systemctl' main commands"
+  :type '(repeat (string :tag "systemctl command"))
+  :group 'pcomplete)
+
+(defun pcomplete/systemctl ()
+  "Completion rules for the `systemctl' command."
+  (pcomplete-here pcomplete-systemctl-commands))
+#+END_SRC
+
+***** Man completion.
+#+BEGIN_SRC emacs-lisp
+(defvar pcomplete-man-user-commands
+  (split-string
+   (shell-command-to-string
+    "apropos -s 1 .|while read -r a b; do echo \" $a\";done;"))
+  "p-completion candidates for `man' command")
+
+(defun pcomplete/man ()
+  "Completion rules for the `man' command."
+  (pcomplete-here pcomplete-man-user-commands))
+#+END_SRC
+
+***** Git completion.
+#+BEGIN_SRC emacs-lisp
+(defconst pcmpl-git-commands
+  '("add" "bisect" "branch" "checkout" "clone"
+    "commit" "diff" "fetch" "grep"
+    "init" "log" "merge" "mv" "pull" "push" "rebase"
+    "reset" "rm" "show" "status" "tag" )
+  "List of `git' commands")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defvar pcmpl-git-ref-list-cmd "git for-each-ref refs/ --format='%(refname)'"
+  "The `git' command to run to get a list of refs")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun pcmpl-git-get-refs (type)
+  "Return a list of `git' refs filtered by TYPE"
+  (with-temp-buffer
+    (insert (shell-command-to-string pcmpl-git-ref-list-cmd))
+    (goto-char (point-min))
+    (let ((ref-list))
+      (while (re-search-forward (concat "^refs/" type "/\\(.+\\)$") nil t)
+        (add-to-list 'ref-list (match-string 1)))
+      ref-list)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun pcomplete/git ()
+  "Completion for `git'"
+  (pcomplete-here* pcmpl-git-commands)
+
+  (cond
+   ;; complete files/dirs forever if the command is `add' or `rm'
+   ((pcomplete-match (regexp-opt '("add" "rm")) 1)
+    (while (pcomplete-here (pcomplete-entries))))
+   ;; provide branch completion for the command `checkout'.
+   ((pcomplete-match (regexp-opt '("checkout" "branch")) 1)
+    (pcomplete-here* (pcmpl-git-get-refs "heads")))))
+#+END_SRC
+
+References:
+1. https://masteringemacs.org/article/pcomplete-context-sensitive-completion-emacs
+
+***** Bash-completion + eshell
+#+BEGIN_SRC emacs-lisp
+(use-package bash-completion
+  :config
+  (bash-completion-setup)
+  (setq eshell-default-completion-function 'eshell-bash-completion)
+
+  (defun eshell-bash-completion ()
+    (while (pcomplete-here
+            (nth 2 (bash-completion-dynamic-complete-nocomint
+                    (save-excursion (eshell-bol) (point))
+                    (point)))))))
+#+END_SRC
+Referecences:
+1. https://github.com/andrejlamov/dotfiles/commit/17a716cbe4c8fd589212f319b9cca268c6e69eb9
 * Basic Buffers, Windows, Frames and Navigation
 This section contains config about windows, frames, and buffer switching.
 #+BEGIN_SRC emacs-lisp
@@ -2865,268 +3104,6 @@ Major mode for terraform configuration file.
 References:
 1. https://github.com/syohex/emacs-terraform-mode
 2. https://github.com/rafalcieslak/emacs-company-terraform
-* Eshell & VTerm
-** Eshell as my Terminal
-Eshell is a shell, not a terminal emulator. It plays well with CLI, but not TUI. However, since Emacs has UI, some commands might have a replacement in Emacs. E.g. top -> proced, alsomixer -> volume.
-#+BEGIN_SRC emacs-lisp
-(use-package eshell
-  :ensure nil
-  :config
-  (use-package esh-mode
-    :ensure nil)
-
-  (evil-set-initial-state 'eshell-mode 'emacs)
-
-  ;; enable Plan9 smart shell display.
-  (require 'em-smart)
-  (setq eshell-where-to-jump 'begin)
-  (setq eshell-review-quick-commands nil)
-  (setq eshell-smart-space-goes-to-end t)
-
-  ;; use ~/.bash_history for eshell
-  (setenv "HISTFILE" (expand-file-name "~/.bash_history"))
-  (setq eshell-history-file-name nil) ; use HISTFILE value
-  (setq eshell-history-size 9999999) ; note: eshell does not support unbounded history length
-  (setq eshell-save-history-on-exit t)
-
-  (setq eshell-buffer-maximum-lines 4096)
-  (setq eshell-scroll-to-bottom-on-input t)
-  (setq eshell-cmpl-ignore-case t)
-  (setq eshell-hist-ignoredups t)
-
-  (setq eshell-destroy-buffer-when-process-dies t) ; to kill *top* buffer on exit
-
-  ;; makes eshell prompt similar to Bash
-  ;; reference: https://www.emacswiki.org/emacs/EshellPrompt#toc6
-  (defun jh/--eshell-prompt ()
-    (let* ((home (getenv "HOME"))
-           (login-info (concat (user-login-name) "@" (system-name) ":"))
-           (pwd (replace-regexp-in-string "/home/zacque" "~" (eshell/pwd))))
-      (concat
-       (propertize login-info 'face `(:foreground "green"))
-       (propertize pwd 'face `(:foreground "gold"))
-       (if (= (user-uid) 0) "# " "$ "))))
-
-  (setq eshell-prompt-function 'jh/--eshell-prompt)
-  (setq eshell-prompt-regexp "^[^#$\n]*[#$] ")
-
-  ;; cache sudo password in eshell
-  (require 'em-tramp)
-  (setq eshell-prefer-lisp-functions t)
-  (setq eshell-prefer-lisp-variables t)
-  (setq password-cache t)
-  (setq password-cache-expiry 600) ;; seconds
-
-  ;; C-r to search previous history using ivy/counsel
-  (define-key eshell-mode-map (kbd "C-r") #'counsel-esh-history)
-
-  ;; Use C-d to exit eshell
-  (defun jh/eshell-quit-or-delete-char (arg)
-    (interactive "p")
-    (if (and (eolp)
-             (looking-back eshell-prompt-regexp))
-        (eshell-life-is-too-much) ; Why not? (eshell/exit)
-      (delete-forward-char arg)))
-  (define-key eshell-mode-map (kbd "C-d") 'jh/eshell-quit-or-delete-char)
-
-  (use-package xterm-color)
-
-  ;; makes ls output colourful
-  (defun jh/--eshell-set-term ()
-    (setenv "TERM" "xterm-256color"))
-
-  (add-hook 'eshell-mode-hook 'jh/--eshell-set-term)
-
-  ;; not sure what this does
-  (defun jh/--eshell-enable-xterm-preserve-properties ()
-    (setq xterm-color-preserve-properties t))
-
-  (add-hook 'eshell-mode-hook 'jh/--eshell-enable-xterm-preserve-properties)
-
-  (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
-  (setq eshell-output-filter-functions (delete 'eshell-handle-ansi-color eshell-output-filter-functions))
-
-  ;; remove the default "Welcome to the Emacs shell\n\n" message on Eshell startup.
-  (setq eshell-banner-message "")
-
-  (setq eshell-highlight-prompt t)
-
-  (defun jh/--customise-eshell-display ()
-    "Sets a special font for Org-mode writing and more."
-    (buffer-face-set '(:family "Hack" :height 103))
-    ;; (buffer-face-set '(:family "Hack"))
-    (setq header-line-format " "))
-
-  (add-hook 'eshell-mode-hook #'jh/--customise-eshell-display)
-
-  (use-package eshell-up)
-  (use-package eshell-z)
-  (use-package eshell-did-you-mean
-    :config
-    (eshell-did-you-mean-setup)))
-#+END_SRC
-
-References:
-1. https://emacs.stackexchange.com/questions/5608/how-to-let-eshell-remember-sudo-password-for-two-minutes
-   Cache sudo password.
-2. https://oremacs.com/2019/03/24/shell-apt/
-   Progress bar
-3. https://github.com/peterwvj/emacs.d/blob/master/lisp/eshell-config-pvj.el
-4. https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org
-5. https://github.com/peterwvj/emacs.d/blob/master/lisp/eshell-config-pvj.el
-6. https://github.com/xuchunyang/eshell-did-you-mean
-*** Subcommand Completions
-Eshell uses pcomplete package for programmable completion. Completions are defined as functions named =pcomplete/COMMAND=, where COMMAND is the name of the command for which this function provides completions.
-
-References:
-1. https://www.emacswiki.org/emacs/EshellCompletion#toc3
-2. https://masteringemacs.org/article/pcomplete-context-sensitive-completion-emacs
-**** Systemctl subcommand completion.
-#+BEGIN_SRC emacs-lisp
-(defcustom pcomplete-systemctl-commands
-  '("disable" "enable" "status" "start" "restart" "stop" "reenable"
-    "list-units" "list-unit-files")
-  "p-completion candiates for `systemctl' main commands"
-  :type '(repeat (string :tag "systemctl command"))
-  :group 'pcomplete)
-
-(defun pcomplete/systemctl ()
-  "Completion rules for the `systemctl' command."
-  (pcomplete-here pcomplete-systemctl-commands))
-#+END_SRC
-
-**** Man completion.
-#+BEGIN_SRC emacs-lisp
-(defvar pcomplete-man-user-commands
-  (split-string
-   (shell-command-to-string
-    "apropos -s 1 .|while read -r a b; do echo \" $a\";done;"))
-  "p-completion candidates for `man' command")
-
-(defun pcomplete/man ()
-  "Completion rules for the `man' command."
-  (pcomplete-here pcomplete-man-user-commands))
-#+END_SRC
-
-**** Git completion.
-#+BEGIN_SRC emacs-lisp
-(defconst pcmpl-git-commands
-  '("add" "bisect" "branch" "checkout" "clone"
-    "commit" "diff" "fetch" "grep"
-    "init" "log" "merge" "mv" "pull" "push" "rebase"
-    "reset" "rm" "show" "status" "tag" )
-  "List of `git' commands")
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defvar pcmpl-git-ref-list-cmd "git for-each-ref refs/ --format='%(refname)'"
-  "The `git' command to run to get a list of refs")
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun pcmpl-git-get-refs (type)
-  "Return a list of `git' refs filtered by TYPE"
-  (with-temp-buffer
-    (insert (shell-command-to-string pcmpl-git-ref-list-cmd))
-    (goto-char (point-min))
-    (let ((ref-list))
-      (while (re-search-forward (concat "^refs/" type "/\\(.+\\)$") nil t)
-        (add-to-list 'ref-list (match-string 1)))
-      ref-list)))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun pcomplete/git ()
-  "Completion for `git'"
-  (pcomplete-here* pcmpl-git-commands)
-
-  (cond
-   ;; complete files/dirs forever if the command is `add' or `rm'
-   ((pcomplete-match (regexp-opt '("add" "rm")) 1)
-    (while (pcomplete-here (pcomplete-entries))))
-   ;; provide branch completion for the command `checkout'.
-   ((pcomplete-match (regexp-opt '("checkout" "branch")) 1)
-    (pcomplete-here* (pcmpl-git-get-refs "heads")))))
-#+END_SRC
-
-References:
-1. https://masteringemacs.org/article/pcomplete-context-sensitive-completion-emacs
-
-**** Bash-completion + eshell
-#+BEGIN_SRC emacs-lisp
-(use-package bash-completion
-  :config
-  (bash-completion-setup)
-  (setq eshell-default-completion-function 'eshell-bash-completion)
-
-  (defun eshell-bash-completion ()
-    (while (pcomplete-here
-            (nth 2 (bash-completion-dynamic-complete-nocomint
-                    (save-excursion (eshell-bol) (point))
-                    (point)))))))
-#+END_SRC
-Referecences:
-1. https://github.com/andrejlamov/dotfiles/commit/17a716cbe4c8fd589212f319b9cca268c6e69eb9
-** Libvterm/VTerm
-
-*** Pre-requisite
-<2019-08-25 Sun>
-
-1. Libterm
-   #+BEGIN_SRC shell
-   sudo apt-get install libvterm-dev
-   #+END_SRC
-
-2. Libtool-bin
-   #+BEGIN_SRC shell
-   sudo apt-get install libtool-bin
-   #+END_SRC
-
-Fullfill the prerequisite. Clone the git repo. Build. And done.
-
-*** Config
-#+BEGIN_SRC emacs-lisp
-(use-package vterm
-  :load-path "lisp/emacs-libvterm"
-  :config
-  (defun jh/--customise-vterm-display ()
-    "Customise font face to make looks like a typical terminal emulator."
-    ;; (buffer-face-set '(:family "Hack" :height 103))
-    (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch)
-    (buffer-face-mode t)
-    (buffer-face-set '(:family "Hack"))
-    (setq header-line-format " "))
-  (add-hook 'vterm-mode-hook #'jh/--customise-vterm-display)
-
-  (defun jh/--truncate-lines ()
-    "To make the line wrapping works normally."
-    (setq truncate-lines t))
-  (add-hook 'vterm-mode-hook #'jh/--truncate-lines)
-
-  (evil-set-initial-state 'vterm-mode 'emacs)
-
-
-  ;; Exit buffer after exiting Vterm
-  (setq vterm-kill-buffer-on-exit t))
-#+END_SRC
-
-References:
-1. https://superuser.com/a/988843
-2. https://github.com/akermu/emacs-libvterm/issues/24#issuecomment-438048042
-** Shell-Mode
-Provide exact same completions in =shell-mode= as I get in a terminal emulator with a TAB key [fn:8].
-#+BEGIN_SRC emacs-lisp
-(use-package native-complete
-  :config
-  (with-eval-after-load 'shell
-    (native-complete-setup-bash)))
-#+END_SRC
-
-Possible useful config from Redguardtoo [fn:9].
-
-[fn:8] github:CeleritasCelery/emacs-native-shell-complete and the accompanying [[https://coredumped.dev/2020/01/04/native-shell-completion-in-emacs/][article]].
-
-[fn:9] https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-term-mode.el#L1
 * Handy Small Functions
 Open the current file-buffer using system viewer [fn:10].
 #+BEGIN_SRC emacs-lisp
