@@ -982,8 +982,12 @@ Provide exact same completions in =shell-mode= as I get in a terminal emulator w
 For full fledged terminal experience, use vterm[fn:6]. Libvterm is the library used in Neovim.
 #+BEGIN_SRC emacs-lisp
 (use-package vterm
-  :load-path "lisp/emacs-libvterm"
+  :commands vterm
   :config
+  (setq vterm-always-compile-module t)
+  (setq vterm-max-scrollback 10000)
+  (setq vterm-kill-buffer-on-exit t)
+
   (defun jh/--customise-vterm-display ()
     "Customise font face to make looks like a typical terminal emulator."
     ;; (buffer-face-set '(:family "Hack" :height 103))
@@ -993,16 +997,8 @@ For full fledged terminal experience, use vterm[fn:6]. Libvterm is the library u
     (setq header-line-format " "))
   (add-hook 'vterm-mode-hook #'jh/--customise-vterm-display)
 
-  (defun jh/--truncate-lines ()
-    "To make the line wrapping works normally. Reference: https://superuser.com/a/988843"
-    (setq truncate-lines t))
-  (add-hook 'vterm-mode-hook #'jh/--truncate-lines)
-
-  (evil-set-initial-state 'vterm-mode 'emacs)
-
-
-  ;; Exit buffer after exiting Vterm
-  (setq vterm-kill-buffer-on-exit t))
+  (with-eval-after-load 'evil
+    (evil-set-initial-state 'vterm-mode 'emacs)))
 #+END_SRC
 
 [fn:5] github:CeleritasCelery/emacs-native-shell-complete and the accompanying [[https://coredumped.dev/2020/01/04/native-shell-completion-in-emacs/][article]], possible useful config from Redguardtoo https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-term-mode.el#L1
