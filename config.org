@@ -1434,8 +1434,10 @@ WAITING --> DONE
   (setq org-agenda-start-on-weekday 0) ; start a new week on Sunday
 
   ;; add all files matching regexp in org-agenda-files directory
-  (setq org-agenda-files `(,(jh/file-in-sync-directory "gtd")))
-  (setq org-agenda-file-regexp "\\`[^.].*\\(\\.org\\|\\.txt\\)\\'"))
+  (defun jh/hardcoded-get-agenda-file (PATH)
+    (split-string (shell-command-to-string "find /home/zacque/Dropbox/DropSyncFiles/gtd/ -regextype egrep -regex .*\\(org\\|txt\\)") "\n" t))
+  (setq org-agenda-files (jh/hardcoded-get-agenda-file (jh/file-in-sync-directory "gtd"))))
+
 #+END_SRC
 
 References:
