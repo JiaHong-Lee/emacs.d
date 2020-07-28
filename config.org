@@ -1438,6 +1438,10 @@ WAITING --> DONE
     (split-string (shell-command-to-string "find /home/zacque/Dropbox/DropSyncFiles/gtd/ -regextype egrep -regex .*\\(org\\|txt\\)") "\n" t))
   (setq org-agenda-files (jh/hardcoded-get-agenda-file (jh/file-in-sync-directory "gtd"))))
 
+(setq org-refile-targets '((org-agenda-files :maxlevel . 3))) ; target all agenda files
+(setq org-refile-use-outline-path 'file) ; refile to top level
+(setq org-refile-allow-creating-parent-nodes 'confirm) ; create a new heading on the fly and refile under it
+(setq org-outline-path-complete-in-steps nil) ; make it compatible with ivy, otherwise Ivy has issue display all the subtrees, see https://github.com/abo-abo/swiper/issues/444#issuecomment-286693939
 #+END_SRC
 
 References:
@@ -1445,6 +1449,7 @@ References:
    Org-log-done variable.
 2. [[info:org#TODO%20dependencies][info:org#TODO dependencies]]
 3. http://doc.norang.ca/org-mode.html#TasksAndStates
+4. https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
 
 [fn:7] http://doc.norang.ca/org-mode.html#Clocking
 * IDE Framework
@@ -2651,66 +2656,6 @@ Sync semi-automatically.
 
 References:
 1. https://cestlaz.github.io/posts/using-emacs-26-gcal/
-
-** Org Capture, Refile, Archive
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-
-*** Org Refile
-
-#+BEGIN_SRC emacs-lisp
-(defun jh/opened-buffer-files ()
-  "Return the list of files currently opened in emacs"
- )
-#+END_SRC
-
-Refile to all org buffers, included current buffer and org-agenda-files.
-#+BEGIN_SRC emacs-lisp
-(setq org-refile-targets
-      '((org-buffer-list :maxlevel . 3)))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq org-refile-use-outline-path t)
-#+END_SRC
-
-This is added because during refiling, my Ivy had an issue displaying all the options. All the options show as the same.
-#+BEGIN_SRC emacs-lisp
-;; Discussion: https://github.com/abo-abo/swiper/issues/1254
-;; Solution: https://github.com/abo-abo/swiper/issues/444#issuecomment-286693939
-(setq org-outline-path-complete-in-steps nil)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq org-refile-allow-creating-parent-nodes 'confirm)
-#+END_SRC
-
-Source: https://stackoverflow.com/a/26683663
-#+BEGIN_SRC emacs-lisp
-(defun jh/org-refile-to-datetree ()
-  "Refile a subtree to a datetree corresponding to it's timestamp."
-  (interactive)
-  (let* ((datetree-date (org-entry-get nil "TIMESTAMP" t))
-         (date (org-date-to-gregorian datetree-date)))
-    (when date
-      (save-excursion
-        (org-cut-subtree)
-        (org-datetree-find-date-create date)
-        (org-narrow-to-subtree)
-        (show-subtree)
-        (org-end-of-subtree t)
-        (newline)
-        (goto-char (point-max))
-        (org-paste-subtree 4)
-        (widen)
-        )
-      )
-    ))
-#+END_SRC
-
-References:
-1. https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
 
 * Evil's Reading-State for Org-mode
 
