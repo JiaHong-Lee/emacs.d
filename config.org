@@ -668,7 +668,7 @@ References:
 (defun jh/toggle-coding-face-mode ()
   "Sets a fixed width (monospace) font in current buffer"
   (interactive)
-  (buffer-face-set '(:family "IBM Plex Mono")))
+  (buffer-face-set '(:family "DejaVu Sans Mono")))
 (add-hook 'prog-mode-hook 'jh/toggle-coding-face-mode)
 
 ;; Prettify symbol, i.e. replace keywords with symbol. E.g. lambda -> λ
@@ -782,11 +782,11 @@ References:
 
 (use-package display-fill-column-indicator
   ;; highlight column at position 80
+  :ensure nil
   :if (version<= "27.0" emacs-version)
   :hook (prog-mode . display-fill-column-indicator-mode)
   :config
-  (setq display-fill-column-indicator-column 80)
-  (setq display-fill-column-indicator-character '│))
+  (setq display-fill-column-indicator-column 80))
 
 (use-package debug
   :ensure nil
