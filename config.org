@@ -1442,6 +1442,13 @@ WAITING --> DONE
 (setq org-refile-use-outline-path 'file) ; refile to top level
 (setq org-refile-allow-creating-parent-nodes 'confirm) ; create a new heading on the fly and refile under it
 (setq org-outline-path-complete-in-steps nil) ; make it compatible with ivy, otherwise Ivy has issue display all the subtrees, see https://github.com/abo-abo/swiper/issues/444#issuecomment-286693939
+
+(use-package org-archive
+  ;; archive DONE tasks to keep my working files clean
+  :ensure nil
+  :config
+  (setq org-archive-mark-done nil) ; don't set TODO keyword, I'll set it before archiving
+  (setq org-archive-location "%s_archive::")) ; file to top level
 #+END_SRC
 
 References:
@@ -2574,16 +2581,6 @@ Reset the appointments if I leave Emacs running overnight.
 
 References:
 1. http://doc.norang.ca/org-mode.html#Reminders
-
-** Archiving Subtrees
-
-Archiving can keep my main working files clutter-free. It keeps my files contributing to the agenda fairly current. It cleans up my project trees and removes the old tasks that are no longer interesting.
-
-Tasks to archive are listed automatically at the end of agenda. They can have any todo state.
-#+BEGIN_SRC emacs-lisp
-(setq org-archive-mark-done nil)
-(setq org-archive-location "%s_archive::* Archived Tasks")
-#+END_SRC
 
 ** Org Time Clocking
 
