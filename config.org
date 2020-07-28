@@ -1420,7 +1420,7 @@ WAITING --> DONE
 
   (setq org-capture-templates
         `(("d" "TODO" entry (file+headline ,(concat jh/sync-directory "/gtd/" "todo.txt") "TODOs")
-           "* TODO %?\n %U")
+           "* TODO %?\nCaptured on: %U")
           ("p" "Personal Journal" entry (file ,(concat jh/personal-journal-directory (jh/generate-journal-filename)))
            "* %u ")
           ("t" "Technical Journal" entry (file ,(concat jh/technical-journal-directory (jh/generate-journal-filename)))
