@@ -1380,6 +1380,8 @@ WAITING --> DONE
 [[file:images/org_task_states.png][Org TODO task states]]
 
 #+BEGIN_SRC emacs-lisp
+(setq org-deadline-warning-days 14) ; start prompting me to get reasy
+
 (setq org-treat-insert-todo-heading-as-state-change t)  ; to invoke timestamp log
 
 (setq org-todo-keywords
@@ -2174,11 +2176,6 @@ References:
 I don't need an indicator of tasks blocked.
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-dim-blocked-tasks nil)
-#+END_SRC
-
-Start showing the deadline in Org-Agenda for task going to due in 90 days.
-#+BEGIN_SRC emacs-lisp
-(setq org-deadline-warning-days 14)
 #+END_SRC
 
 Customise Org-agenda TODO view.
