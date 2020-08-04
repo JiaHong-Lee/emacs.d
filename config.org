@@ -1416,11 +1416,20 @@ WAITING --> DONE
   :config
   (global-set-key (kbd "C-c c") 'org-capture)
 
-  (defun jh/generate-journal-filename ()
-    "Generate the correct journal filename dynamically. Currently, it's in the form YYYYMM.txt."
-    (let ((month (nth 0 (calendar-current-date)))
+  (defun jh/generate-date-string (&optional format)
+    "Generate a date string from the date today in the specified FORMAT."
+    (let ((day (nth 1 (calendar-current-date)))
+          (month (nth 0 (calendar-current-date)))
           (year (nth 2 (calendar-current-date))))
-      (format "%d%02d.txt" year month)))
+      (cond
+       ((eq format 'dd) (format "%02d" day))
+       ((eq format 'mm) (format "%02d" month))
+       ((eq format 'yyyy) (format "%04d" year))
+       ((eq format 'yyyymm) (format "%04d%02d" year month))
+       ((eq format 'yyyymmdd) (format "%04d%02d%02d" year month day))
+       ((eq format 'ddmmyyyy) (format "%02d%02d%04d" day month year))
+       ((eq format 'mmddyyyy) (format "%02d%02d%04d" month day year))
+       (t ""))))
 
   (defconst jh/personal-journal-directory (concat jh/sync-directory "/writing/personal_journal/"))
   (defconst jh/technical-journal-directory (concat jh/sync-directory "/writing/technical_journal/"))
@@ -1428,10 +1437,13 @@ WAITING --> DONE
   (setq org-capture-templates
         `(("d" "TODO" entry (file+headline ,(concat jh/sync-directory "/gtd/" "todo.txt") "TODOs")
            "* TODO %?\nCaptured on: %U")
-          ("p" "Personal Journal" entry (file ,(concat jh/personal-journal-directory (jh/generate-journal-filename)))
+          ("p" "Personal Journal" entry
+           (file ,(concat jh/personal-journal-directory (jh/generate-date-string 'yyyymm) ".txt"))
            "* %u ")
-          ("t" "Technical Journal" entry (file ,(concat jh/technical-journal-directory (jh/generate-journal-filename)))
-           "* %u "))))
+          ("t" "Technical Journal" entry
+           (file ,(concat jh/technical-journal-directory (jh/generate-date-string 'yyyymm) ".txt"))
+           "* %u ")
+           "* %u ")
 
 (use-package org-agenda
   :ensure nil
