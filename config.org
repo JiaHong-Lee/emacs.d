@@ -1431,12 +1431,14 @@ WAITING --> DONE
        ((eq format 'mmddyyyy) (format "%02d%02d%04d" month day year))
        (t ""))))
 
+  (defconst jh/gtd-directory (concat jh/sync-directory "/gtd/"))
   (defconst jh/personal-journal-directory (concat jh/sync-directory "/writing/personal_journal/"))
   (defconst jh/technical-journal-directory (concat jh/sync-directory "/writing/technical_journal/"))
 
   (setq org-capture-templates
-        `(("d" "TODO" entry (file+headline ,(concat jh/sync-directory "/gtd/" "todo.txt") "TODOs")
-           "* TODO %?\nCaptured on: %U")
+        `(("d" "TODO" entry
+           (file+headline ,(concat jh/gtd-directory "todo.txt") "TODOs")
+           "* TODO %?\n")
           ("p" "Personal Journal" entry
            (file ,(concat jh/personal-journal-directory (jh/generate-date-string 'yyyymm) ".txt"))
            "* %u ")
