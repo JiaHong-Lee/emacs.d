@@ -1070,7 +1070,10 @@ For full fledged terminal experience, use vterm[fn:6]. Libvterm is the library u
 #+BEGIN_SRC emacs-lisp
 (use-package vterm
   :commands vterm
+  :init
+  (global-set-key (kbd "C-c t") 'vterm)
   :config
+
   (setq vterm-always-compile-module t)
   (setq vterm-max-scrollback 10000)
   (setq vterm-kill-buffer-on-exit t)
