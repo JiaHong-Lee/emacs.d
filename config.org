@@ -1468,7 +1468,7 @@ WAITING --> DONE
     (split-string (shell-command-to-string "find /home/zacque/Dropbox/DropSyncFiles/gtd/ -regextype egrep -regex .*\\(org\\|txt\\)") "\n" t))
   (setq org-agenda-files (jh/hardcoded-get-agenda-file (jh/file-in-sync-directory "gtd"))))
 
-(setq org-refile-targets '((org-agenda-files :maxlevel . 3))) ; target all agenda files
+(setq org-refile-targets '((org-agenda-files :maxlevel . 9))) ; target all agenda files
 (setq org-refile-use-outline-path 'file) ; refile to top level
 (setq org-refile-allow-creating-parent-nodes 'confirm) ; create a new heading on the fly and refile under it
 (setq org-outline-path-complete-in-steps nil) ; make it compatible with ivy, otherwise Ivy has issue display all the subtrees, see https://github.com/abo-abo/swiper/issues/444#issuecomment-286693939
