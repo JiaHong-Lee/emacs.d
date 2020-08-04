@@ -1443,7 +1443,16 @@ WAITING --> DONE
           ("t" "Technical Journal" entry
            (file ,(concat jh/technical-journal-directory (jh/generate-date-string 'yyyymm) ".txt"))
            "* %u ")
+          ("w" "Work")
+          ("wj" "Work Journal" entry
+           (file ,(concat jh/work-journal-directory (jh/generate-date-string 'yyyymm) ".txt"))
            "* %u ")
+          ("wt" "Work Timesheet" entry
+           (file+olp+datetree ,(concat jh/work-journal-directory "timesheet.txt"))
+           "* %U - %^{Activity}  %^g")
+          ("wd" "Work Todo" entry
+           (file+olp+datetree ,(concat jh/gtd-directory "work.txt"))
+           "* TODO %^{Task Description}  %^g\n%?\n\nAdded: %U"))))
 
 (use-package org-agenda
   :ensure nil
