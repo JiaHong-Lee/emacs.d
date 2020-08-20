@@ -1431,9 +1431,19 @@ WAITING --> DONE
        ((eq format 'mmddyyyy) (format "%02d%02d%04d" month day year))
        (t ""))))
 
+  (defun jh/construct-writing-filename (directory)
+    "Construct a filename prefixed by date string yyyymmdd. And return a path to the file in the DIRECTORY."
+    (let* ((filename (read-string "Filename (without .txt): "))
+           (fullfilename (format "%s_%s.txt" (jh/generate-date-string 'yyyymmdd) filename))
+           (fullpath (concat directory fullfilename)))
+      fullpath))
+
   (defconst jh/gtd-directory (concat jh/sync-directory "/gtd/"))
   (defconst jh/personal-journal-directory (concat jh/sync-directory "/writing/personal_journal/"))
+  (defconst jh/personal-writing-directory (concat jh/sync-directory "/writing/personal_writing/"))
   (defconst jh/technical-journal-directory (concat jh/sync-directory "/writing/technical_journal/"))
+  (defconst jh/technical-writing-directory (concat jh/sync-directory "/writing/technical_writing/"))
+  (defconst jh/work-journal-directory (concat jh/sync-directory "/writing/work_journal/"))
 
   (setq org-capture-templates
         `(("d" "TODO" entry
