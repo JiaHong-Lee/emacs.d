@@ -1489,6 +1489,18 @@ References:
 4. https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
 
 [fn:7] http://doc.norang.ca/org-mode.html#Clocking
+* Spelling Checking
+Possible candidates:
+1. flyspell
+2. spell-fu
+
+#+BEGIN_SRC emacs-lisp
+(setq ispell-dictionary "british-ise")
+(setq ispell-personal-dictionary (concat user-emacs-directory "ispell.en.pws"))
+
+(use-package spell-fu
+  :hook ((text-mode prog-mode) . spell-fu-mode))
+#+END_SRC
 * IDE Framework
 An IDE is a complex piece of software. Emacs is the best Lisp editor and I want it to be the best editor completing with features to rival the best IDE in the market. Here I define the framework to declare the framework of a programming language. Components of an IDE:
 1. console, shell
@@ -2957,23 +2969,6 @@ Use "pyim" as default input method. Then I can invoke =toggle-input-method= anyw
 #+END_SRC
 
 [fn:9] http://tumashu.github.io/pyim/
-
-** Spelling Checker (Flyspell-mode)
-
-Flyspell-mode is a built-in package with Emacs.
-#+BEGIN_SRC emacs-lisp
-(require 'flyspell)
-#+END_SRC
-
-I prefer British spelling to US spelling.
-#+BEGIN_SRC emacs-lisp
-(setq ispell-dictionary "british-ise")
-#+END_SRC
-
-Remove the default "M-TAB" binding to flyspell-auto-correct-word. Currently, I am using it for pcomplete.
-#+BEGIN_SRC emacs-lisp
-(define-key flyspell-mode-map (kbd "C-M-i") nil)
-#+END_SRC
 
 * LaTeX Writing Ergonomics
 #+BEGIN_SRC emacs-lisp
