@@ -1439,6 +1439,9 @@ WAITING --> DONE
         `(("d" "TODO" entry
            (file+headline ,(concat jh/gtd-directory "todo.txt") "TODOs")
            "* TODO %?\n")
+          ("s" "General Timesheet" entry
+           (file+olp+datetree ,(concat jh/sync-directory "/timesheet.txt"))
+           "* %U - %^{Activity}  %^g")
           ("p" "Personal Journal" entry
            (file ,(concat jh/personal-journal-directory (jh/generate-date-string 'yyyymm) ".txt"))
            "* %u ")
@@ -1449,7 +1452,7 @@ WAITING --> DONE
           ("wj" "Work Journal" entry
            (file ,(concat jh/work-journal-directory (jh/generate-date-string 'yyyymm) ".txt"))
            "* %u ")
-          ("wt" "Work Timesheet" entry
+          ("ws" "Work Timesheet" entry
            (file+olp+datetree ,(concat jh/work-journal-directory "timesheet.txt"))
            "* %U - %^{Activity}  %^g")
           ("wd" "Work Todo" entry
