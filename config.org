@@ -462,6 +462,12 @@ Layer1 will probably be the largest layer of all. How should I structure this se
   (add-to-list 'org-structure-template-alist '("pl" . "src plantuml :file ?.png"))
   (add-to-list 'org-structure-template-alist '("cl" . "src lisp"))
 
+  (defun jh/disable-electric-pair-angle-bracket ()
+    "Disable <> auto pairing in Org-mode to work well with templating system, e.g. <el, <cl. Reference: https://emacs.stackexchange.com/a/27426."
+    (setq-local electric-pair-inhibit-predicate
+                (lambda (c) (if (char-equal c ?<) t (electric-pair-default-inhibit c)))))
+  (add-hook 'org-mode-hook 'jh/disable-electric-pair-angle-bracket)
+
   (defun jh/toggle-org-mode-writing-configuration ()
     "Sets a special font for Org-mode writing and more. See: https://shreyas.ragavan.co/post/951004ce-add0-4e7e-b6e2-2932e0dee429/."
     (interactive)
