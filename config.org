@@ -1510,6 +1510,39 @@ References:
 4. https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
 
 [fn:7] http://doc.norang.ca/org-mode.html#Clocking
+** Org Export
+#+begin_src emacs-lisp
+(use-package ox
+  ;; package for org export
+  :ensure nil
+  :config
+  (setq org-export-preserve-breaks t)
+  (setq org-export-with-emphasize t)
+  (setq org-export-with-special-strings t) ; --- to &mdash in HTML
+  (setq org-export-with-sub-superscripts "{}") ; only interpret ^ and _ as superscript or subscript when it is enclosed in {}
+  (setq org-export-allow-bind-keywords t) ; allows #+BIND keywords to work in org buffers, making it more portable
+
+  ;; Org export to HTML
+  (require 'ox-html)
+  (use-package htmlize) ; dependency for ox-html
+  (setq org-html-htmlize-output-type 'css) ; export CSS into an external file instead of inline it
+
+  ;; Org export to LaTeX
+  (require 'ox-latex)
+  (setq org-latex-prefer-user-labels t)
+
+  (add-to-list 'org-latex-packages-alist '("" "minted")) ; for Org source code syntax highlighting in LaTeX
+  (setq org-latex-listings 'minted) ; same as above
+
+  (setq org-latex-compiler "xelatex")
+  (setq org-latex-pdf-process '("latexmk -shell-escape -bibtex -f -pdf -xelatex %f")))
+#+end_src
+
+References:
+1. https://emacs.stackexchange.com/a/29698
+   Allows #+BIND keyword.
+3. https://emacs.stackexchange.com/a/45051
+   Export LaTeX code with syntax highlighting.
 * Spelling Checking
 Possible candidates:
 1. flyspell
@@ -2046,45 +2079,6 @@ Use the format year/month/day.
 #+BEGIN_SRC emacs-lisp
 (setq calendar-date-style 'iso)
 #+END_SRC
-* Org Export
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-#+BEGIN_SRC emacs-lisp
-(use-package ox
-  ;; package for org export
-  :ensure nil
-  :config
-
-  (setq org-export-with-sub-superscripts "{}")
-  (setq org-export-allow-bind-keywords t) ; allows #+BIND keywords to work in org buffers, making it more portable
-
-  (use-package htmlize
-    ;; export Org-files into HTML files
-    :config (setq org-html-htmlize-output-type 'css)) ; export CSS into an external file instead of inlining it
-
-  ;;; Expor to LaTeX
-  (setq org-latex-prefer-user-labels t)
-
-  (defun org-latex-ignore-heading-filter-headline (headline backend info)
-    "Filter headings from exported to LaTeX. Strip headline from HEADLINE. Ignore BACKEND and INFO."
-    (when (and (org-export-derived-backend-p backend 'latex)
-               (string-match "\\`.*ignoreheading.*\n" headline))
-      (replace-match "" nil nil headline)))
-  (add-to-list 'org-export-filter-headline-functions 'org-latex-ignore-heading-filter-headline)
-
-  (add-to-list 'org-latex-packages-alist '("" "minted")) ; LaTeX syntax highlighting
-  (setq org-latex-listings 'minted))
-#+END_SRC
-
-References:
-1. https://emacs.stackexchange.com/a/29698
-   Allows #+BIND keyword.
-2. https://tex.stackexchange.com/a/127287
-   http://article.gmane.org/gmane.emacs.orgmode/67692
-   Filter headline exported to LaTeX.
-3. https://emacs.stackexchange.com/a/45051
-   Export LaTeX code with syntax highlighting.
 * Org Publish
 :PROPERTIES:
 :header-args: :tangle no
