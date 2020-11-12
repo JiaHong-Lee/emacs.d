@@ -1580,6 +1580,11 @@ Possible candidates:
 (use-package spell-fu
   :hook ((text-mode prog-mode) . spell-fu-mode))
 #+END_SRC
+* Default Global Text Scale
+This is useful when using Emacs in different resolution settings.
+#+BEGIN_SRC emacs-lisp
+(use-package default-text-scale)
+#+END_SRC
 * IDE Framework
 An IDE is a complex piece of software. Emacs is the best Lisp editor and I want it to be the best editor completing with features to rival the best IDE in the market. Here I define the framework to declare the framework of a programming language. Components of an IDE:
 1. console, shell
