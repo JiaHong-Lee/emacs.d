@@ -3011,6 +3011,7 @@ Writing in Chinese pinyin [fn:9]. Use =set-input-method= to switch between langu
 (use-package pyim
   :config
   (setq pyim-dicts `((:name "hugedict" :file ,(jh/emacs-subdirectory "pyim/dict/pyim-bigdict.pyim"))))
+  (setq pyim-page-tooltip 'minibuffer)
 
   ;; pinyin dictionary for =pyim= package.
   (use-package pyim-basedict
