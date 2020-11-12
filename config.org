@@ -1535,7 +1535,27 @@ References:
   (setq org-latex-listings 'minted) ; same as above
 
   (setq org-latex-compiler "xelatex")
-  (setq org-latex-pdf-process '("latexmk -shell-escape -bibtex -f -pdf -xelatex %f")))
+  (setq org-latex-pdf-process '("latexmk -shell-escape -bibtex -f -pdf -xelatex %f"))
+
+  ;; add custom latex class
+  (add-to-list 'org-latex-classes '("jharticle"
+                                    "\\documentclass[a4paper,12pt]{extarticle}
+\\usepackage[headheight=15pt,margin=1in]{geometry}
+\\usepackage{parskip}
+
+% change default font
+\\usepackage{kpfonts}
+
+% paragraph formatting
+\\renewcommand{\\baselinestretch}{1.25}
+\\setlength{\\parindent}{4em}
+\\setlength{\\parskip}{1em}
+"
+                                    ("\\section{%s}" . "\\section*{%s}")
+                                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 #+end_src
 
 References:
