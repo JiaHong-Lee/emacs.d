@@ -551,7 +551,11 @@ Layer1 will probably be the largest layer of all. How should I structure this se
         evil-regexp-search t)
 
   ;; Show (current match/total matches) info in the mode-line
-  (use-package evil-anzu)
+  (use-package evil-anzu
+    :init
+    (use-package anzu
+      :diminish
+      :config (global-anzu-mode +1)))
 
   (use-package evil-visual-mark-mode
     ;; Display mark at a point during evil-jump-to-mark
