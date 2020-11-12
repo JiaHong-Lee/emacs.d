@@ -1739,6 +1739,15 @@ Use cases:
 References:
 1. https://www.emacswiki.org/emacs/PythonProgrammingInEmacs
 2. https://thoughtbot.com/blog/emacs-as-a-python-ide
+* Haskell Mode
+#+BEGIN_SRC emacs-lisp
+(use-package haskell-mode
+  :config
+  ;; for org-babel integration
+  ;; (setq haskell-process-type 'stack-ghci)
+  (with-eval-after-load 'org
+    (org-babel-do-load-languages 'org-babel-load-languages '((haskell . t)))))
+#+END_SRC
 * Graphviz-Dot Mode
 #+BEGIN_SRC emacs-lisp
 (use-package graphviz-dot-mode
