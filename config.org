@@ -1605,6 +1605,8 @@ An IDE is a complex piece of software. Emacs is the best Lisp editor and I want 
 * Lisp Mode
 Lisp mode deals a lot with parens.
 #+BEGIN_SRC emacs-lisp
+(setq common-lisp-hyperspec-root (expand-file-name "~/Documents/lisp/HyperSpec/"))
+
 (defun jh/enable-check-parens-on-save ()
   "Run `check-parens' when the current buffer is saved."
   (add-hook 'after-save-hook #'check-parens nil t))
