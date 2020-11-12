@@ -1455,26 +1455,26 @@ WAITING --> DONE
 
   (setq org-capture-templates
         `(("d" "TODO" entry
-           (file+headline ,(concat jh/gtd-directory "todo.txt") "TODOs")
+           (file+headline ,(concat jh/gtd-directory "todo.org") "TODOs")
            "* TODO %?\n")
           ("s" "General Timesheet" entry
-           (file+olp+datetree ,(concat jh/sync-directory "/timesheet.txt"))
+           (file+olp+datetree ,(concat jh/sync-directory "/timesheet.org"))
            "* %U - %^{Activity}  %^g")
           ("p" "Personal Journal" entry
-           (file ,(concat jh/personal-journal-directory (jh/generate-date-string 'yyyymm) ".txt"))
+           (file ,(concat jh/personal-journal-directory (jh/generate-date-string 'yyyymm) ".org"))
            "* %u ")
           ("t" "Technical Journal" entry
-           (file ,(concat jh/technical-journal-directory (jh/generate-date-string 'yyyymm) ".txt"))
+           (file ,(concat jh/technical-journal-directory (jh/generate-date-string 'yyyymm) ".org"))
            "* %u ")
           ("w" "Work")
           ("wj" "Work Journal" entry
-           (file ,(concat jh/work-journal-directory (jh/generate-date-string 'yyyymm) ".txt"))
+           (file ,(concat jh/work-journal-directory (jh/generate-date-string 'yyyymm) ".org"))
            "* %u ")
           ("ws" "Work Timesheet" entry
-           (file+olp+datetree ,(concat jh/work-journal-directory "timesheet.txt"))
+           (file+olp+datetree ,(concat jh/work-journal-directory "timesheet.org"))
            "* %U - %^{Activity}  %^g")
           ("wd" "Work Todo" entry
-           (file+olp+datetree ,(concat jh/gtd-directory "work.txt"))
+           (file+olp+datetree ,(concat jh/gtd-directory "work.org"))
            "* TODO %^{Task Description}  %^g\n%?\n\nAdded: %U"))))
 
 (use-package org-agenda
@@ -2142,12 +2142,12 @@ Tasks are separated into logical groupings/projects. For large groupings/project
 For non-work related tasks:
 | Filename | Description                                |
 |----------+--------------------------------------------|
-| todo.txt | Personal tasks and things to keep track of |
+| todo.org | Personal tasks and things to keep track of |
 
 For org capture notes and tasks:
 | Filename   | Description           |
 |------------+-----------------------|
-| refile.txt | Captured tasks bucket |
+| refile.org | Captured tasks bucket |
 
 For work-related org-files to keep business notes:
 | Filename                | Description                      |
