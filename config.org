@@ -1374,6 +1374,14 @@ Layer2:
 1. org-capture, org-agenda...
 2. Programming major mode
 
+Beautification:
+#+begin_src emacs-lisp
+(use-package org-superstar
+  ;; :replace org-bullets
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-superstar-mode +1))))
+#+end_src
+
 Bernt Hansen[fn:7] has a good article on GTD. The following diagram shows the possible state transitions for a tasks:
 #+begin_src plantuml :file normal_task_states.png :cache yes
 title Task States
