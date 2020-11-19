@@ -1382,7 +1382,22 @@ Beautification:
   (add-hook 'org-mode-hook (lambda () (org-superstar-mode +1))))
 #+end_src
 
-Bernt Hansen[fn:7] has a good article on GTD. The following diagram shows the possible state transitions for a tasks:
+Last edit timestamp[fn:7]:
+#+begin_src emacs-lisp
+(use-package time-stamp
+  :ensure nil
+  :config
+  (defun jh/org-set-update-timestamp ()
+    "Setup Org-mode to update the LAST_EDIT file property on saved."
+    (setq-local time-stamp-active t
+                time-stamp-start "#\\+LAST_EDIT:[ \t]*"
+                time-stamp-end "$"
+                time-stamp-format " \[%Y-%02m-%02d %3a %02H:%02M:%02S UTC%Z\]")
+    (add-hook 'before-save-hook 'time-stamp nil 'local))
+  (add-hook 'org-mode-hook #'jh/org-set-update-timestamp))
+#+end_src
+
+Bernt Hansen[fn:8] has a good article on GTD. The following diagram shows the possible state transitions for a tasks:
 #+begin_src plantuml :file normal_task_states.png :cache yes
 title Task States
 [*] -> TODO
@@ -1529,7 +1544,9 @@ References:
 3. http://doc.norang.ca/org-mode.html#TasksAndStates
 4. https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
 
-[fn:7] http://doc.norang.ca/org-mode.html#Clocking
+[fn:7] https://org-roam.discourse.group/t/update-a-field-last-modified-at-save/321/21
+
+[fn:8] http://doc.norang.ca/org-mode.html#Clocking
 ** Org Export
 #+begin_src emacs-lisp
 (use-package ox
