@@ -3122,6 +3122,11 @@ Major mode for terraform configuration file.
 References:
 1. https://github.com/syohex/emacs-terraform-mode
 2. https://github.com/rafalcieslak/emacs-company-terraform
+* Machine Specific
+I want smaller default font size to display more text on my laptop display.
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'default nil :height 100)
+#+END_SRC
 * Config File Ending
 #+BEGIN_SRC emacs-lisp
 (provide 'init-config)
