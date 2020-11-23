@@ -1561,8 +1561,8 @@ References:
   (require 'ox-latex)
   (setq org-latex-prefer-user-labels t)
 
-  (add-to-list 'org-latex-packages-alist '("" "minted")) ; for Org source code syntax highlighting in LaTeX
-  (setq org-latex-listings 'minted) ; same as above
+  ;; (add-to-list 'org-latex-packages-alist '("" "minted")) ; for Org source code syntax highlighting in LaTeX
+  ;; (setq org-latex-listings 'minted) ; same as above
 
   (setq org-latex-compiler "xelatex")
   (setq org-latex-pdf-process '("latexmk -shell-escape -bibtex -f -pdf -xelatex %f"))
