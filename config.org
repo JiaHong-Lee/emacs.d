@@ -523,6 +523,7 @@ Layer1 will probably be the largest layer of all. How should I structure this se
 (use-package evil
   ;; evil is an extensible vi layer that emulate the main features of Vim in Emacs.
   :config
+  (evil-set-undo-system 'undo-tree)
 
   ;; Set some built-in modes to launch in evil emacs state (in addition to the default).
   (cl-loop for (mode . state) in
