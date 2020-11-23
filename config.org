@@ -436,14 +436,6 @@ Layer1 will probably be the largest layer of all. How should I structure this se
   :config
   (global-set-key (kbd "C-c l") 'org-store-link)
 
-  (use-package org-num
-    ;; add numbering to org headings
-    :ensure nil
-    :config
-    (setq org-num-skip-tags '("ARCHIVE" "noexport"))
-    (setq org-num-skip-commented t)
-    (add-hook 'org-mode-hook (lambda () (org-num-mode +1))))
-
   (setq org-startup-indented t) ; open an org file with hard indentation
   (setq org-startup-folded 'content) ; open an org file by showing all children
   (setq org-use-sub-superscripts "{}") ; display texts as sub- and superscripts only with {}, e.g. i_{2}, not i_2.
