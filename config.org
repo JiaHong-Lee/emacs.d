@@ -2713,7 +2713,7 @@ References:
 (org-clock-persistence-insinuate)
 #+END_SRC
 
-Besides Bernt Hansen, Lee Hinman[fn:8] has good config on org-clocking.
+Besides Bernt Hansen, Lee Hinman[fn:9] has good config on org-clocking.
 #+BEGIN_SRC emacs-lisp
 ;; Show lots of clocking history.
 (setq org-clock-history-length 23)
@@ -2746,7 +2746,7 @@ Use =org-mru-clock= package to clock into recent org-mode tasks. By default, org
 (setq org-mru-clock-completing-read #'ivy-completing-read)
 #+END_SRC
 
-[fn:8] https://writequit.org/denver-emacs/presentations/2017-04-11-time-clocking-with-org.html
+[fn:9] https://writequit.org/denver-emacs/presentations/2017-04-11-time-clocking-with-org.html
 
 ** Org-Gcal
 :PROPERTIES:
@@ -3034,7 +3034,7 @@ References:
 
 * Text Writing Ergonomics
 ** Writing in Chinese Pinyin
-Writing in Chinese pinyin [fn:9]. Use =set-input-method= to switch between languages. Use =toggle-input-method= to easily switch back.
+Writing in Chinese pinyin [fn:10]. Use =set-input-method= to switch between languages. Use =toggle-input-method= to easily switch back.
 #+BEGIN_SRC emacs-lisp
 (use-package pyim
   :config
@@ -3051,7 +3051,7 @@ Use "pyim" as default input method. Then I can invoke =toggle-input-method= anyw
 (setq default-input-method "pyim")
 #+END_SRC
 
-[fn:9] http://tumashu.github.io/pyim/
+[fn:10] http://tumashu.github.io/pyim/
 
 * LaTeX Writing Ergonomics
 #+BEGIN_SRC emacs-lisp
