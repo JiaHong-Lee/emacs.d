@@ -1594,6 +1594,13 @@ References:
    Allows #+BIND keyword.
 3. https://emacs.stackexchange.com/a/45051
    Export LaTeX code with syntax highlighting.
+* Ebook Reader
+Make sure Calibre is installed.
+#+begin_src emacs-lisp
+(use-package openwith
+  :config
+  (add-to-list 'openwith-associations '("\\.epub\\'" "ebook-viewer" (file))))
+#+end_src
 * Spelling Checking
 Possible candidates:
 1. flyspell
