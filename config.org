@@ -1751,6 +1751,7 @@ Use cases:
 
 (use-package pyenv-mode
   ;; Integrate pyenv with Python-mode
+  :disabled
   :ensure-system-package pyenv
   :config
   (pyenv-mode))
