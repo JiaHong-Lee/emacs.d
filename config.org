@@ -918,7 +918,8 @@ rotate entire document."
   :config
   (setq openwith-confirm-invocation nil)
   (setq openwith-associations '(("\\.docx\\'" "xdg-open" (file))
-                                ("\\.mp3\\'" "mpv" ("--no-video" file)))))
+                                ("\\.mp3\\'" "mpv" ("--no-video" file))
+                                ("\\.mkv\\|webm\\|mp4\\'" "mpv" (file)))))
 #+END_SRC
 
 References:
