@@ -1483,7 +1483,7 @@ WAITING --> DONE
 
   (setq org-capture-templates
         `(("d" "TODO" entry
-           (file+headline ,(concat jh/gtd-directory "todo.org") "TODOs")
+           (file+headline ,(concat jh/gtd-directory "capture.org") "TODOs")
            "* TODO %?\n")
           ("s" "General Timesheet" entry
            (file+olp+datetree ,(concat jh/sync-directory "/timesheet.org"))
