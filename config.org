@@ -1632,6 +1632,13 @@ Make sure Calibre is installed.
   (use-package elfeed-web))
 #+end_src
 * Academic Papers
+** BibTeX
+#+begin_src emacs-lisp
+(use-package bibtex
+  :ensure nil
+  :config
+  (setq bibtex-entry-format (list 'opts-or-alts 'required-fields 'numerical-fields 'sort-fields)))
+#+end_src
 * Spelling Checking
 Possible candidates:
 1. flyspell
