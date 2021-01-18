@@ -1631,6 +1631,7 @@ Make sure Calibre is installed.
 
   (use-package elfeed-web))
 #+end_src
+* Academic Papers
 * Spelling Checking
 Possible candidates:
 1. flyspell
