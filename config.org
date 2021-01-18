@@ -706,6 +706,7 @@ References:
   :config
   (smart-jump-setup-default-registers)
   (define-key evil-normal-state-map (kbd "g d") 'smart-jump-go)
+  (evil-add-command-properties #'smart-jump-go :jump t)
 
   ;; smart-jump opens xref when there are more than one candidate.
   (evil-set-initial-state 'xref--xref-buffer-mode 'emacs))
