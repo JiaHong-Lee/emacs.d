@@ -1604,6 +1604,33 @@ Make sure Calibre is installed.
   :config
   (add-to-list 'openwith-associations '("\\.epub\\'" "ebook-viewer" (file))))
 #+end_src
+* Elfeed
+
+#+begin_src emacs-lisp
+(use-package elfeed
+  :config
+  (fullframe elfeed elfeed-search-quit-window) ; open in fullframe
+
+  (setq elfeed-use-curl t) ; faster feed fetching
+  (setq elfeed-sort-order 'ascending) ; not catching the latest news, I intend to read all the feeds
+  (setq elfeed-db-directory (expand-file-name "elfeed" user-emacs-directory)) ; save to ~/.emacs.d/elfeed
+  (setq-default elfeed-search-filter "@1-week-ago +unread +technical -bigcorp")
+
+  ;; Disable Evil key bindings shadowing
+  (evil-set-initial-state 'elfeed-show-mode 'emacs)
+  (evil-set-initial-state 'elfeed-search-mode 'emacs)
+
+  (define-key elfeed-show-mode-map (kbd "f") 'scroll-up-command)
+  (define-key elfeed-show-mode-map (kbd "b") 'scroll-down-command)
+  (define-key elfeed-show-mode-map (kbd "o") 'elfeed-show-visit)
+
+  (use-package elfeed-org
+    :config
+    (setq rmh-elfeed-org-files (list (expand-file-name "elfeed.org" user-emacs-directory)))
+    (elfeed-org))
+
+  (use-package elfeed-web))
+#+end_src
 * Spelling Checking
 Possible candidates:
 1. flyspell
@@ -4451,134 +4478,6 @@ Use it like =top= tool.
 
 References:
 1. https://www.emacswiki.org/emacs/ProcEd
-
-** Elfeed -- RSS Reader
-
-#+BEGIN_SRC emacs-lisp
-(use-package elfeed)
-#+END_SRC
-
-Open elfeed in fullframe.
-#+BEGIN_SRC emacs-lisp
-(fullframe elfeed elfeed-search-quit-window)
-#+END_SRC
-
-Override default search filter to including the =focus= tag.
-#+BEGIN_SRC emacs-lisp
-(setq-default elfeed-search-filter "@1-week-ago +unread +focus")
-#+END_SRC
-
-Sort from oldest to newest because I am not using RSS to catch the "latest" news. And I am expecting myself to go through all the feeds.
-#+BEGIN_SRC emacs-lisp
-(setq elfeed-sort-order 'ascending)
-#+END_SRC
-
-Override default database directory at home folder.
-#+BEGIN_SRC emacs-lisp
-(setq elfeed-db-directory (expand-file-name "elfeed" user-emacs-directory))
-#+END_SRC
-
-Start =elfeed= in =evil-emacs-mode=.
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
-(add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)
-#+END_SRC
-
-Auto enable writeroom mode to centralise contents when I read Elfeed articles.
-#+BEGIN_SRC emacs-lisp
-(add-hook 'elfeed-show-mode 'writeroom-mode)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(define-key elfeed-show-mode-map (kbd "f") 'scroll-up-command)
-(define-key elfeed-show-mode-map (kbd "b") 'scroll-down-command)
-(define-key elfeed-show-mode-map (kbd "o") 'elfeed-show-visit)
-#+END_SRC
-
-[Disable] Play video directly from the URL of a feed [fn:14]. (With a little modification to play "unlimited" resolution by default.
-#+BEGIN_SRC emacs-lisp :tangle no
-(defun elfeed-play-with-mpv ()
-  "Play entry link with mpv."
-  (interactive)
-  (let ((entry (if (eq major-mode 'elfeed-show-mode) elfeed-show-entry (elfeed-search-selected :single)))
-        (quality-arg "")
-    (quality-val (completing-read "Max height resolution (0 for unlimited):" '("0" "480" "720") nil nil)))
-    (setq quality-val (string-to-number quality-val))
-    (message "Opening %s with height≤%s with mpv..." (elfeed-entry-link entry) quality-val)
-    (when (< 0 quality-val)
-      (setq quality-arg (format "--ytdl-format=[height<=?%s]" quality-val)))
-    (start-process "elfeed-mpv" nil "mpv" quality-arg (elfeed-entry-link entry))))
-
-(defun elfeed-open-with-eww ()
-  "Open in eww with `eww-readable'."
-  (interactive)
-  (let ((entry (if (eq major-mode 'elfeed-show-mode) elfeed-show-entry (elfeed-search-selected :single))))
-    (eww  (elfeed-entry-link entry))
-    (add-hook 'eww-after-render-hook 'eww-readable nil t)))
-
-(defvar elfeed-visit-patterns
-  '(("//[^/]*youtu\\.?be" . elfeed-play-with-mpv)
-    ("phoronix" . elfeed-open-with-eww))
-  "List of (regexps . function) to match against elfeed entry link to know
-whether how to visit the link.")
-
-(defun elfeed-visit-maybe-externally ()
-  "Visit with external function if entry link matches `elfeed-visit-patterns',
-show normally otherwise."
-  (interactive)
-  (let ((entry (if (eq major-mode 'elfeed-show-mode)
-                   elfeed-show-entry
-                 (elfeed-search-selected :single)))
-        (patterns elfeed-visit-patterns))
-    (while (and patterns (not (string-match (caar patterns) (elfeed-entry-link entry))))
-      (setq patterns (cdr patterns)))
-    (cond
-     (patterns
-      (elfeed-untag entry 'unread)
-      (elfeed-search-update-entry entry)
-      (funcall (cdar patterns)))
-     ((eq major-mode 'elfeed-search-mode)
-      (call-interactively 'elfeed-search-show-entry))
-     (t (elfeed-show-visit)))))
-
-(define-key elfeed-show-mode-map [remap shr-browse-url] #'elfeed-visit-maybe-externally)
-#+END_SRC
-
-#+NAME: Elfeed_Dependency
-#+BEGIN_SRC sh :dir /sudo::
-apt install mpv youtube-dl curl
-#+END_SRC
-
-Use curl to fetch feed. This will be faster.
-#+BEGIN_SRC emacs-lisp
-(setq elfeed-use-curl t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; Source: https://emacs.stackexchange.com/a/2441
-(defun jh/elfeed-mark-all-as-read()
-  "Mark all messages as read."
-  (interactive)
-  (mark-whole-buffer)
-  (elfeed-search-untag-all-unread))
-#+END_SRC
-
-Use elfeed-org to load feeds from an org file.
-#+BEGIN_SRC emacs-lisp
-(use-package elfeed-org)
-#+END_SRC
-
-Initialise elfeed-org to read the configuration file.
-#+BEGIN_SRC emacs-lisp
-(elfeed-org)
-#+END_SRC
-
-Define the org file used to store all the RSS links.
-#+BEGIN_SRC emacs-lisp
-(setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))
-#+END_SRC
-
-[fn:14] https://github.com/skeeto/elfeed/issues/267 OR https://gitlab.com/ambrevar/dotfiles/blob/master/.emacs.d/lisp/init-elfeed.el
 
 ** Ledger
 
