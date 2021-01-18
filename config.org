@@ -1386,7 +1386,7 @@ Last edit timestamp[fn:7]:
     (setq-local time-stamp-active t
                 time-stamp-start "#\\+LAST_EDIT:[ \t]*"
                 time-stamp-end "$"
-                time-stamp-format " \[%Y-%02m-%02d %3a %02H:%02M:%02S UTC%Z\]")
+                time-stamp-format "\[%Y-%02m-%02d %3a %02H:%02M:%02S UTC%Z\]")
     (add-hook 'before-save-hook 'time-stamp nil 'local))
   (add-hook 'org-mode-hook #'jh/org-set-update-timestamp))
 #+end_src
