@@ -1667,6 +1667,14 @@ Ebib is a BibTeX database manager for Emacs.
   (use-package org-ebib
     :ensure nil))
 #+end_src
+** Scihub
+Download papers using DOI.
+#+begin_src emacs-lisp
+(use-package scihub
+  :commands scihub
+  :config
+  (setq scihub-download-directory "~/Downloads"))
+#+end_src
 * Spelling Checking
 Possible candidates:
 1. flyspell
