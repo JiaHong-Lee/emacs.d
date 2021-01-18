@@ -1480,7 +1480,8 @@ WAITING --> DONE
   (defconst jh/personal-writing-directory (concat jh/sync-directory "/writing/personal_writing/"))
   (defconst jh/technical-journal-directory (concat jh/sync-directory "/writing/technical_journal/"))
   (defconst jh/technical-writing-directory (concat jh/sync-directory "/writing/technical_writing/"))
-  (defconst jh/work-journal-directory (concat jh/sync-directory "/writing/work_journal/"))
+  (defconst jh/business-journal-directory (concat jh/sync-directory "/writing/business_journal/"))
+  (defconst jh/business-writing-directory (concat jh/sync-directory "/writing/business_writing/"))
 
   (setq org-capture-templates
         `(("d" "TODO" entry
@@ -1497,10 +1498,10 @@ WAITING --> DONE
            "* %u ")
           ("w" "Work")
           ("wj" "Work Journal" entry
-           (file ,(concat jh/work-journal-directory (jh/generate-date-string 'yyyymm) ".org"))
+           (file ,(concat jh/business-journal-directory (jh/generate-date-string 'yyyymm) ".org"))
            "* %u ")
           ("ws" "Work Timesheet" entry
-           (file+olp+datetree ,(concat jh/work-journal-directory "timesheet.org"))
+           (file+olp+datetree ,(concat jh/business-journal-directory "timesheet.org"))
            "* %U - %^{Activity}  %^g")
           ("wd" "Work Todo" entry
            (file+olp+datetree ,(concat jh/gtd-directory "work.org"))
