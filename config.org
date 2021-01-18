@@ -564,7 +564,7 @@ Layer1 will probably be the largest layer of all. How should I structure this se
 
   (use-package evil-matchit
     ;; Use % to jump between HTML tags, Python blocks
-    :config (global-evil-matchit-mode))
+    :hook ((python-mode html-mode) . evil-matchit-mode))
 
   (use-package sentence-navigation
     ;; To define sentence as a evil text object
