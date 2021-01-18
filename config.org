@@ -1675,6 +1675,31 @@ Download papers using DOI.
   :config
   (setq scihub-download-directory "~/Downloads"))
 #+end_src
+** DOI -> BibTeX
+#+begin_src emacs-lisp
+(defun jh/normalise-doi-url (doi-or-url)
+  "Accept both DOI identifier or the url to doi.org."
+  (if (string-match-p "doi" doi-or-url)
+      doi-or-url
+    (format "https://doi.org/%s" doi-or-url)))
+
+(defun jh/bibtex-format-entry ()
+  "Assume that the point is inside an entry."
+  (interactive)
+  (save-excursion
+    (let ((head (bibtex-beginning-of-entry))
+          (tail (bibtex-end-of-entry)))
+      (set-mark head)
+      (goto-char tail)
+      (activate-mark))
+    (bibtex-reformat)))
+
+(defun jh/doi-bibtex (doi)
+  (interactive "MDOI: ")
+  (call-process-shell-command (format "curl -sLH \"Accept: text/bibliography; style=bibtex\" %s" (jh/normalise-doi-url doi)) nil t nil)
+  (when (eq major-mode 'bibtex-mode)
+    (jh/bibtex-format-entry)))
+#+end_src
 * Spelling Checking
 Possible candidates:
 1. flyspell
