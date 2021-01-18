@@ -1639,6 +1639,34 @@ Make sure Calibre is installed.
   :config
   (setq bibtex-entry-format (list 'opts-or-alts 'required-fields 'numerical-fields 'sort-fields)))
 #+end_src
+** Ebib
+Ebib is a BibTeX database manager for Emacs.
+#+begin_src emacs-lisp
+(use-package ebib
+  :config
+  ;; launch without Evil key bindings overshadowing
+  (evil-set-initial-state 'ebib-index-mode 'emacs)
+  (evil-set-initial-state 'ebib-entry-mode 'emacs)
+  (evil-set-initial-state 'ebib-log-mode 'emacs)
+
+  ;; config
+  (setq ebib-bibtex-dialect 'biblatex)
+  (setq ebib-bib-search-dirs '("~/Documents/academic-papers/"))
+  (setq ebib-preload-bib-files '("references.bib")) ; no need full path, these names will be searched in the `ebib-bib-search-dirs'
+
+  (setq ebib-file-search-dirs '("~/Documents/academic-papers/files")) ; path to search for PDF files
+  (setq ebib-file-associations '())
+
+  (defun jh/ebib-author-year-title-description (key db)
+    (format "%s (%s), %s"
+            (ebib--get-field-value-for-display "Author/Editor" key db)
+            (ebib--get-field-value-for-display "Year" key db)
+            (ebib--get-field-value-for-display "Title" key db)))
+  (setq ebib-citation-description-function #'jh/ebib-author-year-title-description)
+
+  (use-package org-ebib
+    :ensure nil))
+#+end_src
 * Spelling Checking
 Possible candidates:
 1. flyspell
